@@ -27,4 +27,5 @@ https://docs.mongodb.com/manual/installation/#mongodb-community-edition-installa
     
 ## STOP webapp
 
-    `pm2 stop all`
+
+    pm2 stop all
