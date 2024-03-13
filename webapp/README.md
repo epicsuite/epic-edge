@@ -12,12 +12,12 @@
     
 ## Start api server
 
-    cd server
+    cd webapp/server
     npm start
 
 ## Start ui client
 
-    cd client
+    cd webapp/client
     npm start
 
 ## View the website
@@ -26,18 +26,18 @@
 
 ## Note
 
-- Have to restart the client when make changes in client/.env.
-- Have to restart the server when make changes in server code or server/.env.
+- Have to restart the client when any changes made in client/.env.
+- Have to restart the server when any changes made in server code or server/.env.
     
 #### Restart api server
 
-    cd server
+    cd webapp/server
     use Ctrl-C to stop the webapp server
     npm start
 
 #### Restart ui client
 
-    cd client
+    cd webapp/client
     use Ctrl-C to stop the webapp client
     npm start
 
