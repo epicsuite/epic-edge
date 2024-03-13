@@ -25,6 +25,9 @@ echo "Install $env EPIC EDGE webapp to $app_home"
 app_url="http://$web_server_domain:$web_server_port"
 echo "URL: http://$web_server_domain:$web_server_port"
 
+read -p 'Data root directory? (default /panfs/biopan04/epicdev/dataroot/products)' prod_home
+[[ ! $prod_home ]] && prod_home=/panfs/biopan04/epicdev/dataroot/products
+
 # Prompt user for installation system
 echo 'What OS are you using? ' 
 options=("Mac" "Linux" "Quit")
@@ -71,6 +74,7 @@ if [[ $opt == 'Mac' ]]; then
   sed -i "" "s/\<WEB_SERVER_PORT\>/${web_server_port}/g" $app_home/webapp/client/.env
   sed -i "" "s/\<APP_URL\>/${app_url//\//\\/}/g" $app_home/webapp/server/.env
   sed -i "" "s/\<WEB_SERVER_PORT\>/${web_server_port}/g" $app_home/webapp/server/.env
+  sed -i "" "s/\<PROD_HOME\>/${prod_home//\//\\/}/g" $app_home/webapp/server/.env
   sed -i "" "s/\<APP_HOME\>/${app_home//\//\\/}/g" $app_home/webapp/server/.env
   sed -i "" "s/\<IO_HOME\>/${io_home//\//\\/}/g" $app_home/webapp/server/.env
   sed -i "" "s/\<JWT_KEY\>/${jwt_key}/g" $app_home/webapp/server/.env
@@ -80,6 +84,7 @@ else
   sed -i "s/<WEB_SERVER_PORT>/${web_server_port}/g" $app_home/webapp/client/.env
   sed -i "s/<APP_URL>/${app_url//\//\\/}/g" $app_home/webapp/server/.env
   sed -i "s/<WEB_SERVER_PORT>/${web_server_port}/g" $app_home/webapp/server/.env
+  sed -i "s/<PROD_HOME>/${prod_home//\//\\/}/g" $app_home/webapp/server/.env
   sed -i "s/<APP_HOME>/${app_home//\//\\/}/g" $app_home/webapp/server/.env
   sed -i "s/<IO_HOME>/${io_home//\//\\/}/g" $app_home/webapp/server/.env
   sed -i "s/<JWT_KEY>/${jwt_key}/g" $app_home/webapp/server/.env

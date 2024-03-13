@@ -3,7 +3,7 @@ CRON_PORT=5555
 NODE_ENV=prod
 
 #EPIC
-PRODUCT_HOME=/panfs/biopan04/epicdev/dataroot/products
+PRODUCT_HOME=<PROD_HOME>
 DATASET_HOME=<IO_HOME>/datasets
 SESSION_HOME=<IO_HOME>/sessions
 
