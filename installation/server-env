@@ -1,0 +1,101 @@
+PORT=<WEB_SERVER_PORT>
+CRON_PORT=5555
+NODE_ENV=prod
+
+#EPIC
+PRODUCT_HOME=/panfs/biopan04/epicdev/dataroot/products
+DATASET_HOME=<IO_HOME>/datasets
+SESSION_HOME=<IO_HOME>/sessions
+
+# uncomment 'SYSTEM_MESSAGE' and restart pm2 to disable workflow submission
+#SYSTEM_MESSAGE=Workflow submission is temporarily unavailable. You can still browse/view your submitted projects.
+
+#React UI prod 'build' directory full path
+UI_BUILD_PATH=<APP_HOME>/webapp/client/build
+
+JWT_KEY=<JWT_KEY>
+
+DB_NAME=epicedge
+MONGO_URI=mongodb://127.0.0.1:27017/epicedge
+DB_BACKUP_DIR=<IO_HOME>/db
+# 1 week
+DB_BACKUP_CLEAN_AGE_INSECONDES=604800
+
+PUBLIC_DATA_HOME=<IO_HOME>/public
+SRA_DATA_HOME=<IO_HOME>/sra
+DOCS_HOME=<APP_HOME>/data/docs
+
+#winston-daily-rotate-file
+LOG_FILE=<IO_HOME>/log/EDGE-workflows-%DATE%.log
+LOG_LEVEL=info
+LOG_DATE_PATTERN=YYYY-MM-DD
+LOG_MAX_SIZE=20m
+LOG_MAX_FILES=14d
+
+#project env
+PROJECT_HOME=<IO_HOME>/projects
+PROJECT_DELETE_GRACE_PERIOD=7
+
+#file upload env
+FILEUPLOAD_FILE_DIR=<IO_HOME>/upload/files
+FILEUPLOAD_TMP_DIR=<IO_HOME>/upload/tmp
+FILEUPLOAD_ALLOWED_EXTENSIONS=hic|csv|gff
+#150G
+FILEUPLOAD_MAX_STORAGE_SIZE_BYTES=161061273600
+FILEUPLOAD_DAYS_KEPT=180
+FILEUPLOAD_DELETE_GRACE_PERIOD=5
+#10G
+FILEUPLOAD_MAX_SIZE_BYTES=10737418200
+
+#sendmail env
+SENDMAIL_FROM=edge.bioinformatics.lanl@gmail.com
+SENDMAIL_SERVICE=mailgun
+SENDMAIL_PASS=key-2414e787be9205b98b60b0f36374b337
+SENDMAIL_USER=mail.edgebioinformatics.org
+#activate user
+ACTIVATE_USER_SUBJECT=Your EDGE login account
+ACTIVATE_USER_ACTION=Activate Your Account
+ACTIVATE_USER_ACTION_MESSAGE=Please activate your account.
+#resetpassword
+RESETPASSWORD_SUBJECT=Reset your EDGE login password
+RESETPASSWORD_ACTION=Reset Your Password
+RESETPASSWORD_ACTION_MESSAGE=Someone requested a password reset for your account. If this was not you, please disregard this email. If you would like to continue, click the button to reset your password.
+#project status
+SENDMAIL_PROJECT=off
+PROJECT_URL=<APP_URL>/user/project?code=
+PROJECT_STATUS_SUBJECT=Your EDGE project status
+
+#WDL env
+WORKFLOW_WDL_HOME=<APP_HOME>/data/workflow/WDL
+WORKFLOW_TEMPLATE_HOME=<APP_HOME>/data/workflow/templates
+WORKFLOW_CONF=<APP_HOME>/data/workflow/conf.json
+
+#cromwell env
+#disabled the jobs limit
+MAX_CROMWELL_JOBS=100000
+#limit big mem jobs
+MAX_CROMWELL_JOBS_BIG_MEM=4
+## 150 GB =161061273600
+MAX_CROMWELL_JOBS_INPUTSIZE=161061273600
+CROMWELL_API_URL=http://localhost:8000/api/workflows/v1
+CROMWELL_WORKFLOW_TYPE=WDL
+
+#cron job schedules
+#monitor pipeline requests on every 3 minutes
+CRON_PIPELINE_MONITOR=0-59/3 * * * *
+# monitor workflow requests on every 3 minutes
+CRON_WORKFLOW_MONITOR=1-59/3 * * * *
+# monitor workflow requests on every 3 minutes
+CRON_WORKFLOW_BIG_MEM_MONITOR=0-59/3 * * * *
+# monitor cromwell jobs on every 3 minutes
+CRON_CROMWELL_MONITOR=2-59/3 * * * *
+# monitor file upload deletion/expiration every day at midnight
+CRON_FILEUPLOAD_MONITOR=0 0 * * *
+#monitor project status on every 1 minute
+CRON_PROJECT_STATUS_MONITOR=*/1 * * * *
+# monitor project deletion every day at 10pm
+CRON_PROJECT_MONITOR=0 22 * * *
+#backup nmdcedge database
+CRON_DB_BACKUP=0 1 * * *
+#delete old db backups
+CRON_DB_BACKUP_CLEAN=0 2 * * *
