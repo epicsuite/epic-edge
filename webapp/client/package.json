@@ -2,7 +2,7 @@
   "name": "@edge/lanl-edge",
   "version": "3.0.0",
   "description": "LANL EDGE v3",
-  "homepage": ".",
+  "homepage": "",
   "license": "MIT",
   "author": "The LANL EDGE Team",
   "scripts": {
