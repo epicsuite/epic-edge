@@ -44,7 +44,7 @@ const AppHeaderDropdown = (props) => {
           <CIcon icon={cilGrid} className="me-2" />
           My Datasets
         </CDropdownItem>
-        <CDropdownItem to="/user/alldatasets" component={NavLink}>
+        <CDropdownItem to="/user/datasets-all" component={NavLink}>
           <CIcon icon={cilGrid} className="me-2" />
           All Datasets Available to Me
         </CDropdownItem>
@@ -57,7 +57,7 @@ const AppHeaderDropdown = (props) => {
               <CIcon icon={cilCloudUpload} className="me-2" />
               My Sessions
             </CDropdownItem>
-            <CDropdownItem to="/user/allsessions" component={NavLink}>
+            <CDropdownItem to="/user/sessions-all" component={NavLink}>
               <CIcon icon={cilGrid} className="me-2" />
               All Sessions Available to Me
             </CDropdownItem>

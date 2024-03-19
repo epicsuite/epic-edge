@@ -517,16 +517,23 @@ const DatasetTable = (props) => {
                       />
                     </Fab>
                   </Tooltip>
-                  <Tooltip title="Add new dataset" aria-label="add">
-                    <Fab color="primary" size="small" style={{ marginRight: 10 }} aria-label="add">
-                      <Add
-                        onClick={() => {
-                          handleAction('add')
-                          table.reset()
-                        }}
-                      />
-                    </Fab>
-                  </Tooltip>
+                  {props.tableType === 'user' && (
+                    <Tooltip title="Add new dataset" aria-label="add">
+                      <Fab
+                        color="primary"
+                        size="small"
+                        style={{ marginRight: 10 }}
+                        aria-label="add"
+                      >
+                        <Add
+                          onClick={() => {
+                            handleAction('add')
+                            table.reset()
+                          }}
+                        />
+                      </Fab>
+                    </Tooltip>
+                  )}
                   <Tooltip title="Delete selected datasets" aria-label="delete">
                     <Fab
                       color="primary"
@@ -603,36 +610,40 @@ const DatasetTable = (props) => {
                       />
                     </Fab>
                   </Tooltip>
-                  <Tooltip title="Export selected datasets" aria-label="export-data">
-                    <Fab
-                      color="primary"
-                      size="small"
-                      style={{ marginRight: 10 }}
-                      aria-label="export-data"
-                    >
-                      <FileDownload
-                        onClick={() => {
-                          setTable(table)
-                          handleAction('export-data', table.getSelectedRowModel().flatRows)
-                        }}
-                      />
-                    </Fab>
-                  </Tooltip>
-                  <Tooltip title="Create session" aria-label="create-session">
-                    <Fab
-                      color="primary"
-                      size="small"
-                      style={{ marginRight: 10 }}
-                      aria-label="create-session"
-                    >
-                      <Forward
-                        onClick={() => {
-                          setTable(table)
-                          handleAction('create-session', table.getSelectedRowModel().flatRows)
-                        }}
-                      />
-                    </Fab>
-                  </Tooltip>
+                  {props.tableType === 'user' && (
+                    <Tooltip title="Export selected datasets" aria-label="export-data">
+                      <Fab
+                        color="primary"
+                        size="small"
+                        style={{ marginRight: 10 }}
+                        aria-label="export-data"
+                      >
+                        <FileDownload
+                          onClick={() => {
+                            setTable(table)
+                            handleAction('export-data', table.getSelectedRowModel().flatRows)
+                          }}
+                        />
+                      </Fab>
+                    </Tooltip>
+                  )}
+                  {props.tableType === 'user' && (
+                    <Tooltip title="Create session" aria-label="create-session">
+                      <Fab
+                        color="primary"
+                        size="small"
+                        style={{ marginRight: 10 }}
+                        aria-label="create-session"
+                      >
+                        <Forward
+                          onClick={() => {
+                            setTable(table)
+                            handleAction('create-session', table.getSelectedRowModel().flatRows)
+                          }}
+                        />
+                      </Fab>
+                    </Tooltip>
+                  )}
                 </div>
               </div>
             )

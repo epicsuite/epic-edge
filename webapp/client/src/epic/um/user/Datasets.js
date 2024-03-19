@@ -2,7 +2,6 @@ import React from 'react'
 import { Col, Row, Button } from 'reactstrap'
 import { useNavigate } from 'react-router-dom'
 import DatasetTable from '../common/DatasetTable'
-import { apis } from '../../util'
 
 const Datasets = (props) => {
   const navigate = useNavigate()
@@ -14,7 +13,7 @@ const Datasets = (props) => {
             color="primary"
             size="sm"
             className="rounded-pill"
-            onClick={() => navigate('/user/datasets/all')}
+            onClick={() => navigate('/user/datasets-all')}
             outline
           >
             &nbsp;Show all datasets available to me&nbsp;
@@ -24,7 +23,7 @@ const Datasets = (props) => {
         <DatasetTable
           title={'My Datasets'}
           datasetPageUrl={'/user/dataset?code='}
-          api={apis.userDatasets}
+          tableType={'user'}
         />
         <br></br>
         <br></br>

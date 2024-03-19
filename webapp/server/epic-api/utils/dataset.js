@@ -34,9 +34,7 @@ const updateDataset = (query, req) => new Promise((resolve, reject) => {
       if (req.body.status) {
         dataset.status = req.body.status;
       }
-      console.log('update')
       if ('public' in req.body) {
-        console.log("set public:", req.body.public)
         dataset.public = req.body.public;
       }
       if (req.body.sharedTo) {

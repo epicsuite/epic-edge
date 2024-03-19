@@ -11,7 +11,7 @@ const AdminSessions = React.lazy(() => import('./epic/um/admin/Sessions'))
 const privateRoutes = [
   { path: '/user/profile', exact: true, name: 'Profile', element: UserProfile },
   { path: '/user/datasets', exact: true, name: 'UserDatasets', element: UserDatasets },
-  { path: '/user/datasets/all', exact: true, name: 'UserDatasets', element: UserDatasetsAll },
+  { path: '/user/datasets-all', exact: true, name: 'UserDatasets', element: UserDatasetsAll },
   { path: '/user/sessions', exact: true, name: 'UserSessions', element: UserSessions },
   { path: '/admin/users', exact: true, name: 'Users', element: AdminUsers },
   { path: '/admin/datasets', exact: true, name: 'AdminDatasets', element: AdminDatasets },

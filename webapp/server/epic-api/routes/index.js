@@ -7,7 +7,7 @@ const datasetRoutes = require('./dataset');
 const authUserDatasetRoutes = require('./auth-user-dataset');
 // const sessionRoutes = require('./session');
 // const authUserSessionRoutes = require('./auth-user-session');
-// const adminDatasetRoutes = require('./admin-dataset');
+const adminDatasetRoutes = require('./admin-dataset');
 // const adminSessionRoutes = require('./admin-session');
 
 /* GET home page. */
@@ -22,7 +22,7 @@ router.use('/public/datasets', datasetRoutes);
 router.use('/auth-user', passport.authenticate('user', { session: false }), authUserDatasetRoutes);
 // router.use('/public/sessions', sessionRoutes);
 // router.use('/auth-user', passport.authenticate('user', { session: false }), authUserSessionRoutes);
-// router.use('/admin', passport.authenticate('admin', { session: false }), adminDatasetRoutes);
+router.use('/admin', passport.authenticate('admin', { session: false }), adminDatasetRoutes);
 // router.use('/admin', passport.authenticate('admin', { session: false }), adminSessionRoutes);
 
 module.exports = router;
