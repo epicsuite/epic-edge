@@ -13,6 +13,7 @@
 ## Start api server
 
     cd webapp/server
+    (change NODE_ENV=prod to NODE_ENV=dev in .env)
     npm start
 
 ## Start ui client
