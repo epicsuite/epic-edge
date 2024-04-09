@@ -22,7 +22,8 @@ const dbBackupClean = require('./crons/dbBackupClean');
 const app = express();
 app.use(cors({ origin: '*' }));
 // Helmet helps to secure Express apps by setting various HTTP headers.
-app.use(helmet());
+// app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
 app.use(express.json());
 app.use(fileUpload({
   // max size: 5G
