@@ -8,7 +8,7 @@ import { components } from './defaults'
 
 export const FastqInput = (props) => {
   const componentName = 'fastqInput'
-  const [form, setState] = useState(components[componentName].init)
+  const [form, setState] = useState({ ...components[componentName].init })
   const [doValidation, setDoValidation] = useState(0)
 
   const setNewState2 = (name, value) => {

@@ -1,7 +1,7 @@
-const Project = require('../../edge-api/models/project');
-const User = require('../../edge-api/models/user');
-const logger = require('../../utils/logger');
-const { projectStatusSender } = require('../../mailers/senders');
+const Project = require('../edge-api/models/project');
+const User = require('../edge-api/models/user');
+const logger = require('../utils/logger');
+const { projectStatusSender } = require('../mailers/senders');
 
 module.exports = function projectMonitor() {
   logger.debug('project status monitor');

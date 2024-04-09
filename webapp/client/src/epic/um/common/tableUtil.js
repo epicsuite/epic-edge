@@ -1,5 +1,5 @@
 import { createTheme } from '@mui/material'
-import { colors } from '../../../edge/common/util'
+import { colors } from 'src/edge/common/util'
 
 export const theme = createTheme({
   palette: {

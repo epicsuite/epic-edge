@@ -1,6 +1,6 @@
 import React from 'react'
 import DatasetTable from '../common/DatasetTable'
-import { apis } from '../../../edge/common/util'
+import { apis } from 'src/edge/common/util'
 
 const Sessions = (props) => {
   return (

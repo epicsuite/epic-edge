@@ -63,11 +63,32 @@ io_home=$app_home/io
 if [ ! -d  $io_home ]; then
   echo "Create io directories"
   mkdir ${io_home}
+  mkdir ${io_home}/upload
+  mkdir ${io_home}/upload/files
+  mkdir ${io_home}/upload/tmp
   mkdir ${io_home}/log
+  mkdir ${io_home}/projects
+  mkdir ${io_home}/public
   mkdir ${io_home}/db
   mkdir ${io_home}/datasets
   mkdir ${io_home}/sessions
 fi
+
+echo "Generate imports.zip"
+cd $app_home/data/workflow/WDL
+for f in *; do
+    if [ -d "$f" ]; then
+        # $f is a directory
+        cd $f
+        zip -r imports.zip *.wdl
+        if [ "$?" != "0" ]; then
+          echo "Cannot create $app_home/data/workflow/WDL/$f/imports.zip!" 1>&2
+          exit 1
+        fi
+        cd ../
+    fi
+done
+
 
 echo "Setup EPIC EDGE webapp ..."
 

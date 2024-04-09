@@ -8,7 +8,7 @@ import { components } from './defaults'
 
 export const FileInputArray = (props) => {
   const componentName = 'fileInputArray'
-  const [form, setState] = useState(components[componentName])
+  const [form, setState] = useState({ ...components[componentName] })
   const [doValidation, setDoValidation] = useState(0)
   const { control } = useForm({
     mode: defaults['form_mode'],

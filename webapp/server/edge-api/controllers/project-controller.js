@@ -23,7 +23,7 @@ const getAll = async (req, res) => {
   }
 };
 
-// Find a public project by code
+// Find all public projects
 const getOne = async (req, res) => {
   try {
     logger.debug(`/api/public/projects/${req.params.code}`);

@@ -67,6 +67,16 @@ const AppHeader = () => {
                   Sessions
                 </CNavLink>
               </CNavItem> */}
+              <CNavItem>
+                <CNavLink
+                  style={{ color: 'white' }}
+                  className="edge-header-nav-link"
+                  to="/workflow/4dgb"
+                  component={NavLink}
+                >
+                  4DGB Workflow
+                </CNavLink>
+              </CNavItem>
             </CHeaderNav>
             <CHeaderNav className="ms-3">
               <AppHeaderDropdown

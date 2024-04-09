@@ -1,7 +1,7 @@
-const Project = require('../../edge-api/models/project');
-const CromwellJob = require('../../edge-api/models/job');
-const { abortJob, updateJobStatus } = require('../../edge-api/utils/workflow');
-const logger = require('../../utils/logger');
+const Project = require('../edge-api/models/project');
+const CromwellJob = require('../edge-api/models/job');
+const { abortJob, updateJobStatus } = require('../edge-api/utils/workflow');
+const logger = require('../utils/logger');
 
 
 module.exports = function cromwellMonitor() {

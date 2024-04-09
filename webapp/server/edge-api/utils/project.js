@@ -1,7 +1,7 @@
 const fs = require('fs');
 const Project = require('../models/project');
 const { getAllFiles } = require('../../utils/common');
-const { generateWorkflowResult, generateRunStats } = require('./workflow');
+const { generateWorkflowResult, generateRunStats } = require('../../utils/workflow');
 
 const getProject = (code, type, user) => new Promise((resolve, reject) => {
   // Use $eq to prevent query selector injections

@@ -122,9 +122,9 @@ export const FileSelector = (props) => {
   }
 
   const handleSelectedFile = (fileKey) => {
-    //console.log(fileKey)
+    // Don't allow modifying selected file
     setDisable_input(true)
-    setCleanup_input(true)
+    setCleanup_input(props.cleanupInput)
     setOpenFBModal(false)
     setFile_path(fileKey.path)
     setFile(fileKey.key)
@@ -161,8 +161,8 @@ export const FileSelector = (props) => {
       })
   }
   const deleteFile = () => {
-    setDisable_input(false)
-    setCleanup_input(false)
+    setDisable_input(!props.enableInput)
+    setCleanup_input(props.cleanupInput)
     setFile_path('')
     setFile('')
     props.onChange('', props.fieldname, props.index, '')

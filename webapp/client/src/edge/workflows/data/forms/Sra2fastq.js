@@ -7,8 +7,8 @@ import { workflows } from '../defaults'
 export const Sra2fastq = (props) => {
   const workflowName = 'sra2fastq'
   const [collapseParms, setCollapseParms] = useState(false)
-  const [form] = useState(workflows[workflowName])
-  const [validInputs] = useState(workflows[workflowName].validInputs)
+  const [form] = useState({ ...workflows[workflowName] })
+  const [validInputs] = useState({ ...workflows[workflowName].validInputs })
   const [doValidation, setDoValidation] = useState(0)
 
   const toggleParms = () => {

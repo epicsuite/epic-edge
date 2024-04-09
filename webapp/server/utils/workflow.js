@@ -4,11 +4,37 @@ const path = require('path');
 const moment = require('moment');
 const FormData = require('form-data');
 const ejs = require('ejs');
-const CromwellJob = require('../models/job');
-const Upload = require('../models/upload');
-const { workflowList } = require('./conf');
-const common = require('../../utils/common');
-const logger = require('../../utils/logger');
+const YAML = require('json-to-pretty-yaml');
+const CromwellJob = require('../edge-api/models/job');
+const Upload = require('../edge-api/models/upload');;
+const common = require('./common');
+const logger = require('./logger');
+
+const workflowList = {
+  default_wdl_version: '1.0',
+  '4dgb': {
+    wdl: '4dgb.wdl',
+    wdl_imports: 'imports.zip',
+    inputs_tmpl: '4dgb_inputs.tmpl',
+    outdir: 'output/4DGB',
+    // set if not default 1.0
+    // wdl_version: '1.0',
+  },
+  sra2fastq: {
+    wdl: 'sra2fastq.wdl',
+    wdl_imports: 'imports.zip',
+    inputs_tmpl: 'sra2fastq_inputs.tmpl',
+    outdir: 'output/sra2fastq',
+    // set if not default 1.0
+    // wdl_version: '1.0',
+  },
+  runFaQCs: {
+    wdl: 'runQC.wdl',
+    wdl_imports: 'imports.zip',
+    inputs_tmpl: 'runFaQCs_inputs.tmpl',
+    outdir: 'output/runFaQCs',
+  },
+};
 
 const linkUpload = (fq, projHome) => new Promise((resolve) => {
   if (fq.startsWith(process.env.FILEUPLOAD_FILE_DIR)) {
@@ -54,13 +80,107 @@ const generateWDL = async (projHome, projectConf) => {
   return false;
 };
 
-const generateInputs = async (projHome, projectConf, workflowConf) => {
+const generateInputs = async (projHome, projectConf, workflowConf, proj) => {
   // projectConf: project conf.js
   // workflowList in utils/conf
   // workflowConf: data/workflow/conf.json
   const workflowSettings = workflowList[projectConf.workflow.name];
   const template = String(fs.readFileSync(`${process.env.WORKFLOW_TEMPLATE_HOME}/${projectConf.category}/${workflowSettings.inputs_tmpl}`));
   const params = { ...workflowConf, ...projectConf.workflow.input, outdir: `${projHome}/${workflowSettings.outdir}` };
+
+  if (projectConf.workflow.name === '4dgb') {
+    //set up FDGB workflow input directory
+    const inputDir = projHome + "/input";
+    if (!fs.existsSync(inputDir)) {
+      fs.mkdirSync(inputDir);
+    }
+    //setup datasets
+    const workflow = projectConf.workflow.input;
+    let src = workflow.datasets[0].data;
+    let dest = inputDir + "/dataset1.hic";
+    fs.copyFileSync(src, dest);
+    src = workflow.datasets[1].data;
+    dest = inputDir + "/dataset2.hic";
+    fs.copyFileSync(src, dest);
+    //generate FDGB workflow project.yaml
+    let fgdb_settings = { id: proj.code, name: proj.name, ...workflow.projectSettings };
+    if (fgdb_settings.blackout.length === 0) {
+      delete fgdb_settings.blackout;
+    }
+    let fdgb_datasets = [{ name: workflow.datasets[0].name, data: 'dataset1.hic' }, { name: workflow.datasets[1].name, data: 'dataset2.hic' }];
+    let fdgb_proj = { project: fgdb_settings, datasets: fdgb_datasets };
+    if (workflow.tracks) {
+      for (var i in workflow.tracks) {
+        src = workflow.tracks[i].file;
+        dest = inputDir + "/track" + i + ".csv";
+        fs.copyFileSync(src, dest);
+        workflow.tracks[i].file = "track" + i + ".csv";
+        if (workflow.tracks[i].columns[0].file) {
+          src = workflow.tracks[i].columns[0].file;
+          dest = inputDir + "/track" + i + "_column_1.csv";
+          fs.copyFileSync(src, dest);
+          workflow.tracks[i].columns[0].file = "track" + i + "_column_1.csv";
+        } else {
+          delete workflow.tracks[i].columns[0].file;
+        }
+        if (workflow.tracks[i].columns[1].file) {
+          src = workflow.tracks[i].columns[1].file;
+          dest = inputDir + "/track" + i + "_column_2.csv";
+          fs.copyFileSync(src, dest);
+          workflow.tracks[i].columns[1].file = "track" + i + "_column_2.csv";
+        } else {
+          delete workflow.tracks[i].columns[1].file
+        }
+      }
+      fdgb_proj.tracks = workflow.tracks;
+    }
+    if (workflow.annotations) {
+      if (workflow.annotations.genes && workflow.annotations.genes.file) {
+        if (!fdgb_proj.annotations) {
+          fdgb_proj.annotations = {};
+        }
+        fdgb_proj.annotations.genes = {};
+        src = workflow.annotations.genes.file;
+        dest = inputDir + "/annotations_genes.gff";
+        fs.copyFileSync(src, dest);
+        fdgb_proj.annotations.genes.file = "annotations_genes.gff";
+        if (workflow.annotations.genes.description) {
+          fdgb_proj.annotations.genes.description = workflow.annotations.genes.description;
+        }
+      }
+      if (workflow.annotations.features && workflow.annotations.features.file) {
+        if (!fdgb_proj.annotations) {
+          fdgb_proj.annotations = {};
+        }
+        fdgb_proj.annotations.features = {};
+        src = workflow.annotations.features.file;
+        dest = inputDir + "/annotations_features.csv";
+        fs.copyFileSync(src, dest);
+        fdgb_proj.annotations.features.file = "annotations_features.csv";
+        if (workflow.annotations.features.description) {
+          fdgb_proj.annotations.features.description = workflow.annotations.features.description;
+        }
+      }
+    }
+    if (workflow.bookmarks) {
+      if (workflow.bookmarks.locations && workflow.bookmarks.locations.length > 0) {
+        if (!fdgb_proj.bookmarks) {
+          fdgb_proj.bookmarks = {};
+        }
+        fdgb_proj.bookmarks.locations = workflow.bookmarks.locations;
+      }
+      if (workflow.bookmarks.features && workflow.bookmarks.features.length > 0) {
+        if (!fdgb_proj.bookmarks) {
+          fdgb_proj.bookmarks = {};
+        }
+        fdgb_proj.bookmarks.features = workflow.bookmarks.features;
+      }
+    }
+    const YAMLfile = YAML.stringify(fdgb_proj);
+    fs.writeFileSync(inputDir + "/workflow.yaml", YAMLfile);
+    // inputs template var
+    params.projdir = inputDir;
+  }
 
   if (projectConf.workflow.name === 'sra2fastq') {
     params.outdir = process.env.SRA_DATA_HOME;
@@ -391,6 +511,7 @@ async function findInputsize(projectConf) {
 }
 
 module.exports = {
+  workflowList,
   generateWDL,
   generateInputs,
   submitWorkflow,
@@ -399,5 +520,5 @@ module.exports = {
   abortJob,
   getJobMetadata,
   updateJobStatus,
-  findInputsize
+  findInputsize,
 };

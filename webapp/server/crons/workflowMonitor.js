@@ -1,10 +1,9 @@
 const fs = require('fs');
-const Project = require('../../edge-api/models/project');
-const CromwellJob = require('../../edge-api/models/job');
-const { workflowList } = require('../../edge-api/utils/conf');
-const common = require('../../utils/common');
-const logger = require('../../utils/logger');
-const { generateWDL, generateInputs, submitWorkflow, findInputsize } = require('../../edge-api/utils/workflow');
+const Project = require('../edge-api/models/project');
+const CromwellJob = require('../edge-api/models/job');
+const common = require('../utils/common');
+const logger = require('../utils/logger');
+const { workflowList, generateWDL, generateInputs, submitWorkflow, findInputsize } = require('../utils/workflow');
 
 module.exports = function workflowMonitor() {
   logger.debug('workflow monitor');
@@ -17,7 +16,7 @@ module.exports = function workflowMonitor() {
     // get current running/submitted projects' input size
     let jobInputsize = 0;
     jobs.forEach(job => {
-      jobInputsize += job.inputsize;
+      jobInputsize += job.inputSize;
     });
     // only process one request at each time
     Project.find({ 'status': 'in queue' }).sort({ updated: 1 }).then(async projs => {
@@ -72,7 +71,7 @@ module.exports = function workflowMonitor() {
         });
         // eslint-disable-next-line no-async-promise-executor
         const promise2 = new Promise(async (resolve, reject) => {
-          const inputs = await generateInputs(projHome, projectConf, workflowConf);
+          const inputs = await generateInputs(projHome, projectConf, workflowConf, proj);
           if (inputs) {
             resolve(proj);
           } else {

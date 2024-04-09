@@ -46,7 +46,6 @@ const Main = (props) => {
       name: projectParams.projectName,
       desc: projectParams.projectDesc,
       type: workflow,
-      label: workflowList[workflow].label,
     }
 
     // set workflow inputs

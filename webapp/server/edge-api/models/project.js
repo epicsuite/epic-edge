@@ -21,10 +21,6 @@ const projectSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  label: {
-    type: String,
-    required: true,
-  },
   code: {
     type: String,
     required: true,

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { Row, Col } from 'reactstrap'
 import ProjectSummary from '../ProjectSummary'
 import ProjectResult from '../../ProjectResult'
 import { LoaderDialog } from '../../../common/Dialogs'
 import { getData, apis } from '../../../common/util'
+import { SubTopBar } from 'src/edge/common/SubTopBar'
 
 const Public = (props) => {
   const navigate = useNavigate()
@@ -45,22 +47,33 @@ const Public = (props) => {
 
   return (
     <div className="animated fadeIn">
-      <LoaderDialog loading={loading} text="Loading..." />
-      {error ? (
-        <div className="clearfix">
-          <h4 className="pt-3">Project not found</h4>
-          <hr />
-          <p className="text-muted float-left">
-            The project might be deleted or you have no permission to acces it.
-          </p>
-        </div>
-      ) : (
-        <>
-          <ProjectSummary project={project} />
-          <br></br>
-          <ProjectResult project={project} type={'public'} />
-        </>
-      )}
+      <Row className="justify-content-center">
+        <Col xs="12" sm="12" md="10">
+          {process.env.REACT_APP_SUBTOPBAR === 'on' && (
+            <>
+              <SubTopBar active={'uploads'} />
+              <br></br>
+              <br></br>
+            </>
+          )}
+          <LoaderDialog loading={loading} text="Loading..." />
+          {error ? (
+            <div className="clearfix">
+              <h4 className="pt-3">Project not found</h4>
+              <hr />
+              <p className="text-muted float-left">
+                The project might be deleted or you have no permission to acces it.
+              </p>
+            </div>
+          ) : (
+            <>
+              <ProjectSummary project={project} />
+              <br></br>
+              <ProjectResult project={project} type={'public'} />
+            </>
+          )}
+        </Col>
+      </Row>
     </div>
   )
 }

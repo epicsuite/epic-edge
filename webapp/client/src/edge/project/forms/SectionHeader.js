@@ -10,6 +10,7 @@ export const Header = (props) => {
 
   return (
     <CardHeader
+      key={props.id}
       style={{ backgroundColor: headerColor, border: '1px' }}
       onMouseEnter={(e) => setHeaderColor(colors.secondary)}
       onMouseLeave={() => setHeaderColor(colors.light)}

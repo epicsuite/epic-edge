@@ -50,8 +50,8 @@ const options = {
       },
     ],
   },
-  // Path to the API docs, relative to the server.js path
-  apis: ['./edge-api/routes/*.js'],
+  // Path to the API docs
+  apis: ['./routes/*.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

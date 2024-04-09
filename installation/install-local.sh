@@ -54,7 +54,12 @@ io_home=$app_home/io
 if [ ! -d  $io_home ]; then
   echo "Create io directories"
   mkdir ${io_home}
+  mkdir ${io_home}/upload
+  mkdir ${io_home}/upload/files
+  mkdir ${io_home}/upload/tmp
   mkdir ${io_home}/log
+  mkdir ${io_home}/projects
+  mkdir ${io_home}/public
   mkdir ${io_home}/db
   mkdir ${io_home}/datasets
   mkdir ${io_home}/sessions

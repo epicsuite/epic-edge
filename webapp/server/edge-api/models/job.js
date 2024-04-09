@@ -27,7 +27,7 @@ const jobSchema = new mongoose.Schema({
   },
   queue: {
     type: String,
-    default: 'cromwell',
+    default: queueTypes[0],
     enum: queueTypes,
   },
 }, {

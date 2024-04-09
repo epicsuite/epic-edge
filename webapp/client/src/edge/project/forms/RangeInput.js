@@ -8,7 +8,7 @@ import { components } from './defaults'
 
 export const RangeInput = (props) => {
   const componentName = 'rangeInput'
-  const [form, setState] = useState(components[componentName])
+  const [form, setState] = useState({ ...components[componentName] })
   const [doValidation, setDoValidation] = useState(0)
 
   const setNewState2 = (name, value) => {
@@ -22,10 +22,6 @@ export const RangeInput = (props) => {
   useEffect(() => {
     form.rangeInput = props.defaultValue
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    setState({ ...components[componentName] })
-  }, [props.reset]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     //force updating parent's inputParams

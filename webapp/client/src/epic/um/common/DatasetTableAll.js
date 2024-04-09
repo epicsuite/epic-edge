@@ -8,10 +8,10 @@ import Fab from '@mui/material/Fab'
 import { Refresh, FileDownload, Forward } from '@mui/icons-material'
 import moment from 'moment'
 import ReactJson from 'react-json-view'
-import { setSubmittingForm } from '../../../redux/reducers/pageSlice'
-import { cleanError } from '../../../redux/reducers/messageSlice'
-import { ConfirmDialog } from '../../../edge/common/Dialogs'
-import { getData } from '../../../edge/common/util'
+import { setSubmittingForm } from 'src/redux/reducers/pageSlice'
+import { cleanError } from 'src/redux/reducers/messageSlice'
+import { ConfirmDialog, LoaderDialog } from 'src/edge/common/Dialogs'
+import { getData, postData } from 'src/edge/common/util'
 import { theme, actionDialogMessages } from './tableUtil'
 import { datasetUrl } from '../../util'
 
@@ -19,6 +19,7 @@ const DatasetTableAll = (props) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
+  const [submitting, setSubmitting] = useState(false)
   const [table, setTable] = useState()
   const [tableData, setTableData] = useState([])
   const [loading, setLoading] = useState(false)
@@ -129,8 +130,9 @@ const DatasetTableAll = (props) => {
     if (rows.length === 0) {
       return
     }
-    // at least 2 datasets required
-    if (action === 'create-session' && rows.length < 2) {
+    // 2 datasets required
+    if (action === 'create-session' && rows.length !== 2) {
+      alert('Must select 2 datasets')
       return
     }
     const selectedRows = rows.map((row) => {
@@ -154,15 +156,37 @@ const DatasetTableAll = (props) => {
     if (action === 'export-data') {
       //exportData(selectedRows)
     } else if (action === 'create-session') {
-      // store selectedData to localstorage
-      localStorage.setItem('datasets', JSON.stringify(selectedData))
-      // redirect to /genomeBrowser page
-      navigate('/genomeBrowser')
+      // // store selectedData to localstorage
+      // localStorage.setItem('datasets', JSON.stringify(selectedData))
+      // // redirect to /genomeBrowser page
+      // navigate('/genomeBrowser')
+
+      // call api to launch a trame instance and redirect to genomeBrowser
+      let formData = new FormData()
+
+      let params = { datasets: selectedData }
+      formData.append('params', JSON.stringify(params))
+
+      setSubmitting(true)
+      postData('/api/public/sessions/trame', formData)
+        .then((data) => {
+          setSubmitting(false)
+          if (data.success) {
+            navigate('/trame', { state: { url: data.url } })
+          } else {
+            alert(data.errMessage)
+          }
+        })
+        .catch((error) => {
+          setSubmitting(false)
+          alert(error.errMessage)
+        })
     }
   }
 
   return (
     <>
+      <LoaderDialog loading={submitting === true} text="Loading ..." />
       <ConfirmDialog
         isOpen={openDialog}
         action={action}

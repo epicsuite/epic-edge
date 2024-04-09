@@ -7,7 +7,7 @@ import { components } from './defaults'
 
 export const TextInput = (props) => {
   const componentName = 'textInput'
-  const [form, setState] = useState(components[componentName])
+  const [form, setState] = useState({ ...components[componentName] })
   const [doValidation, setDoValidation] = useState(0)
 
   const {
@@ -63,7 +63,7 @@ export const TextInput = (props) => {
   return (
     <>
       <Row>
-        <Col md="3">
+        <Col md={props.text ? 3 : 0}>
           {props.tooltip ? (
             <MyTooltip
               id={`textInputTooltip-${props.name}`}
@@ -82,7 +82,7 @@ export const TextInput = (props) => {
             </>
           )}
         </Col>
-        <Col xs="12" md="9">
+        <Col xs="12" md={props.text ? 9 : 12}>
           <Input
             type="text"
             name="textInput"

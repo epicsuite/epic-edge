@@ -31,7 +31,6 @@ const Main = (props) => {
     setDoValidation(doValidation + 1)
   }
   const setWorkflowParams = (params, workflowName) => {
-    //console.log('workflow:', params, workflowName)
     setSelectedWorkflows({ ...selectedWorkflows, [workflowName]: params })
     setDoValidation(doValidation + 1)
   }
@@ -46,7 +45,6 @@ const Main = (props) => {
       name: projectParams.projectName,
       desc: projectParams.projectDesc,
       type: workflow,
-      label: workflowList[workflow].label,
     }
 
     // set workflow inputs

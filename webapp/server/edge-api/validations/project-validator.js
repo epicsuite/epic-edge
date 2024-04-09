@@ -3,7 +3,6 @@ const { body, validationResult } = require('express-validator');
 const validationRules = () => [
   body('project.name').trim().isLength({ min: 3, max: 30 }).escape().withMessage('Invalid project name, at least 3 but less than 30 characters.'),
   body('project.desc').optional(),
-  body('pipeline').trim().notEmpty().withMessage('Invalid pipeline'),
 ];
 
 const validate = (req, res, next) => {

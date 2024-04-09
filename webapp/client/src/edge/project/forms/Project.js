@@ -5,8 +5,8 @@ import { components } from './defaults'
 
 export const Project = (props) => {
   const componentName = 'project'
-  const [form, setState] = useState(components[componentName].init)
-  const [validInputs] = useState(components[componentName].validInputs)
+  const [form, setState] = useState({ ...components[componentName].init })
+  const [validInputs] = useState({ ...components[componentName].validInputs })
   const [doValidation, setDoValidation] = useState(0)
 
   const setTextInput = (inForm, name) => {
@@ -21,7 +21,7 @@ export const Project = (props) => {
     } else {
       setState({
         ...form,
-        [name]: 0,
+        [name]: null,
       })
       if (validInputs[name]) {
         validInputs[name].isValid = false
@@ -29,10 +29,6 @@ export const Project = (props) => {
     }
     setDoValidation(doValidation + 1)
   }
-
-  useEffect(() => {
-    setState({ ...components[componentName].init })
-  }, [props.reset])
 
   useEffect(() => {
     // check input errors
@@ -59,6 +55,7 @@ export const Project = (props) => {
       <TextInput
         name={'projectName'}
         setParams={setTextInput}
+        defaultValue={''}
         text={components[componentName].params['projectName'].text}
         showErrorTooltip={components[componentName].params['projectName'].showErrorTooltip}
         isOptional={components[componentName].params['projectName'].isOptional}
@@ -71,6 +68,7 @@ export const Project = (props) => {
       <TextInput
         name={'projectDesc'}
         setParams={setTextInput}
+        defaultValue={''}
         text={components[componentName].params['projectDesc'].text}
         isOptional={components[componentName].params['projectDesc'].isOptional}
         placeholder={components[componentName].params['projectDesc'].placeholder}

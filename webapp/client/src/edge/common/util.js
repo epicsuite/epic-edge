@@ -43,7 +43,7 @@ export const colors = {
 export const defaults = {
   //onSubmit, onBlur, onChange
   form_mode: 'onChange',
-  showTooltip: false,
+  showTooltip: true,
   tooltipPlace: 'right',
   tooltipColor: colors.app,
   inputStyle: { borderRadius: '5px', backgroundColor: 'white' },
@@ -55,6 +55,15 @@ export const defaults = {
 }
 
 export const workflowList = {
+  '4dgb': {
+    label: '4DGB',
+    category: 'epic',
+    title: '4DGB Workflow',
+    name: '4DGB Workflow',
+    inputLink: 'https://github.com/4DGB/4DGBWorkflow/blob/main/doc/project.md',
+    link: 'https://github.com/4DGB/4DGBWorkflow',
+    info: 'A dockerized application implementing an end-to-end workflow to process Hi-C data files and displaying their structures in an instance of the 4D Genome Browser.',
+  },
   sra2fastq: {
     label: 'Download SRA Data',
     category: 'data',

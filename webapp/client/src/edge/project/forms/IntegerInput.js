@@ -7,7 +7,7 @@ import { components } from './defaults'
 
 export const IntegerInput = (props) => {
   const componentName = 'integerInput'
-  const [form, setState] = useState(components[componentName])
+  const [form, setState] = useState({ ...components[componentName] })
   const [doValidation, setDoValidation] = useState(0)
 
   const {
@@ -41,10 +41,6 @@ export const IntegerInput = (props) => {
   useEffect(() => {
     form.integerInput = props.defaultValue
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    setState({ ...components[componentName] })
-  }, [props.reset]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     //validate form
@@ -82,9 +78,8 @@ export const IntegerInput = (props) => {
           <Input
             type="number"
             name="integerInput"
-            id={props.name}
+            key={props.name}
             defaultValue={props.defaultValue}
-            placeholder={props.placeholder}
             style={errors['integerInput'] ? defaults.inputStyleWarning : defaults.inputStyle}
             onChange={(e) => {
               integerInputReg.onChange(e) // method from hook form register

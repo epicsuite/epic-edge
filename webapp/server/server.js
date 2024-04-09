@@ -11,7 +11,11 @@ const cron = require('node-cron');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./epic-api/swagger/swaggerSpec');
 const logger = require('./utils/logger');
-const indexRouter = require('./epic-api/routes/index');
+const indexRouter = require('./indexRouter');
+const uploadMonitor = require('./crons/uploadMonitor');
+const workflowMonitor = require('./crons/workflowMonitor');
+const projectMonitor = require('./crons/projectMonitor');
+const projectStatusMonitor = require('./crons/projectStatusMonitor');
 const dbBackup = require('./crons/dbBackup');
 const dbBackupClean = require('./crons/dbBackupClean');
 
@@ -48,6 +52,10 @@ app.use('/api', indexRouter);
 app.use('/api-ui', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: false }));
 
 // Serving static files in Express
+app.use('/projects', express.static(process.env.PROJECT_HOME, { dotfiles: 'allow' }));
+app.use('/uploads', express.static(process.env.FILEUPLOAD_FILE_DIR));
+app.use('/publicdata', express.static(process.env.PUBLIC_DATA_HOME));
+app.use('/docs', express.static(process.env.DOCS_HOME, { dotfiles: 'allow' }));
 app.use('/datasets', express.static(process.env.DATASET_HOME, { dotfiles: 'allow' }));
 app.use('/sessions', express.static(process.env.SESSION_HOME, { dotfiles: 'allow' }));
 
@@ -59,7 +67,23 @@ if (process.env.NODE_ENV === 'prod') {
   });
 } else {
   // cron jobs
-  // backup nmdcepic DB every day at 10pm
+  // monitor workflow requests on every 3 minutes
+  cron.schedule(process.env.CRON_WORKFLOW_MONITOR, () => {
+    workflowMonitor();
+  });
+  // monitor uploads every day at midnight
+  cron.schedule(process.env.CRON_FILEUPLOAD_MONITOR, () => {
+    uploadMonitor();
+  });
+  // monitor project status on every 1 minute
+  cron.schedule(process.env.CRON_PROJECT_STATUS_MONITOR, () => {
+    projectStatusMonitor();
+  });
+  // monitor project deletion every day at 10pm
+  cron.schedule(process.env.CRON_PROJECT_MONITOR, () => {
+    projectMonitor();
+  });
+  // backup nmdcedge DB every day at 10pm
   cron.schedule(process.env.CRON_DB_BACKUP, () => {
     dbBackup();
   });
@@ -68,6 +92,7 @@ if (process.env.NODE_ENV === 'prod') {
     dbBackupClean();
   });
 }
+
 
 const runApp = async () => {
   try {

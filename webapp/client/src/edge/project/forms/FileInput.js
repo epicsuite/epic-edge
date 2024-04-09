@@ -7,7 +7,7 @@ import { components } from './defaults'
 
 export const FileInput = (props) => {
   const componentName = 'fileInput'
-  const [form, setState] = useState(components[componentName])
+  const [form, setState] = useState({ ...components[componentName] })
   const [doValidation, setDoValidation] = useState(0)
 
   const handleFileSelection = (filename, type, index, key) => {

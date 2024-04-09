@@ -5,14 +5,13 @@ const Upload = require('../models/upload');
 const Job = require('../models/job');
 
 module.exports = {
-  // user: { ...m2s(User) },
+  user: { ...m2s(User) },
   /* registerUser: {
         ...m2s(User, {
             omitFields: ['_id', 'created', 'updated', 'job', 'notification', 'code', 'role'],
         }),
         ...registerUserExample,
     }, */
-  user: m2s(User, { omitFields: ['_id', 'code', 'password', 'oauth'] }),
   project: m2s(Project, { omitFields: ['_id', 'created', 'updated', 'jobPriority', 'sharedTo', 'parent', 'children'] }),
   upload: m2s(Upload, { omitFields: ['_id', 'created', 'updated', 'sharedTo'] }),
   job: m2s(Job, { omitFields: ['_id', 'created', 'updated'] }),

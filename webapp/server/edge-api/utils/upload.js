@@ -75,8 +75,8 @@ const getUploadFolderOptions = (owner) => new Promise((resolve, reject) => {
 });
 
 module.exports = {
+  getRealName,
   updateUpload,
   getUploadedSize,
   getUploadFolderOptions,
-  getRealName,
 };

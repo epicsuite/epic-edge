@@ -1,7 +1,7 @@
 const fs = require('fs');
 const moment = require('moment');
-const Upload = require('../../edge-api/models/upload');
-const logger = require('../../utils/logger');
+const Upload = require('../edge-api/models/upload');
+const logger = require('../utils/logger');
 
 module.exports = function fileUploadMonitor() {
   logger.debug('file upload monitor');

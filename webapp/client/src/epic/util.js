@@ -9,3 +9,14 @@ export const apis = {
 }
 
 export const datasetUrl = process.env.REACT_APP_API_URL + '/datasets'
+
+// validators
+export const isValidChromosome = (name) => {
+  const regexp = new RegExp(/^[a-zA-Z0-9\-_.]{3,}$/)
+  return regexp.test(name.trim())
+}
+
+export const isValidTextInput = (name) => {
+  const regexp = new RegExp(/^[a-zA-Z0-9\-_.\s]{1,}$/)
+  return regexp.test(name.trim())
+}

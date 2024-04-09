@@ -3,13 +3,26 @@ export const components = {
     validForm: false,
     textInput: null,
   },
+  textInputArray: {
+    validForm: false,
+    textInputs: [],
+  },
   integerInput: {
-    validForm: true,
-    integerInput: 0,
+    validForm: false,
+    integerInput: null,
   },
   rangeInput: {
     validForm: true,
     rangeInput: 0,
+  },
+  rangeTextInput: {
+    validForm: false,
+    start: 0,
+    end: 1,
+  },
+  rangeTextInputArray: {
+    validForm: false,
+    rangeInputs: [],
   },
   switcher: {
     validForm: true,

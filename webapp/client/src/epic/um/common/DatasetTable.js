@@ -23,12 +23,12 @@ import {
 import moment from 'moment'
 import ReactJson from 'react-json-view'
 
-import { updateDatasetAdmin } from '../../../redux/reducers/epic/adminSlice'
-import { updateDataset } from '../../../redux/reducers/epic/userSlice'
-import { setSubmittingForm } from '../../../redux/reducers/pageSlice'
-import { cleanError } from '../../../redux/reducers/messageSlice'
-import { ConfirmDialog } from '../../../edge/common/Dialogs'
-import { notify, getData } from '../../../edge/common/util'
+import { updateDatasetAdmin } from 'src/redux/reducers/epic/adminSlice'
+import { updateDataset } from 'src/redux/reducers/epic/userSlice'
+import { setSubmittingForm } from 'src/redux/reducers/pageSlice'
+import { cleanError } from 'src/redux/reducers/messageSlice'
+import { ConfirmDialog, LoaderDialog } from 'src/edge/common/Dialogs'
+import { notify, getData, postData } from 'src/edge/common/util'
 import { apis, datasetUrl } from '../../util'
 import {
   theme,
@@ -37,7 +37,7 @@ import {
   validateBoolean,
   actionDialogMessages,
 } from './tableUtil'
-import UserSelector from '../../../edge/um/common/UserSelector'
+import UserSelector from 'src/edge/um/common/UserSelector'
 import DatasetFormDialog from './DatasetFormDialog'
 
 const DatasetTable = (props) => {
@@ -46,6 +46,7 @@ const DatasetTable = (props) => {
   const user = useSelector((state) => state.user)
   const errors = useSelector((state) => state.message.errors)
   const page = useSelector((state) => state.page)
+  const [submitting, setSubmitting] = useState(false)
 
   const [table, setTable] = useState()
   const [tableData, setTableData] = useState([])
@@ -281,8 +282,9 @@ const DatasetTable = (props) => {
     if (rows.length === 0) {
       return
     }
-    // at least 2 datasets required
-    if (action === 'create-session' && rows.length < 2) {
+    // 2 datasets required
+    if (action === 'create-session' && rows.length !== 2) {
+      alert('Must select 2 datasets')
       return
     }
     const selectedRows = rows.map((row) => {
@@ -309,11 +311,31 @@ const DatasetTable = (props) => {
     } else if (action === 'export-data') {
       //exportData(seletedData)
     } else if (action === 'create-session') {
-      // store selectedData to localstorage
-      console.log('selected', selectedData)
-      localStorage.setItem('datasets', JSON.stringify(selectedData))
-      // redirect to /genomeBrowser page
-      navigate('/genomeBrowser')
+      // // store selectedData to localstorage
+      // localStorage.setItem('datasets', JSON.stringify(selectedData))
+      // // redirect to /genomeBrowser page
+      // navigate('/genomeBrowser')
+
+      // call api to launch a trame instance and redirect to genomeBrowser
+      let formData = new FormData()
+
+      let params = { datasets: selectedData }
+      formData.append('params', JSON.stringify(params))
+
+      setSubmitting(true)
+      postData('/api/public/sessions/trame', formData)
+        .then((data) => {
+          setSubmitting(false)
+          if (data.success) {
+            navigate('/trame', { state: { url: data.url } })
+          } else {
+            alert(data.errMessage)
+          }
+        })
+        .catch((error) => {
+          setSubmitting(false)
+          alert(error.errMessage)
+        })
     } else {
       const promises = selectedData.map(async (dataset) => {
         return proccessDataset(dataset)
@@ -408,6 +430,7 @@ const DatasetTable = (props) => {
   return (
     <>
       <ToastContainer />
+      <LoaderDialog loading={submitting === true} text="Loading ..." />
       <ConfirmDialog
         isOpen={openDialog}
         action={action}

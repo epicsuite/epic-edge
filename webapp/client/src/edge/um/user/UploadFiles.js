@@ -165,7 +165,7 @@ const UploadFiles = (props) => {
           }
         })
         setSubmitting(false)
-        setTimeout(() => navigate('/user/uploads'), 2000)
+        props.reloadTableData()
       })
       .catch((error) => {
         alert(error)

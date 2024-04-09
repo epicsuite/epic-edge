@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form } from 'reactstrap'
-import { TextInput } from '../../../edge/project/forms/TextInput'
-import { postData } from '../../../edge/common/util'
-import { LoaderDialog } from '../../../edge/common/Dialogs'
+import { TextInput } from 'src/edge/project/forms/TextInput'
+import { postData } from 'src/edge/common/util'
+import { LoaderDialog } from 'src/edge/common/Dialogs'
 import { apis } from '../../util'
 import { isValidProductId } from './tableUtil'
 

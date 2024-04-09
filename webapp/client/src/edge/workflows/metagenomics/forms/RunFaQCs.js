@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { Card, CardBody, Collapse } from 'reactstrap'
-import { isValidFileInput } from '../../../common/util'
-import { Header } from '../../../project/forms/SectionHeader'
-import { FastqInput } from '../../../project/forms/FastqInput'
-import { RangeInput } from '../../../project/forms/RangeInput'
-import { Switcher } from '../../../project/forms/Switcher'
-import { FileInput } from '../../../project/forms/FileInput'
-import { IntegerInput } from '../../../project/forms/IntegerInput'
+import { isValidFileInput } from 'src/edge/common/util'
+import { Header } from 'src/edge/project/forms/SectionHeader'
+import { FastqInput } from 'src/edge/project/forms/FastqInput'
+import { RangeInput } from 'src/edge/project/forms/RangeInput'
+import { Switcher } from 'src/edge/project/forms/Switcher'
+import { FileInput } from 'src/edge/project/forms/FileInput'
+import { IntegerInput } from 'src/edge/project/forms/IntegerInput'
 import { workflows } from '../defaults'
 
 export const RunFaQCs = (props) => {
   const workflowName = 'runFaQCs'
   const [collapseParms, setCollapseParms] = useState(false)
-  const [form] = useState(workflows[workflowName])
-  const [validInputs] = useState(workflows[workflowName].validInputs)
+  const [form] = useState({ ...workflows[workflowName] })
+  const [validInputs] = useState({ ...workflows[workflowName].validInputs })
   const [doValidation, setDoValidation] = useState(0)
 
   const toggleParms = () => {
@@ -26,6 +26,7 @@ export const RunFaQCs = (props) => {
   }
 
   const setIntegerInput = (inForm, name) => {
+    console.log(inForm, name)
     if (inForm.validForm) {
       form.inputs[name].value = inForm.integerInput
       if (validInputs[name]) {

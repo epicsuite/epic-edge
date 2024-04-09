@@ -24,7 +24,6 @@ const addOne = async (req, res) => {
     const projName = data.project.name;
     const projDesc = data.project.desc;
     const projType = data.project.type;
-    const projTypeAlias = data.project.typeAlias;
 
     fs.mkdirSync(projHome);
     // don't save project name/desc to conf file
@@ -68,7 +67,6 @@ const addOne = async (req, res) => {
       name: projName,
       desc: projDesc,
       type: projType,
-      typeAlias: projTypeAlias,
       owner: req.user.email,
       code
     });

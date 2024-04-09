@@ -1,8 +1,8 @@
 const fs = require('fs');
 const moment = require('moment');
-const Project = require('../../edge-api/models/project');
-const CromwellJob = require('../../edge-api/models/job');
-const logger = require('../../utils/logger');
+const Project = require('../edge-api/models/project');
+const CromwellJob = require('../edge-api/models/job');
+const logger = require('../utils/logger');
 
 module.exports = function projectMonitor() {
   logger.debug('project monitor');

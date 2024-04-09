@@ -55,7 +55,7 @@ const options = {
     ],
   },
   // Path to the API docs
-  apis: ['./edge-api/routes/user.js', './epic-api/routes/*.js'],
+  apis: ['./edge-api/routes/*.js', './epic-api/routes/*.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

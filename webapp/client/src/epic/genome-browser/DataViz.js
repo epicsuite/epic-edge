@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { notify, getData } from '../../edge/common/util'
+import { notify, getData } from 'src/edge/common/util'
 import { datasetUrl } from '../util'
 
 const DataViz = (props) => {

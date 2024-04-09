@@ -6,7 +6,7 @@ import { components } from './defaults'
 
 export const Switcher = (props) => {
   const componentName = 'switcher'
-  const [form, setState] = useState(components[componentName])
+  const [form, setState] = useState({ ...components[componentName] })
   const [doValidation, setDoValidation] = useState(0)
 
   const setNewState2 = (name, value) => {
