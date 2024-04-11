@@ -1,5 +1,6 @@
 const requestIp = require('request-ip')
 const fs = require('fs');
+const readline = require('readline');
 const { exec, spawn } = require('child_process');
 const logger = require('../../utils/logger');
 const { getOne, addOne, updateOne, deleteOne } = require('../utils/trame');
@@ -67,8 +68,10 @@ const trame = async (req, res) => {
     }
 
     input.port = port;
-
-    let cmd = `${process.env.PYTHON} ${process.env.TRAME_APP_HOME}/${trameApps[input.app]} ${input.data} Untr_Eigenvalue --server --port ${input.port}`;
+    // find the track name, temp solution for now
+    const firstLine = await readFirstLine(input.data);
+    const track = firstLine.split(',')[4];
+    let cmd = `${process.env.PYTHON} ${process.env.TRAME_APP_HOME}/${trameApps[input.app]} ${input.data} ${track} --server --port ${input.port}`;
     logger.info(cmd);
     const outLog = `${process.env.STRUCTURE_HOME}/${params.structure}/out.log`;
     let pid = execCmd(cmd, outLog);
@@ -110,6 +113,17 @@ const execCmd = (cmd, outLog) => {
   console.log('child', child)
   child.unref();
   return child.pid;
+}
+
+const readFirstLine = async (path) => {
+  const inputStream = fs.createReadStream(path);
+  try {
+    for await (const line of readline.createInterface(inputStream)) return line;
+    return ''; // If the file is empty.
+  }
+  finally {
+    inputStream.destroy(); // Destroy file stream.
+  }
 }
 
 module.exports = {
