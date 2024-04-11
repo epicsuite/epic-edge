@@ -61,34 +61,34 @@ const AppHeaderDropdown = (props) => {
               <CIcon icon={cilGrid} className="me-2" />
               All Sessions Available to Me
             </CDropdownItem>
+            <CDropdownHeader className="dropdown-header text-center fw-semibold py-2">
+              Workflow Projects
+            </CDropdownHeader>
+            <CDropdownItem to="/user/projects" component={NavLink}>
+              <CIcon icon={cilGrid} className="me-2" />
+              My Projects
+            </CDropdownItem>
+            <CDropdownItem to="/user/allProjects" component={NavLink}>
+              <CIcon icon={cilGrid} className="me-2" />
+              All Projects Available to Me
+            </CDropdownItem>
+            <CDropdownItem to="/public/projects" component={NavLink}>
+              <CIcon icon={cilGrid} className="me-2" />
+              Public Projects
+            </CDropdownItem>
+            <CDropdownItem to="/user/jobQueue" component={NavLink}>
+              <CIcon icon={cilGrid} className="me-2" />
+              Job Queue
+            </CDropdownItem>
+            <CDropdownHeader className="dropdown-header text-center fw-semibold py-2">
+              Data
+            </CDropdownHeader>
+            <CDropdownItem to="/user/uploads" component={NavLink}>
+              <CIcon icon={cilGrid} className="me-2" />
+              Upload Files/My Uploads
+            </CDropdownItem>
           </>
         )}
-        <CDropdownHeader className="dropdown-header text-center fw-semibold py-2">
-          Workflow Projects
-        </CDropdownHeader>
-        <CDropdownItem to="/user/projects" component={NavLink}>
-          <CIcon icon={cilGrid} className="me-2" />
-          My Projects
-        </CDropdownItem>
-        <CDropdownItem to="/user/allProjects" component={NavLink}>
-          <CIcon icon={cilGrid} className="me-2" />
-          All Projects Available to Me
-        </CDropdownItem>
-        <CDropdownItem to="/public/projects" component={NavLink}>
-          <CIcon icon={cilGrid} className="me-2" />
-          Public Projects
-        </CDropdownItem>
-        <CDropdownItem to="/user/jobQueue" component={NavLink}>
-          <CIcon icon={cilGrid} className="me-2" />
-          Job Queue
-        </CDropdownItem>
-        <CDropdownHeader className="dropdown-header text-center fw-semibold py-2">
-          Data
-        </CDropdownHeader>
-        <CDropdownItem to="/user/uploads" component={NavLink}>
-          <CIcon icon={cilGrid} className="me-2" />
-          Upload Files/My Uploads
-        </CDropdownItem>
         {props.user && props.user.profile && props.user.profile.role === 'admin' && (
           <>
             <CDropdownHeader className="dropdown-header text-center fw-semibold py-2">

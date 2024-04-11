@@ -66,7 +66,7 @@ const AppHeader = () => {
                 >
                   Sessions
                 </CNavLink>
-              </CNavItem> */}
+              </CNavItem>
               <CNavItem>
                 <CNavLink
                   style={{ color: 'white' }}
@@ -76,7 +76,7 @@ const AppHeader = () => {
                 >
                   4DGB Workflow
                 </CNavLink>
-              </CNavItem>
+              </CNavItem>*/}
             </CHeaderNav>
             <CHeaderNav className="ms-3">
               <AppHeaderDropdown
