@@ -12,6 +12,7 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./epic-api/swagger/swaggerSpec');
 const logger = require('./utils/logger');
 const indexRouter = require('./indexRouter');
+const trameMonitor = require('./crons/trameMonitor');
 const uploadMonitor = require('./crons/uploadMonitor');
 const workflowMonitor = require('./crons/workflowMonitor');
 const projectMonitor = require('./crons/projectMonitor');
@@ -68,6 +69,10 @@ if (process.env.NODE_ENV === 'prod') {
   });
 } else {
   // cron jobs
+  // monitor trames every day at 4am
+  cron.schedule(process.env.CRON_TRAME_MONITOR, () => {
+    trameMonitor();
+  });
   // monitor workflow requests on every 3 minutes
   cron.schedule(process.env.CRON_WORKFLOW_MONITOR, () => {
     workflowMonitor();

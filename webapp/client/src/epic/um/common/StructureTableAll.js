@@ -3,20 +3,18 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { Col, Row } from 'reactstrap'
 import { MaterialReactTable } from 'material-react-table'
-import { ThemeProvider, Tooltip } from '@mui/material'
+import { ThemeProvider, MenuItem, Tooltip } from '@mui/material'
 import Fab from '@mui/material/Fab'
 import { Refresh, FileDownload, Forward } from '@mui/icons-material'
 import moment from 'moment'
 import ReactJson from 'react-json-view'
-
 import { setSubmittingForm } from 'src/redux/reducers/pageSlice'
 import { cleanError } from 'src/redux/reducers/messageSlice'
 import { ConfirmDialog, LoaderDialog } from 'src/edge/common/Dialogs'
 import { getData, postData } from 'src/edge/common/util'
-import { theme, actionDialogMessages } from './tableUtil'
-import { datasetUrl } from '../../util'
+import { theme, actionDialogMessages, submitSession } from './tableUtil'
 
-const DatasetTableViewOnly = (props) => {
+const StructureTableAll = (props) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
@@ -29,7 +27,7 @@ const DatasetTableViewOnly = (props) => {
   const [action, setAction] = useState('')
 
   useEffect(() => {
-    getDatasets()
+    getStructures()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props, user])
 
@@ -37,23 +35,70 @@ const DatasetTableViewOnly = (props) => {
   const columns = useMemo(
     () => [
       {
-        header: 'Name',
-        accessorKey: 'metadata.name',
-        enableEditing: false,
-      },
-      {
         header: 'Product Id',
         accessorKey: 'productId',
         enableEditing: false,
       },
-      { header: 'Description', accessorKey: 'desc' },
       {
         header: 'Chromosome',
-        accessorKey: 'metadata.chromosome',
+        accessorKey: 'chromosome',
         enableEditing: false,
       },
       {
-        header: 'Loaded',
+        header: 'Resolution',
+        accessorKey: 'resolution',
+        enableEditing: false,
+      },
+      {
+        header: 'Species',
+        accessorKey: 'metadata.identity.species',
+        enableEditing: false,
+      },
+      {
+        header: 'Description',
+        accessorKey: 'metadata.identity.description',
+        enableEditing: false,
+      },
+      {
+        header: 'State',
+        accessorKey: 'metadata.identity.state',
+        enableEditing: false,
+      },
+      {
+        header: 'Author',
+        accessorKey: 'metadata.source.author',
+        enableEditing: false,
+      },
+      {
+        header: 'Owner',
+        accessorKey: 'owner',
+        enableEditing: false,
+      },
+      {
+        header: 'Shared',
+        accessorKey: 'shared',
+        Cell: ({ cell }) => <> {cell.getValue() ? 'true' : 'false'}</>,
+        enableColumnActions: false,
+        enableEditing: false,
+        enableGlobalFilter: false,
+        size: 100, //decrease the width of this column
+      },
+      {
+        header: 'Public',
+        accessorKey: 'public',
+        Cell: ({ cell }) => <> {cell.getValue() ? 'true' : 'false'}</>,
+        muiTableBodyCellEditTextFieldProps: {
+          select: true, //change to select for a dropdown
+          children: ['true', 'false'].map((state) => (
+            <MenuItem key={state} value={state}>
+              {state}
+            </MenuItem>
+          )),
+        },
+        size: 100, //decrease the width of this column
+      },
+      {
+        header: 'Created',
         accessorKey: 'created',
         Cell: ({ cell }) => <>{moment(cell.getValue()).format('MM/DD/YYYY, h:mm:ss A')}</>,
         enableEditing: false,
@@ -70,12 +115,12 @@ const DatasetTableViewOnly = (props) => {
     [],
   )
 
-  const getDatasets = () => {
+  const getStructures = () => {
     let url = props.api
     setLoading(true)
     getData(url)
       .then((data) => {
-        let datasets = data.datasets.map((obj) => {
+        let structures = data.structures.map((obj) => {
           let rObj = { ...obj }
 
           if (obj.sharedTo && obj.sharedTo.length > 0) {
@@ -87,7 +132,7 @@ const DatasetTableViewOnly = (props) => {
           return rObj
         })
         setLoading(false)
-        setTableData(datasets)
+        setTableData(structures)
       })
       .catch((err) => {
         setLoading(false)
@@ -97,15 +142,15 @@ const DatasetTableViewOnly = (props) => {
 
   const handleAction = (action, rows) => {
     if (action === 'refresh') {
-      getDatasets()
+      getStructures()
       return
     }
     if (rows.length === 0) {
       return
     }
-    // 2 datasets required
-    if (action === 'create-session' && rows.length !== 2) {
-      alert('Must select 2 datasets')
+    // 2 structures required
+    if (action === 'create-session' && rows.length !== 1) {
+      alert('Must select 1 structure')
       return
     }
     const selectedRows = rows.map((row) => {
@@ -130,29 +175,21 @@ const DatasetTableViewOnly = (props) => {
       //exportData(selectedRows)
     } else if (action === 'create-session') {
       // // store selectedData to localstorage
-      // localStorage.setItem('datasets', JSON.stringify(selectedData))
+      // localStorage.setItem('structures', JSON.stringify(selectedData))
       // // redirect to /genomeBrowser page
       // navigate('/genomeBrowser')
 
       // call api to launch a trame instance and redirect to genomeBrowser
-      let formData = new FormData()
-
-      let params = { datasets: selectedData }
-      formData.append('params', JSON.stringify(params))
-
+      let params = { structure: selectedData[0]['code'], app: 'default' }
       setSubmitting(true)
-      postData('/api/public/sessions/trame', formData)
+      submitSession(params)
         .then((data) => {
           setSubmitting(false)
-          if (data.success) {
-            navigate('/trame', { state: { url: data.url } })
-          } else {
-            alert(data.errMessage)
-          }
+          navigate('/trame', { state: { url: data.url } })
         })
         .catch((error) => {
           setSubmitting(false)
-          alert(error.errMessage)
+          alert(error)
         })
     }
   }
@@ -163,7 +200,7 @@ const DatasetTableViewOnly = (props) => {
       <ConfirmDialog
         isOpen={openDialog}
         action={action}
-        header={'Are you sure to ' + action + ' the selected datasets?'}
+        header={'Are you sure to ' + action + ' the selected structures?'}
         message={actionDialogMessages[action]}
         handleClickYes={handleConfirmYes}
         handleClickClose={handleConfirmClose}
@@ -183,22 +220,15 @@ const DatasetTableViewOnly = (props) => {
           }}
           muiTablePaginationProps={{
             rowsPerPageOptions: [10, 20, 50, 100],
-            labelRowsPerPage: 'datasets per page',
+            labelRowsPerPage: 'structures per page',
           }}
           renderEmptyRowsFallback={() => (
             <center>
-              <br></br>No datasets to display
+              <br></br>No structures to display
             </center>
           )}
           renderDetailPanel={({ row }) => (
             <Row className="justify-content-center">
-              <Col xs="12" sm="12" md="1">
-                <img
-                  crossOrigin="anonymous"
-                  style={{ width: 100, height: 100 }}
-                  src={datasetUrl + '/' + row.original.code + '/' + row.original.metadata.thumbnail}
-                />
-              </Col>
               <Col xs="12" sm="12" md="9">
                 <ReactJson
                   src={row.original.metadata}
@@ -209,7 +239,7 @@ const DatasetTableViewOnly = (props) => {
                   collapsed={false}
                 />
               </Col>
-              <Col xs="12" sm="12" md="2">
+              <Col xs="12" sm="12" md="3">
                 &nbsp;
               </Col>
             </Row>
@@ -235,7 +265,7 @@ const DatasetTableViewOnly = (props) => {
                       />
                     </Fab>
                   </Tooltip>
-                  <Tooltip title="Export selected datasets" aria-label="export-data">
+                  <Tooltip title="Export selected structures" aria-label="export-data">
                     <Fab
                       color="primary"
                       size="small"
@@ -275,4 +305,4 @@ const DatasetTableViewOnly = (props) => {
   )
 }
 
-export default DatasetTableViewOnly
+export default StructureTableAll

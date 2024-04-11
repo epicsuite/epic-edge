@@ -4,12 +4,22 @@ NODE_ENV=prod
 
 #EPIC
 PRODUCT_HOME=<PROD_HOME>
+STRUCTURE_HOME=<IO_HOME>/structures
 DATASET_HOME=<IO_HOME>/datasets
 SESSION_HOME=<IO_HOME>/sessions
+TRAME_APP_HOME=<APP_HOME>/trame/apps
+TRAME_BASE_URL=https://<WEB_SERVER_DOMAIN>/genomebrowser/
+TRAME_PORT_START=8001
+TRAME_PORT_END=8100
+# in hours
+TRAME_DELETE_GRACE_PERIOD=12
+#python path
+PYTHON=/usr/bin/python3
 
 # uncomment 'SYSTEM_MESSAGE' and restart pm2 to disable workflow submission
 #SYSTEM_MESSAGE=Workflow submission is temporarily unavailable. You can still browse/view your submitted projects.
 
+API_ERROR=system errror
 #React UI prod 'build' directory full path
 UI_BUILD_PATH=<APP_HOME>/webapp/client/build
 
@@ -81,6 +91,8 @@ CROMWELL_API_URL=http://localhost:8000/api/workflows/v1
 CROMWELL_WORKFLOW_TYPE=WDL
 
 #cron job schedules
+# monitor trame instance deletion/expiration every day at 4am
+CRON_TRAME_MONITOR=0 4 * * *
 #monitor pipeline requests on every 3 minutes
 CRON_PIPELINE_MONITOR=0-59/3 * * * *
 # monitor workflow requests on every 3 minutes

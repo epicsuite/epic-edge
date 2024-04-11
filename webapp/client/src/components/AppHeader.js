@@ -51,10 +51,10 @@ const AppHeader = () => {
                 <CNavLink
                   style={{ color: 'white' }}
                   className="edge-header-nav-link"
-                  to="/user/datasets"
+                  to="/user/structures"
                   component={NavLink}
                 >
-                  Datasets
+                  Structure Datasets
                 </CNavLink>
               </CNavItem>
               {/* <CNavItem>
@@ -104,10 +104,10 @@ const AppHeader = () => {
                 <CNavLink
                   style={{ color: 'white' }}
                   className="edge-header-nav-link"
-                  to="/public/datasets"
+                  to="/public/structures"
                   component={NavLink}
                 >
-                  Datasets
+                  Structure Datasets
                 </CNavLink>
               </CNavItem>
               {/* <CNavItem>

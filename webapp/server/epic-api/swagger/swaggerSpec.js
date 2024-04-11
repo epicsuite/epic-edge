@@ -44,6 +44,10 @@ const options = {
         name: 'Dataset',
         description: 'Public dataset endpoints',
       },
+      {
+        name: 'Structure',
+        description: 'Public structure endpoints',
+      },
       // {
       //   name: 'Session',
       //   description: 'Public session endpoints',

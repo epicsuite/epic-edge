@@ -6,7 +6,7 @@ const cron = require('node-cron');
 const logger = require('./utils/logger');
 const dbBackup = require('./crons/dbBackup');
 const dbBackupClean = require('./crons/dbBackupClean');
-
+const trameMonitor = require('./crons/trameMonitor');
 
 const app = express();
 app.use(express.json());
@@ -21,6 +21,10 @@ cron.schedule(process.env.CRON_DB_BACKUP, () => {
 // delete older DB backups every day at 12am
 cron.schedule(process.env.CRON_DB_BACKUP_CLEAN, () => {
   dbBackupClean();
+});
+// monitor trames every day at 4am
+cron.schedule(process.env.CRON_TRAME_MONITOR, () => {
+  trameMonitor();
 });
 
 const runApp = async () => {

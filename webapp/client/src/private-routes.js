@@ -16,8 +16,11 @@ const MetaGWorkflow = React.lazy(() => import('./edge/workflows/metagenomics/Mai
 
 const UserDatasets = React.lazy(() => import('./epic/um/user/Datasets'))
 const UserDatasetsAll = React.lazy(() => import('./epic/um/user/DatasetsAll'))
+const UserStructures = React.lazy(() => import('./epic/um/user/Structures'))
+const UserStructuresAll = React.lazy(() => import('./epic/um/user/StructuresAll'))
 const UserSessions = React.lazy(() => import('./epic/um/user/Sessions'))
 const AdminDatasets = React.lazy(() => import('./epic/um/admin/Datasets'))
+const AdminStructures = React.lazy(() => import('./epic/um/admin/Structures'))
 const AdminSessions = React.lazy(() => import('./epic/um/admin/Sessions'))
 
 const FDGBWorkflow = React.lazy(() => import('./epic/4dgb-workflow/Main'))
@@ -38,8 +41,11 @@ const privateRoutes = [
   { path: '/workflow/metagenomics', name: 'MetaG', element: MetaGWorkflow },
   { path: '/user/datasets', exact: true, name: 'UserDatasets', element: UserDatasets },
   { path: '/user/datasets-all', exact: true, name: 'UserDatasets', element: UserDatasetsAll },
+  { path: '/user/structures', exact: true, name: 'UserStructures', element: UserStructures },
+  { path: '/user/structures-all', exact: true, name: 'UserStructures', element: UserStructuresAll },
   { path: '/user/sessions', exact: true, name: 'UserSessions', element: UserSessions },
   { path: '/admin/datasets', exact: true, name: 'AdminDatasets', element: AdminDatasets },
+  { path: '/admin/structures', exact: true, name: 'AdminStructures', element: AdminStructures },
   { path: '/admin/sessions', exact: true, name: 'AdminSessions', element: AdminSessions },
   { path: '/workflow/4dgb', exact: true, name: 'Workflow', element: FDGBWorkflow },
 ]

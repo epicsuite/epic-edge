@@ -38,15 +38,15 @@ const AppHeaderDropdown = (props) => {
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
         <CDropdownHeader className="dropdown-header text-center fw-semibold py-2">
-          Datasets
+          Structure Datasets
         </CDropdownHeader>
-        <CDropdownItem to="/user/datasets" component={NavLink}>
+        <CDropdownItem to="/user/structures" component={NavLink}>
           <CIcon icon={cilGrid} className="me-2" />
-          My Datasets
+          My Structure Datasets
         </CDropdownItem>
-        <CDropdownItem to="/user/datasets-all" component={NavLink}>
+        <CDropdownItem to="/user/structures-all" component={NavLink}>
           <CIcon icon={cilGrid} className="me-2" />
-          All Datasets Available to Me
+          All Structure Datasets Available to Me
         </CDropdownItem>
         {'disabled' === 'on' && (
           <>
@@ -94,9 +94,9 @@ const AppHeaderDropdown = (props) => {
             <CDropdownHeader className="dropdown-header text-center fw-semibold py-2">
               Admin Tools
             </CDropdownHeader>
-            <CDropdownItem to="/admin/datasets" component={NavLink}>
+            <CDropdownItem to="/admin/structures" component={NavLink}>
               <CIcon icon={cilList} className="me-2" />
-              Manage Datasets
+              Manage Structure Datasets
             </CDropdownItem>
             {'disabled' === 'on' && (
               <>

@@ -57,6 +57,9 @@ const serverErrorExample = { example: { message: 'API server error', success: fa
 const addDatasetExample = { example: { id: '0000', desc: 'first dataset' } };
 const updateDatasetExample = { example: { desc: 'new dataset-desc', public: false, sharedTo: ['test@my.edge'] } };
 
+const addStructureExample = { example: { id: 'eda-fduh0l8m' } };
+const updateStructureExample = { example: { public: false, sharedTo: ['test@my.edge'] } };
+
 
 module.exports = {
   registerUser: {
@@ -352,5 +355,28 @@ module.exports = {
     },
     required: [],
     ...updateDatasetExample,
+  },
+  addStructure: {
+    properties: {
+      dataset: {
+        id: {
+          description: 'product id', type: 'string',
+        },
+      },
+    },
+    required: ['id'],
+    ...addStructureExample,
+  },
+  updateStructure: {
+    properties: {
+      public: {
+        description: 'is a public dataset?', type: 'boolean',
+      },
+      sharedTo: {
+        description: 'other users', type: 'array',
+      },
+    },
+    required: [],
+    ...updateStructureExample,
   },
 };

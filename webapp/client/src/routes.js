@@ -10,6 +10,7 @@ const UserActivate = React.lazy(() => import('./edge/um/user/Activate'))
 const UserResetPassword = React.lazy(() => import('./edge/um/user/ResetPassword'))
 const Home = React.lazy(() => import('./epic/Home'))
 const PublicDatasets = React.lazy(() => import('./epic/um/public/Datasets'))
+const PublicStructures = React.lazy(() => import('./epic/um/public/Structures'))
 const PublicSessions = React.lazy(() => import('./epic/um/public/Sessions'))
 const GenomeBrowser = React.lazy(() => import('./epic/genome-browser/Main'))
 const Trame = React.lazy(() => import('./epic/trame/Main'))
@@ -25,6 +26,7 @@ const routes = [
   { path: '/activate', exact: true, name: 'Activate', element: UserActivate },
   { path: '/resetPassword', exact: true, name: 'ResetPassword', element: UserResetPassword },
   { path: '/public/datasets', exact: true, name: 'PublicDatasets', element: PublicDatasets },
+  { path: '/public/structures', exact: true, name: 'PublicStructures', element: PublicStructures },
   { path: '/public/sessions', exact: true, name: 'PublicSessions', element: PublicSessions },
   { path: '/genomeBrowser', exact: true, name: 'GenomeBrowser', element: GenomeBrowser },
   { path: '/trame', exact: true, name: 'Trame', element: Trame },
