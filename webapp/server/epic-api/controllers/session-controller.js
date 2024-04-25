@@ -77,7 +77,7 @@ const trame = async (req, res) => {
     let pid = execCmd(cmd, outLog);
     //run local
     if (pid) {
-      input.pid = pid;
+      input.pid = pid + 1;
       await addOne(input);
       const url = `${process.env.TRAME_BASE_URL}${input.port}`;
       logger.info('trame ' + url);
