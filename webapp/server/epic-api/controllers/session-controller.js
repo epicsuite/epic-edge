@@ -71,7 +71,7 @@ const trame = async (req, res) => {
     // find the track name, temp solution for now
     const firstLine = await readFirstLine(input.data);
     const track = firstLine.split(',')[4];
-    let cmd = `${process.env.PYTHON} ${process.env.TRAME_APP_HOME}/${trameApps[input.app]} ${input.data} ${track} --server --port ${input.port}`;
+    let cmd = `${process.env.PYTHON} ${process.env.TRAME_APP_HOME}/${trameApps[input.app]} ${input.data} ${track} --server --port ${input.port} &`;
     logger.info(cmd);
     const outLog = `${process.env.STRUCTURE_HOME}/${params.structure}/out.log`;
     let pid = execCmd(cmd, outLog);
