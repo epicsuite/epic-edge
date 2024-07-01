@@ -1,0 +1,19 @@
+stages:
+  - server_pipeline
+  # - client_pipeline
+
+server:
+  stage: server_pipeline
+  variables:
+    CHILD_PIPELINE_EXECUTION_CONTEXT: "webapp/server"
+  trigger:
+    include: .sub-gitlab-ci.yml
+    strategy: depend
+
+# client:
+#   stage: client_pipeline
+#   variables:
+#     CHILD_PIPELINE_EXECUTION_CONTEXT: "webapp/client"
+#   trigger:
+#     include: .sub-gitlab-ci.yml
+#     strategy: depend

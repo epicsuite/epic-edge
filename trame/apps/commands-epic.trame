@@ -1,0 +1,5 @@
+python apps/epic.trame.py products/eda-xwtafb42/section/chr27/structure/100kb/structure-with-tracks.csv
+python apps/epic.trame.py products/eda-xwtafb42/section/chr4/structure/100kb/structure-with-tracks.csv
+
+python apps/epic.trame.py products/eda-fduh0l8m/section/chr27/structure/100kb/structure-with-tracks.csv
+python apps/epic.trame.py products/eda-fduh0l8m/section/chr4/structure/100kb/structure-with-tracks.csv

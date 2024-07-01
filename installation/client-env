@@ -1,0 +1,24 @@
+URL=<APP_URL>
+PORT=3000
+CHOKIDAR_USEPOLLING=false
+GENERATE_SOURCEMAP=false
+
+# EDGE
+REACT_APP_NAME=EPIC EDGE
+
+#on/off
+REACT_APP_FILEUPLOAD=off
+
+#on/off
+REACT_APP_EMAIL_NOTIFICATION=off
+REACT_APP_REGISTER_MSG=Congratulations! Your account has been created successfully.
+REACT_APP_REGISTER_MSG_EMAIL=Congratulations! Your account has been created successfully. Please check your email to activate your account.
+REACT_APP_ACTIVATE_ACTION_URL=$URL/activate
+REACT_APP_ACTIVATE_MSG=Congratulations! Your account has been activated successfully.
+REACT_APP_ACTIVATIONLINK_MSG=Please check your email to activate your account.
+REACT_APP_RESETPASSWORD_ACTION_URL=$URL/resetPassword
+REACT_APP_RESETPASSWORD_MSG=Congratulations! Your password has been updated successfully.
+REACT_APP_RESETPASSWORDLINK_MSG=Please check your email to reset your password.
+
+REACT_APP_API_URL=<APP_URL>
+
