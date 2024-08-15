@@ -52,7 +52,7 @@ const ResetPassword = (props) => {
       dispatch(resetPassword(userData))
     } else {
       const userData = { ...data, actionURL: process.env.REACT_APP_RESETPASSWORD_ACTION_URL }
-      console.log(userData)
+      // console.log(userData)
       dispatch(getResetPasswordLink(userData))
     }
   }

@@ -28,13 +28,13 @@ const addOne = async (req, res) => {
       throw new Error('File meta.yaml not found in structure.');
     }
 
-    //find all structure-with-tracks.csv
+    // find all structure-with-tracks.csv
     const sections = fs.readdirSync(`${productHome}/section`);
-    sections.forEach(function (section) {
+    sections.forEach((section) => {
       if (fs.existsSync(`${productHome}/section/${section}/structure`)) {
-        //get resolutions
+        // get resolutions
         const resolutions = fs.readdirSync(`${productHome}/section/${section}/structure`);
-        resolutions.forEach(function (resolution) {
+        resolutions.forEach((resolution) => {
           const structureFile = `${productHome}/section/${section}/structure/${resolution}/structure-with-tracks.csv`;
           if (fs.existsSync(structureFile)) {
             // generate structure code and create structure home
@@ -51,10 +51,10 @@ const addOne = async (req, res) => {
             fs.symlinkSync(structureFile, `${structureHome}/structure-with-tracks.csv`, 'file');
             // insert into DB
             const newStructure = new Structure({
-              productId: productId,
+              productId,
               chromosome: section,
-              resolution: resolution,
-              metadata: metadata,
+              resolution,
+              metadata,
               owner: req.user.email,
               code
             });

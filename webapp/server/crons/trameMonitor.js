@@ -1,4 +1,3 @@
-const fs = require('fs');
 const moment = require('moment');
 const { exec } = require('child_process');
 const Trame = require('../epic-api/models/trame');
@@ -23,9 +22,9 @@ module.exports = function trameMonitor() {
       // delete from database
       Trame.deleteOne({ ipAddress: trame.ipAddress }, (err) => {
         if (err) {
-          logger.info(`Failed to delete trame `);
+          logger.info('Failed to delete trame');
         }
       });
     });
   });
-}
+};

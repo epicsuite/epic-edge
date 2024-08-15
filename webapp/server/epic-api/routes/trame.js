@@ -1,9 +1,9 @@
 const router = require('express').Router();
 const {
   trame,
-} = require('../controllers/session-controller');
+} = require('../controllers/trame-controller');
 /**
- * /api/public/sessions/trame
+ * /api/public/trame
  *   post
  * */
 router.post('/trame', async (req, res) => {

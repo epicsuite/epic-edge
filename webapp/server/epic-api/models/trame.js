@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 
 // Create Schema
 const trameSchema = new mongoose.Schema({
-  ipAddress: {
+  user: {
     type: String,
     required: true,
-    unique: true,
-    description: 'structure code',
+    unique: false,
+    description: 'logged in user or public user',
     trim: true,
   },
   port: {

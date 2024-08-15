@@ -1,7 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
 import { putData, deleteData, apis } from '../../../edge/common/util'
-import { apis as epicApis } from '../../../epic/util'
 import { setSubmittingForm } from '../pageSlice'
 import { cleanMessage, addError, cleanError } from '../messageSlice'
 
@@ -37,25 +36,6 @@ const updateUploadAsync = createAsyncThunk(
           dispatch(addError({ [uploadData.code]: JSON.stringify(err.error) }))
         } else {
           dispatch(addError({ [uploadData.code]: 'API server error' }))
-        }
-      }
-    }
-  },
-)
-
-const updateDatasetAsync = createAsyncThunk(
-  'admin/updateDataset',
-  async (datasetData, { dispatch }) => {
-    try {
-      await putData(`${epicApis.adminDatasets}/${datasetData.code}`, datasetData)
-    } catch (err) {
-      if (typeof err === 'string') {
-        dispatch(addError({ [datasetData.code]: err }))
-      } else {
-        if (err.error) {
-          dispatch(addError({ [datasetData.code]: JSON.stringify(err.error) }))
-        } else {
-          dispatch(addError({ [datasetData.code]: 'API server error' }))
         }
       }
     }
@@ -104,10 +84,6 @@ export const updateProjectAdmin = (projData) => (dispatch, getState) => {
 
 export const updateUploadAdmin = (uploadData) => (dispatch, getState) => {
   dispatch(updateUploadAsync(uploadData))
-}
-
-export const updateDatasetAdmin = (datasetData) => (dispatch, getState) => {
-  dispatch(updateDatasetAsync(datasetData))
 }
 
 export const updateUserAdmin = (userData) => (dispatch, getState) => {

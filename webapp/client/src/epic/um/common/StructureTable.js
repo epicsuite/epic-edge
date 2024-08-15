@@ -17,7 +17,6 @@ import {
   Lock,
   LockOpen,
   Add,
-  FileDownload,
   Forward,
 } from '@mui/icons-material'
 import moment from 'moment'
@@ -28,8 +27,8 @@ import { updateStructure } from 'src/redux/reducers/epic/userSlice'
 import { setSubmittingForm } from 'src/redux/reducers/pageSlice'
 import { cleanError } from 'src/redux/reducers/messageSlice'
 import { ConfirmDialog, LoaderDialog } from 'src/edge/common/Dialogs'
-import { notify, getData, postData } from 'src/edge/common/util'
-import { apis, structureUrl } from '../../util'
+import { notify, getData } from 'src/edge/common/util'
+import { apis } from '../../util'
 import {
   theme,
   isValid4dgbProductId,
@@ -328,8 +327,6 @@ const StructureTable = (props) => {
     //get user selector options
     if (action === 'share' || action === 'unshare') {
       setOpenUserSelector(true)
-    } else if (action === 'export-data') {
-      //exportData(seletedData)
     } else if (action === 'create-session') {
       // // store selectedData to localstorage
       // localStorage.setItem('structures', JSON.stringify(selectedData))
@@ -339,7 +336,7 @@ const StructureTable = (props) => {
       // call api to launch a trame instance and redirect to genomeBrowser
       let params = { structure: selectedData[0]['code'], app: 'default' }
       setSubmitting(true)
-      submitSession(params)
+      submitSession(params, 'user')
         .then((data) => {
           setSubmitting(false)
           navigate('/trame', { state: { url: data.url } })
@@ -638,23 +635,6 @@ const StructureTable = (props) => {
                       />
                     </Fab>
                   </Tooltip>
-                  {props.tableType === 'user' && (
-                    <Tooltip title="Export selected structures" aria-label="export-data">
-                      <Fab
-                        color="primary"
-                        size="small"
-                        style={{ marginRight: 10 }}
-                        aria-label="export-data"
-                      >
-                        <FileDownload
-                          onClick={() => {
-                            setTable(table)
-                            handleAction('export-data', table.getSelectedRowModel().flatRows)
-                          }}
-                        />
-                      </Fab>
-                    </Tooltip>
-                  )}
                   {props.tableType === 'user' && (
                     <Tooltip title="Create session" aria-label="create-session">
                       <Fab

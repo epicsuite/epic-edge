@@ -1,2 +1,2 @@
 - epic.trame.py
-    - usage: `pythong epic.trame.py <path/to/structure/csvfile>'
+    - usage: `python epic.trame.py <path/to/structure/csvfile>'

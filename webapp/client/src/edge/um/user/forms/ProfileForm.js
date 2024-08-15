@@ -70,7 +70,12 @@ const Profile = (props) => {
     setValue('firstName', props.user.profile.firstName)
     setValue('lastName', props.user.profile.lastName)
     setValue('email', props.user.profile.email)
-    setValue('notificationEmail', props.user.profile.notification.email)
+    setValue(
+      'notificationEmail',
+      props.user.profile.notification.email
+        ? props.user.profile.notification.email
+        : props.user.profile.email,
+    )
     setValue('notification', props.user.profile.notification.isOn)
     setNotification(props.user.profile.notification.isOn)
   }, [props.user, setValue])
@@ -81,7 +86,12 @@ const Profile = (props) => {
     if (!notification) {
       setValue('notificationEmail', 'admin@my.edge')
     } else {
-      setValue('notificationEmail', props.user.profile.notification.email)
+      setValue(
+        'notificationEmail',
+        props.user.profile.notification.email
+          ? props.user.profile.notification.email
+          : props.user.profile.email,
+      )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notification])
@@ -173,7 +183,6 @@ const Profile = (props) => {
                   <Input
                     type="text"
                     name="notificationEmail"
-                    placeholder="Email"
                     onChange={(e) => {
                       emailReg.onChange(e) // method from hook form register
                     }}

@@ -58,8 +58,6 @@ app.use('/projects', express.static(process.env.PROJECT_HOME, { dotfiles: 'allow
 app.use('/uploads', express.static(process.env.FILEUPLOAD_FILE_DIR));
 app.use('/publicdata', express.static(process.env.PUBLIC_DATA_HOME));
 app.use('/docs', express.static(process.env.DOCS_HOME, { dotfiles: 'allow' }));
-app.use('/datasets', express.static(process.env.DATASET_HOME, { dotfiles: 'allow' }));
-app.use('/sessions', express.static(process.env.SESSION_HOME, { dotfiles: 'allow' }));
 
 // Serving React as static files in Express and redirect url path to React client app
 if (process.env.NODE_ENV === 'prod') {

@@ -51,7 +51,7 @@ const AppHeader = () => {
                 <CNavLink
                   style={{ color: 'white' }}
                   className="edge-header-nav-link"
-                  to="/user/structures"
+                  to="/user/structures-all"
                   component={NavLink}
                 >
                   Structure Datasets
@@ -100,16 +100,16 @@ const AppHeader = () => {
                   Structure Datasets
                 </CNavLink>
               </CNavItem>
-              {/* <CNavItem>
+              <CNavItem>
                 <CNavLink
                   style={{ color: 'white' }}
                   className="edge-header-nav-link"
-                  to="/public/sessions"
+                  to="/public/projects"
                   component={NavLink}
                 >
-                  Sessions
+                  Workflows
                 </CNavLink>
-              </CNavItem> */}
+              </CNavItem>
               <CNavLink style={{ color: 'white' }} className="edge-header-nav-link" href="/login">
                 Login
               </CNavLink>

@@ -53,10 +53,7 @@ const actionSuccessfulExample = { example: { message: 'Action successful', succe
 const actionFailedExample = { example: { message: 'Action failed', success: false } };
 const serverErrorExample = { example: { message: 'API server error', success: false } };
 
-//epic
-const addDatasetExample = { example: { id: '0000', desc: 'first dataset' } };
-const updateDatasetExample = { example: { desc: 'new dataset-desc', public: false, sharedTo: ['test@my.edge'] } };
-
+// epic
 const addStructureExample = { example: { id: 'eda-fduh0l8m' } };
 const updateStructureExample = { example: { public: false, sharedTo: ['test@my.edge'] } };
 
@@ -326,36 +323,7 @@ module.exports = {
     },
     ...serverErrorExample,
   },
-  //epic
-  addDataset: {
-    properties: {
-      dataset: {
-        id: {
-          description: 'product id, 4 digits numeric string', type: 'string',
-        },
-        desc: {
-          description: 'dataset description', type: 'string',
-        },
-      },
-    },
-    required: ['id'],
-    ...addDatasetExample,
-  },
-  updateDataset: {
-    properties: {
-      desc: {
-        description: 'dataset description', type: 'string',
-      },
-      public: {
-        description: 'is a public dataset?', type: 'boolean',
-      },
-      sharedTo: {
-        description: 'other users', type: 'array',
-      },
-    },
-    required: [],
-    ...updateDatasetExample,
-  },
+  // epic
   addStructure: {
     properties: {
       dataset: {

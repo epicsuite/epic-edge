@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { jwtDecode } from 'jwt-decode'
 
 import { setAuthToken, postData, putData, apis } from '../../../edge/common/util'
-import { apis as epicApis } from '../../../epic/util'
 import { setSubmittingForm } from '../pageSlice'
 import { addMessage, cleanMessage, addError, cleanError } from '../messageSlice'
 
@@ -251,25 +250,6 @@ const updateUploadAsync = createAsyncThunk(
   },
 )
 
-const updateDatasetAsync = createAsyncThunk(
-  'user/updateDataset',
-  async (datasetData, { dispatch }) => {
-    try {
-      await putData(`${epicApis.userDatasets}/${datasetData.code}`, datasetData)
-    } catch (err) {
-      if (typeof err === 'string') {
-        dispatch(addError({ [datasetData.code]: err }))
-      } else {
-        if (err.error) {
-          dispatch(addError({ [datasetData.code]: JSON.stringify(err.error) }))
-        } else {
-          dispatch(addError({ [datasetData.code]: 'API server error' }))
-        }
-      }
-    }
-  },
-)
-
 // We can also write thunks by hand, which may contain both sync and async logic.
 export const register = (userData) => (dispatch, getState) => {
   dispatch(cleanMessage())
@@ -326,10 +306,6 @@ export const updateProject = (projData) => (dispatch, getState) => {
 
 export const updateUpload = (uploadData) => (dispatch, getState) => {
   dispatch(updateUploadAsync(uploadData))
-}
-
-export const updateDataset = (datasetData) => (dispatch, getState) => {
-  dispatch(updateDatasetAsync(datasetData))
 }
 
 export default userSlice.reducer

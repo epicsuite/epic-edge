@@ -1,14 +1,13 @@
-const requestIp = require('request-ip');
-const fs = require('fs');
-const readline = require('readline');
-const { exec, spawn } = require('child_process');
+const { exec } = require('child_process');
 const logger = require('../../utils/logger');
-const { getOne, addOne, updateOne, deleteOne } = require('../utils/trame');
+const { getOne, addOne, updateOne, deleteByPort, execCmd, readFirstLine } = require('../utils/trame');
+const { getStructure } = require('../utils/structure');
 const { trameApps } = require('../utils/conf');
 
 const sysError = process.env.API_ERROR;
 
-// Insert new user and send out activation link to user if user's status is not active
+// assumption: user can be allowed only 1 active trame instance
+// eslint-disable-next-line consistent-return
 const trame = async (req, res) => {
   try {
     logger.debug(`/trame: ${JSON.stringify(req.body)}`);
@@ -18,17 +17,23 @@ const trame = async (req, res) => {
       params = JSON.parse(params);
     }
     logger.debug(params.structure);
-    const clientIp = requestIp.getClientIp(req);
-    logger.debug(`client ip: ${clientIp}`);
+    const structure = await getStructure(params.structure, 'user', req.user);
+    if (!structure) {
+      return res.status(400).json({
+        success: false,
+        message: 'You have no permission to access this dataset.'
+      });
+    }
+
     const structureData = `${process.env.STRUCTURE_HOME}/${params.structure}/structure-with-tracks.csv`;
-    const input = { ipAddress: clientIp, app: params.app, data: structureData };
-    let trame = await getOne(input);
+    const input = { user: req.user.email, app: params.app, data: structureData };
+    let trameObj = await getOne(input);
     // there is an active trame process for the selected structure dataset and app, return it
-    if (trame) {
+    if (trameObj) {
       // set updated time to new time
-      await updateOne({ ipAddress: input.ipAddress });
+      await updateOne({ port: trameObj.port });
       // return url
-      const url = `${process.env.TRAME_BASE_URL}${trame.port}`;
+      const url = `${process.env.TRAME_BASE_URL}${trameObj.port}`;
       logger.debug(`url:${url}`);
       return res.json({
         success: true,
@@ -37,11 +42,10 @@ const trame = async (req, res) => {
     }
 
     // there is an active trame process for previouse dataset and app, delete it
-    trame = await getOne({ ipAddress: input.ipAddress });
-    // there is an active trame process for the selected structure dataset and app, return it
-    if (trame) {
+    trameObj = await getOne({ user: input.user });
+    if (trameObj) {
       // kill the process and delete the trame from DB
-      exec(`kill -9 ${trame.pid}`, (error, stdout, stderr) => {
+      exec(`kill -9 ${trameObj.pid}`, (error, stdout, stderr) => {
         if (error) {
           logger.error(error.message);
           // throw new Error(error.message);
@@ -51,16 +55,19 @@ const trame = async (req, res) => {
           // throw new Error(stderr);
         }
       });
-      await deleteOne(input.ipAddress);
+      await deleteByPort(trameObj.port);
     }
 
     // get unique port
     let port = process.env.TRAME_PORT_START;
-    while (port < process.env.TRAME_PORT_END && await getOne({ port }) !== null) {
+    // eslint-disable-next-line no-await-in-loop
+    while (await getOne({ port }) !== null) {
+      // eslint-disable-next-line no-plusplus
       port++;
     }
+
     // check if port is available
-    if (await getOne({ port }) !== null) {
+    if (port > process.env.TRAME_PORT_END) {
       return res.status(400).json({
         success: false,
         message: 'The system is busy. Please try again later.'
@@ -90,35 +97,11 @@ const trame = async (req, res) => {
       setTimeout(() => res.status(400).json({ success: false, errMessage: 'Failed to create trame instance.' }), 3000);
     }
   } catch (err) {
-    logger.error(`/api/public/trame failed: ${err}`);
+    logger.error(`/api/auth-user/trame failed: ${err}`);
     return res.status(500).json({
       message: sysError,
       success: false,
     });
-  }
-};
-
-const execCmd = (cmd, outLog) => {
-  const out = fs.openSync(outLog, 'a');
-  const err = fs.openSync(outLog, 'a');
-  const child = spawn(cmd, {
-    shell: true, // have to use shell, otherwise the trame instance will be stopped when restarting the webapp
-    stdio: ['ignore', out, err], // piping stdout and stderr to out.log
-    detached: true,
-  });
-  console.log('child', child);
-  child.unref();
-  return child.pid;
-};
-
-const readFirstLine = async (path) => {
-  const inputStream = fs.createReadStream(path);
-  try {
-    for await (const line of readline.createInterface(inputStream)) return line;
-    return ''; // If the file is empty.
-  }
-  finally {
-    inputStream.destroy(); // Destroy file stream.
   }
 };
 

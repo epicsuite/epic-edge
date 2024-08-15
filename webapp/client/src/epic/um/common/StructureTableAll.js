@@ -5,13 +5,13 @@ import { Col, Row } from 'reactstrap'
 import { MaterialReactTable } from 'material-react-table'
 import { ThemeProvider, MenuItem, Tooltip } from '@mui/material'
 import Fab from '@mui/material/Fab'
-import { Refresh, FileDownload, Forward } from '@mui/icons-material'
+import { Refresh, Forward } from '@mui/icons-material'
 import moment from 'moment'
 import ReactJson from 'react-json-view'
 import { setSubmittingForm } from 'src/redux/reducers/pageSlice'
 import { cleanError } from 'src/redux/reducers/messageSlice'
 import { ConfirmDialog, LoaderDialog } from 'src/edge/common/Dialogs'
-import { getData, postData } from 'src/edge/common/util'
+import { getData } from 'src/edge/common/util'
 import { theme, actionDialogMessages, submitSession } from './tableUtil'
 
 const StructureTableAll = (props) => {
@@ -171,18 +171,11 @@ const StructureTableAll = (props) => {
     dispatch(setSubmittingForm(true))
 
     //get user selector options
-    if (action === 'export-data') {
-      //exportData(selectedRows)
-    } else if (action === 'create-session') {
-      // // store selectedData to localstorage
-      // localStorage.setItem('structures', JSON.stringify(selectedData))
-      // // redirect to /genomeBrowser page
-      // navigate('/genomeBrowser')
-
+    if (action === 'create-session') {
       // call api to launch a trame instance and redirect to genomeBrowser
       let params = { structure: selectedData[0]['code'], app: 'default' }
       setSubmitting(true)
-      submitSession(params)
+      submitSession(params, 'user')
         .then((data) => {
           setSubmitting(false)
           navigate('/trame', { state: { url: data.url } })
@@ -261,21 +254,6 @@ const StructureTableAll = (props) => {
                         onClick={() => {
                           handleAction('refresh')
                           table.reset()
-                        }}
-                      />
-                    </Fab>
-                  </Tooltip>
-                  <Tooltip title="Export selected structures" aria-label="export-data">
-                    <Fab
-                      color="primary"
-                      size="small"
-                      style={{ marginRight: 10 }}
-                      aria-label="export-data"
-                    >
-                      <FileDownload
-                        onClick={() => {
-                          setTable(table)
-                          handleAction('export-data', table.getSelectedRowModel().flatRows)
                         }}
                       />
                     </Fab>
