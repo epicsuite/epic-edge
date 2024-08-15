@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Card, CardBody, Col, Container, Row } from 'reactstrap'
+import { Col, Row } from 'reactstrap'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -58,24 +58,12 @@ const Profile = (props) => {
     <div className="app-body flex-row align-items-center">
       <LoaderDialog loading={page.submitting_form} />
       <ToastContainer />
-      <Container>
-        <Row className="justify-content-center">
-          <Col md="6">
-            <Card className="p-4 um-card">
-              <CardBody className="p-4">
-                {updateErrors.update && (
-                  <p className="edge-form-input-error">{updateErrors.update}</p>
-                )}
-                <ProfileForm
-                  user={user}
-                  loading={page.submitting_form}
-                  onSubmit={handleValidSubmit}
-                />
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
+      <Row className="justify-content-center um-form">
+        <Col md="4">
+          {updateErrors.update && <p className="edge-form-input-error">{updateErrors.update}</p>}
+          <ProfileForm user={user} loading={page.submitting_form} onSubmit={handleValidSubmit} />
+        </Col>
+      </Row>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { Card, CardBody, Col, Container, Row } from 'reactstrap'
+import { Col, Row } from 'reactstrap'
 
 import { LoaderDialog, MessageDialog } from '../../common/Dialogs'
 import { cleanMessage } from '../../../redux/reducers/messageSlice'
@@ -49,29 +49,23 @@ const Register = (props) => {
   return (
     <div className="app-body flex-row align-items-center">
       <LoaderDialog loading={page.submittingForm} text="Verifying email..." />
-      <Container>
-        <Row className="justify-content-center">
-          <Col md="6">
-            <Card className="p-4 um-card">
-              <CardBody className="p-4">
-                {registerErrors.register && (
-                  <p className="edge-form-input-error">{registerErrors.register}</p>
-                )}
-                <RegisterForm
-                  errors={registerErrors}
-                  loading={page.submitting_form}
-                  onSubmit={handleValidSubmit}
-                />
-                <MessageDialog
-                  isOpen={messages.register ? true : false}
-                  message={messages.register}
-                  handleClickClose={closeMsgModal}
-                />
-              </CardBody>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
+      <Row className="justify-content-center um-form">
+        <Col md="4">
+          {registerErrors.register && (
+            <p className="edge-form-input-error">{registerErrors.register}</p>
+          )}
+          <RegisterForm
+            errors={registerErrors}
+            loading={page.submitting_form}
+            onSubmit={handleValidSubmit}
+          />
+          <MessageDialog
+            isOpen={messages.register ? true : false}
+            message={messages.register}
+            handleClickClose={closeMsgModal}
+          />
+        </Col>
+      </Row>
     </div>
   )
 }

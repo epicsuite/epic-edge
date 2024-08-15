@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Card, CardBody, Col, Container, Row } from 'reactstrap'
+import { Col, Row } from 'reactstrap'
 import { MessageDialog } from '../../common/Dialogs'
 import ActivateForm from './forms/ActivateForm'
 import { activate, getActivationLink } from '../../../redux/reducers/edge/userSlice'
@@ -54,17 +54,11 @@ const Activate = (props) => {
           handleClickClose={closeMsgModal}
         />
       ) : (
-        <Container>
-          <Row className="justify-content-center">
-            <Col md="6">
-              <Card className="p-4 um-card">
-                <CardBody>
-                  <ActivateForm onSubmit={onSubmit} messages={messages} errors={activateErrors} />
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
+        <Row className="justify-content-center um-form">
+          <Col md="4">
+            <ActivateForm onSubmit={onSubmit} messages={messages} errors={activateErrors} />
+          </Col>
+        </Row>
       )}
     </div>
   )

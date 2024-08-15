@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Card, CardBody, Col, Container, Row } from 'reactstrap'
+import { Col, Row } from 'reactstrap'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { MessageDialog } from '../../common/Dialogs'
 import { cleanMessage } from '../../../redux/reducers/messageSlice'
@@ -65,34 +65,28 @@ const ResetPassword = (props) => {
 
   return (
     <div className="app-body flex-row align-items-center">
-      <Container>
-        <Row className="justify-content-center">
-          <Col md="6">
-            <Card className="p-4 um-card">
-              <CardBody>
-                {reset ? (
-                  <ResetPasswordForm
-                    errors={resetPasswordErrors}
-                    messages={messages}
-                    onSubmit={onSubmit}
-                  />
-                ) : (
-                  <ResetPasswordLinkForm
-                    errors={resetPasswordErrors}
-                    messages={messages}
-                    onSubmit={onSubmit}
-                  />
-                )}
-              </CardBody>
-            </Card>
-            <MessageDialog
-              isOpen={messages.resetPassword ? true : false}
-              message={messages.resetPassword}
-              handleClickClose={closeMsgModal}
+      <Row className="justify-content-center um-form">
+        <Col md="4">
+          {reset ? (
+            <ResetPasswordForm
+              errors={resetPasswordErrors}
+              messages={messages}
+              onSubmit={onSubmit}
             />
-          </Col>
-        </Row>
-      </Container>
+          ) : (
+            <ResetPasswordLinkForm
+              errors={resetPasswordErrors}
+              messages={messages}
+              onSubmit={onSubmit}
+            />
+          )}
+          <MessageDialog
+            isOpen={messages.resetPassword ? true : false}
+            message={messages.resetPassword}
+            handleClickClose={closeMsgModal}
+          />
+        </Col>
+      </Row>
     </div>
   )
 }
