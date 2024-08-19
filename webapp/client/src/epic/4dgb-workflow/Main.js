@@ -6,7 +6,6 @@ import 'react-toastify/dist/ReactToastify.css'
 
 import { postData, getData, notify, apis } from 'src/edge/common/util'
 import { LoaderDialog, MessageDialog } from 'src/edge/common/Dialogs'
-import { SubTopBar } from 'src/edge/common/SubTopBar'
 import { Project } from 'src/edge/project/forms/Project'
 import { HtmlText } from 'src/edge/project/forms/HtmlText'
 import { workflowList } from 'src/edge/common/util'
@@ -25,7 +24,7 @@ const Main = (props) => {
   const [projectParams, setProjectParams] = useState()
   const [inputComponents, setInputComponents] = useState({})
   const [doValidation, setDoValidation] = useState(0)
-  const [workflow, setWorkflow] = useState(workflowOptions[0].value)
+  const [workflow] = useState(workflowOptions[0].value)
   const [openDialog, setOpenDialog] = useState(false)
   const [disabled, setDisabled] = useState(false)
   const [sysMsg, setSysMsg] = useState()

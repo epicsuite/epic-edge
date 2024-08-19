@@ -19,6 +19,7 @@ const UserStructuresAll = React.lazy(() => import('./epic/um/user/StructuresAll'
 const AdminStructures = React.lazy(() => import('./epic/um/admin/Structures'))
 
 const FDGBWorkflow = React.lazy(() => import('./epic/4dgb-workflow/Main'))
+const SlurpyWorkflow = React.lazy(() => import('./epic/slurpy/Main'))
 
 const privateRoutes = [
   { path: '/user/profile', exact: true, name: 'Profile', element: UserProfile },
@@ -38,6 +39,7 @@ const privateRoutes = [
   { path: '/user/structures-all', exact: true, name: 'UserStructures', element: UserStructuresAll },
   { path: '/admin/structures', exact: true, name: 'AdminStructures', element: AdminStructures },
   { path: '/workflow/4dgb', exact: true, name: 'Workflow', element: FDGBWorkflow },
+  { path: '/workflow/slurpy', exact: true, name: 'Workflow', element: SlurpyWorkflow },
 ]
 
 export default privateRoutes

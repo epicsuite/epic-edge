@@ -1,7 +1,7 @@
 export const components = {
   textInput: {
     validForm: false,
-    textInput: null,
+    textInput: '',
   },
   textInputArray: {
     validForm: false,
@@ -27,6 +27,10 @@ export const components = {
   switcher: {
     validForm: true,
     isTrue: true,
+  },
+  selectInput: {
+    validForm: false,
+    selectInput: null,
   },
   fileInput: {
     validForm: false,

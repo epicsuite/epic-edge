@@ -12,7 +12,6 @@ export const TextInput = (props) => {
 
   const {
     register,
-    setValue,
     formState: { errors },
     trigger,
   } = useForm({
@@ -37,9 +36,21 @@ export const TextInput = (props) => {
     setDoValidation(doValidation + 1)
   }
 
+  const setNewState2 = (name, value) => {
+    setState({
+      ...form,
+      [name]: value,
+    })
+    setDoValidation(doValidation + 1)
+  }
+
   useEffect(() => {
     setState({ ...components[componentName] })
-    setValue('textInput', '', { shouldValidate: true })
+    if (props.defaultValue) {
+      setNewState2('textInput', props.defaultValue)
+    } else {
+      setNewState2('textInput', '')
+    }
   }, [props.reset]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -87,7 +98,7 @@ export const TextInput = (props) => {
             type="text"
             name="textInput"
             id={props.name}
-            defaultValue={props.defaultValue}
+            defaultValue={props.defaultValue ? props.defaultValue : ''}
             placeholder={props.placeholder}
             style={errors.textInput ? defaults.inputStyleWarning : defaults.inputStyle}
             onInput={(e) => {

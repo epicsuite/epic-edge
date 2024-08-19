@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 export const SideMenu = (props) => {
   return (
@@ -8,13 +8,23 @@ export const SideMenu = (props) => {
       <br></br>
       <span style={{ fontSize: '1.0em', paddingLeft: '30px', color: '#c4c9d0' }}>WORKFLOWS</span>
       <div className="pt-3 text-muted edge-side-menu">
-        <NavLink
+        {/* <NavLink
           to="/workflow/4dgb"
           className={({ isActive, isPending }) =>
             isPending ? 'pending' : isActive ? 'active' : ''
           }
         >
           4DGB
+        </NavLink>
+        <br></br>
+        <br></br> */}
+        <NavLink
+          to="/workflow/slurpy"
+          className={({ isActive, isPending }) =>
+            isPending ? 'pending' : isActive ? 'active' : ''
+          }
+        >
+          Slurpy
         </NavLink>
       </div>
       <br></br>
