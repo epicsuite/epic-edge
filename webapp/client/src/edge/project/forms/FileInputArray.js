@@ -76,7 +76,7 @@ export const FileInputArray = (props) => {
     <>
       <Row>
         <Col md="3">
-          Input {props.text}
+          {props.text}
           {!props.isOptional && fileInputFields.length === 0 && (
             <WarningTooltip id={props.name} tooltip={'Required at least one input.'} />
           )}

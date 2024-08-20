@@ -35,7 +35,7 @@ export const components = {
         display: [],
         fastqInput: {
           tooltip:
-            'Hi-C requires paired-end Illumina data in FASTQ format as the input; the file can be interleaved and can becompressed. <br/>Acceptable file formats: .fastq, .fq, .fastq.gz, .fq.gz',
+            'Hi-C requires paired-end Illumina data in FASTQ format as the input; the file can be compressed. <br/>Acceptable file formats: .fastq, .fq, .fastq.gz, .fq.gz',
           enableInput: false,
           placeholder: 'Select a file',
           dataSources: ['upload', 'public'],
@@ -44,6 +44,8 @@ export const components = {
           isOptional: false,
           cleanupInput: false,
           maxInput: 100,
+          isInterleaved: false,
+          disableSwitcher: true,
         },
       },
       referenceBwaIndex: {

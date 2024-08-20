@@ -39,6 +39,13 @@ export const FastqInput = (props) => {
     setDoValidation(doValidation + 1)
   }
 
+  useEffect(() => {
+    //set interleaved
+    if (!props.isInterleaved) {
+      setNewState2('interleaved', props.isInterleaved)
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   //trigger validation method when input changes
   useEffect(() => {
     //force updating parent's inputParams
@@ -57,15 +64,19 @@ export const FastqInput = (props) => {
           showTooltip={props.showTooltip ? props.showTooltip : defaults.showTooltip}
         />
       )}
-      <Switcher
-        name={'interleaved'}
-        setParams={setSwitcher}
-        text={components[componentName].params['interleaved'].text}
-        defaultValue={components[componentName].params['interleaved'].defaultValue}
-        trueText={components[componentName].params['interleaved'].trueText}
-        falseText={components[componentName].params['interleaved'].falseText}
-      />
-      <br></br>
+      {!props.disableSwitcher && (
+        <>
+          <Switcher
+            name={'interleaved'}
+            setParams={setSwitcher}
+            text={components[componentName].params['interleaved'].text}
+            defaultValue={components[componentName].params['interleaved'].defaultValue}
+            trueText={components[componentName].params['interleaved'].trueText}
+            falseText={components[componentName].params['interleaved'].falseText}
+          />
+          <br></br>
+        </>
+      )}
 
       {form.interleaved && (
         <>

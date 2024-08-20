@@ -8,7 +8,7 @@ export const SideMenu = (props) => {
       <br></br>
       <span style={{ fontSize: '1.0em', paddingLeft: '30px', color: '#c4c9d0' }}>WORKFLOWS</span>
       <div className="pt-3 text-muted edge-side-menu">
-        {/* <NavLink
+        <NavLink
           to="/workflow/4dgb"
           className={({ isActive, isPending }) =>
             isPending ? 'pending' : isActive ? 'active' : ''
@@ -17,7 +17,7 @@ export const SideMenu = (props) => {
           4DGB
         </NavLink>
         <br></br>
-        <br></br> */}
+        <br></br>
         <NavLink
           to="/workflow/slurpy"
           className={({ isActive, isPending }) =>

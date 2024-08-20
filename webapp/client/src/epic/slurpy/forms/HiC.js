@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Card, CardBody, Col, Row, Collapse } from 'reactstrap'
+import { Card, CardBody, Collapse } from 'reactstrap'
 import { Header } from 'src/edge/project/forms/SectionHeader'
 import { HtmlText } from 'src/edge/project/forms/HtmlText'
 import { FastqInput } from 'src/edge/project/forms/FastqInput'
@@ -15,8 +15,8 @@ import { components } from '../defaults'
 export const HiC = (props) => {
   const componentName = 'hic'
   const [collapseParms, setCollapseParms] = useState(false)
-  const [form, setState] = useState({ ...components[componentName] })
-  const [validInputs, setValidInputs] = useState({ ...components[componentName].validInputs })
+  const [form] = useState({ ...components[componentName] })
+  const [validInputs] = useState({ ...components[componentName].validInputs })
   const [doValidation, setDoValidation] = useState(0)
 
   const toggleParms = () => {
@@ -163,6 +163,12 @@ export const HiC = (props) => {
                 components[componentName].inputs['inputFastq']['fastqInput'].cleanupInput
               }
               maxInput={components[componentName].inputs['inputFastq']['fastqInput'].maxInput}
+              isInterleaved={
+                components[componentName].inputs['inputFastq']['fastqInput'].isInterleaved
+              }
+              disableSwitcher={
+                components[componentName].inputs['inputFastq']['fastqInput'].disableSwitcher
+              }
             />
             <FileInput
               name={'referenceBwaIndex'}
