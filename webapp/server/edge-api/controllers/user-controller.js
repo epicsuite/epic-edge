@@ -4,8 +4,9 @@ const User = require('../models/user');
 const { encodePassword, signToken } = require('../utils/user');
 const { userActionSender } = require('../../mailers/senders');
 const logger = require('../../utils/logger');
+const config = require('../../config');
 
-const sysError = process.env.API_ERROR;
+const sysError = config.APP.API_ERROR;
 
 // Send out action link to user
 const getActionLink = async (req, res, action) => {

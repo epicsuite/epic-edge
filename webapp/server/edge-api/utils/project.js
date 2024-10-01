@@ -1,7 +1,8 @@
 const fs = require('fs');
 const Project = require('../models/project');
 const { getAllFiles } = require('../../utils/common');
-const { generateWorkflowResult, generateRunStats } = require('../../utils/workflow');
+const { generateWorkflowResult, generateRunStats } = require('../../utils/cromwellWorkflow');
+const config = require('../../config');
 
 const getProject = (code, type, user) => new Promise((resolve, reject) => {
   // Use $eq to prevent query selector injections
@@ -88,7 +89,7 @@ const getProjectConf = (code, type, req) => new Promise((resolve, reject) => {
   getProject(code, type, req.user).then((proj) => {
     let confJson = {};
     if (proj) {
-      const projHome = `${process.env.PROJECT_HOME}/${code}`;
+      const projHome = `${config.IO.PROJECT_BASE_DIR}/${code}`;
       confJson = JSON.parse(fs.readFileSync(`${projHome}/conf.json`));
     }
 
@@ -97,7 +98,7 @@ const getProjectConf = (code, type, req) => new Promise((resolve, reject) => {
 });
 
 const getProjectOutputs = (code, type, req) => new Promise((resolve, reject) => {
-  const projDir = process.env.PROJECT_HOME;
+  const projDir = config.IO.PROJECT_BASE_DIR;
   getProject(code, type, req.user).then((proj) => {
     let files = [];
     if (proj && fs.existsSync(`${projDir}/${proj.code}/output`)) {
@@ -108,7 +109,7 @@ const getProjectOutputs = (code, type, req) => new Promise((resolve, reject) => 
 });
 
 const getProjectBatchOutputs = (code, type, req) => new Promise((resolve, reject) => {
-  const projDir = process.env.PROJECT_HOME;
+  const projDir = config.IO.PROJECT_BASE_DIR;
   getProject(code, type, req.user).then(project => {
     if (!project.type.includes('batch')) {
       reject(new Error('Not a batch project'));
@@ -138,7 +139,7 @@ const getProjectResult = (code, type, req) => new Promise((resolve, reject) => {
   getProject(code, type, req.user).then((proj) => {
     let result = {};
     if (proj) {
-      const projHome = `${process.env.PROJECT_HOME}/${code}`;
+      const projHome = `${config.IO.PROJECT_BASE_DIR}/${code}`;
       const resultJson = `${projHome}/result.json`;
 
       if (!fs.existsSync(resultJson)) {
@@ -155,7 +156,7 @@ const getProjectRunStats = (code, type, req) => new Promise((resolve, reject) =>
   getProject(code, type, req.user).then((proj) => {
     let stats = {};
     if (proj) {
-      const projHome = `${process.env.PROJECT_HOME}/${code}`;
+      const projHome = `${config.IO.PROJECT_BASE_DIR}/${code}`;
       const statsJson = `${projHome}/run_stats.json`;
       generateRunStats(proj);
       stats = JSON.parse(fs.readFileSync(statsJson));

@@ -1,73 +1,24 @@
 /* eslint-disable guard-for-in */
 const fs = require('fs');
 const ufs = require('url-file-size');
-const path = require('path');
 const moment = require('moment');
 const FormData = require('form-data');
 const ejs = require('ejs');
 const YAML = require('json-to-pretty-yaml');
-const CromwellJob = require('../edge-api/models/job');
-const Upload = require('../edge-api/models/upload');
+const Job = require('../edge-api/models/job');
 const common = require('./common');
 const logger = require('./logger');
 
+const workflows = ['hic'];
+
 const workflowList = {
-  default_wdl_version: '1.0',
-  '4dgb': {
+  'hic': {
     wdl: '4dgb.wdl',
     wdl_imports: 'imports.zip',
     inputs_tmpl: '4dgb_inputs.tmpl',
-    outdir: 'output/4DGB',
-    // set if not default 1.0
-    // wdl_version: '1.0',
-  },
-  sra2fastq: {
-    wdl: 'sra2fastq.wdl',
-    wdl_imports: 'imports.zip',
-    inputs_tmpl: 'sra2fastq_inputs.tmpl',
-    outdir: 'output/sra2fastq',
-    // set if not default 1.0
-    // wdl_version: '1.0',
-  },
-  runFaQCs: {
-    wdl: 'runQC.wdl',
-    wdl_imports: 'imports.zip',
-    inputs_tmpl: 'runFaQCs_inputs.tmpl',
-    outdir: 'output/runFaQCs',
+    outdir: 'output/hic',
   },
 };
-
-const linkUpload = (fq, projHome) => new Promise((resolve) => {
-  if (fq.startsWith(process.env.FILEUPLOAD_FILE_DIR)) {
-    // create input dir and link uploaded file with realname
-    const inputDir = `${projHome}/input`;
-    if (!fs.existsSync(inputDir)) {
-      fs.mkdirSync(inputDir);
-    }
-    const fileCode = path.basename(fq);
-    let name = fileCode;
-    Upload.findOne({ 'code': name }).then(upload => {
-      if (upload) {
-        name = upload.name;
-      }
-      let linkFq = `${inputDir}/${name}`;
-      let i = 1;
-      while (fs.existsSync(linkFq)) {
-        i += 1;
-        if (name.includes('.')) {
-          const newName = name.replace('.', `${i}.`);
-          linkFq = `${inputDir}/${newName}`;
-        } else {
-          linkFq = `${inputDir}/${name}${i}`;
-        }
-      }
-      fs.symlinkSync(fq, linkFq, 'file');
-      resolve(linkFq);
-    });
-  } else {
-    resolve(fq);
-  }
-});
 
 const generateWDL = async (projHome, projectConf) => {
   // projectConf: project conf.js
@@ -234,14 +185,14 @@ const submitWorkflow = (proj, projectConf, inputsize) => {
     },
   }).then(response => {
     logger.debug(JSON.stringify(response));
-    const newCromwellJob = new CromwellJob({
+    const newJob = new Job({
       id: response.id,
       project: proj.code,
       type: proj.type,
       inputsize,
       status: 'Submitted'
     });
-    newCromwellJob.save().catch(err => { logger.error('falied to save to cromwelljobs: ', err); });
+    newJob.save().catch(err => { logger.error('falied to save to cromwelljobs: ', err); });
     proj.status = 'submitted';
     proj.updated = Date.now();
     proj.save();
@@ -448,7 +399,7 @@ const updateJobStatus = (job, proj) => {
     // update job even its status unchanged. We need set new updated time for this job.
     if (response.status === 'Aborted') {
       // delete job
-      CromwellJob.deleteOne({ project: proj.code }, (err) => {
+      Job.deleteOne({ project: proj.code }, (err) => {
         if (err) {
           logger.error(`Failed to delete job from DB ${proj.code}:${err}`);
         }
@@ -498,6 +449,7 @@ async function findInputsize(projectConf) {
 }
 
 module.exports = {
+  workflows,
   workflowList,
   generateWDL,
   generateInputs,

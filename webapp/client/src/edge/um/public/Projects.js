@@ -2,7 +2,6 @@ import React from 'react'
 import { Row, Col } from 'reactstrap'
 import ProjectTableViewOnly from '../common/ProjectTableViewOnly'
 import { apis } from '../../common/util'
-import { SubTopBar } from 'src/edge/common/SubTopBar'
 import { SideMenu } from 'src/components/SideMenu'
 
 const Projects = (props) => {

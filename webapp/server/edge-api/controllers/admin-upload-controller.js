@@ -1,8 +1,9 @@
 const Upload = require('../models/upload');
 const { updateUpload } = require('../utils/upload');
 const logger = require('../../utils/logger');
+const config = require('../../config');
 
-const sysError = process.env.API_ERROR;
+const sysError = config.APP.API_ERROR;
 
 // Update upload
 const updateOne = async (req, res) => {

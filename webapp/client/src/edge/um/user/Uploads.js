@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Row, Col } from 'reactstrap'
-import { SubTopBar } from 'src/edge/common/SubTopBar'
 import { SideMenu } from 'src/components/SideMenu'
 import UploadTable from '../common/UploadTable'
 import UploadFiles from './UploadFiles'

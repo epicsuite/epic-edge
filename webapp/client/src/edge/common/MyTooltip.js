@@ -1,18 +1,15 @@
 import React, { useState } from 'react'
-import ReactTooltip from 'react-tooltip'
+import { Tooltip } from 'react-tooltip'
 import { FaInfoCircle } from 'react-icons/fa'
+import { HtmlText } from './HtmlText'
 
 export const MyTooltip = (props) => {
   const [showTooltip, setShowTooltip] = useState(props.showTooltip)
 
   return (
     <>
-      <span
-        data-tip=""
-        data-for={props.id}
-        data-html={true}
-        data-event={props.event ? props.event : ''}
-        data-effect="solid"
+      <a
+        data-tooltip-id={props.id}
         className={props.className}
         onMouseOver={(e) => setShowTooltip(true)}
         onMouseLeave={(e) => {
@@ -23,16 +20,16 @@ export const MyTooltip = (props) => {
         <span style={{ color: props.color }} className={showTooltip ? '' : 'hide'}>
           <FaInfoCircle />
         </span>
-      </span>
-      <ReactTooltip
-        globalEventOff="click"
-        wrapper="span"
+      </a>
+      <Tooltip
         id={props.id}
         type={props.type}
-        place={props.place}
+        place={props.place ? props.place : 'right'}
+        openOnClick={props.openOnClick ? props.openOnClick : false}
+        offset={10}
       >
-        {props.tooltip}
-      </ReactTooltip>
+        <HtmlText text={props.tooltip} />
+      </Tooltip>
     </>
   )
 }
@@ -40,22 +37,17 @@ export const MyTooltip = (props) => {
 export const WarningTooltip = (props) => {
   return (
     <>
-      <span
-        data-tip=""
-        data-for={'warning-' + props.id}
-        data-html={true}
-        data-place="right"
-        data-effect="solid"
-      >
+      <a data-tooltip-id={'warning-' + props.id}>
         <span className="edge-form-input-error"></span>
-      </span>
-      <ReactTooltip
+      </a>
+      <Tooltip
         wrapper="span"
         id={'warning-' + props.id}
         type={props.type ? props.type : 'warning'}
+        place={props.place ? props.place : 'right'}
       >
-        {props.tooltip}
-      </ReactTooltip>
+        <HtmlText text={props.tooltip} />
+      </Tooltip>
     </>
   )
 }
@@ -63,17 +55,16 @@ export const WarningTooltip = (props) => {
 export const ErrorTooltip = (props) => {
   return (
     <>
-      <span data-tip="" data-for={'error-' + props.id} data-html={true} data-effect="solid">
+      <a data-tooltip-id={'error-' + props.id}>
         <span className="edge-text-size-large red-text">*</span>
-      </span>
-      <ReactTooltip
-        wrapper="span"
+      </a>
+      <Tooltip
         id={'error-' + props.id}
         type={'error'}
         place={props.place ? props.place : 'right'}
       >
-        {props.tooltip}
-      </ReactTooltip>
+        <HtmlText text={props.tooltip} />
+      </Tooltip>
     </>
   )
 }

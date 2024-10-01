@@ -9,6 +9,7 @@ import JSZipUtils from 'jszip-utils'
 import FileSaver from 'file-saver'
 import { LoaderDialog } from '../../common/Dialogs'
 import { Header } from './CardHeader'
+import config from 'src/config'
 
 //list all files in a project directory
 const ProjectOutputs = (props) => {
@@ -17,7 +18,7 @@ const ProjectOutputs = (props) => {
 
   const handleSelectedFile = (file) => {
     //open file in new tab
-    openInNewTab(process.env.REACT_APP_API_URL + file.url)
+    openInNewTab(config.APP.API_URI + file.url)
   }
 
   const handleDownloadFile = (file) => {
@@ -46,7 +47,7 @@ const ProjectOutputs = (props) => {
     let doDownload = true
     files.forEach((file) => {
       size += file.size
-      if (size > process.env.REACT_APP_FOLDER_DOWNLOAD_MAX_SIZE) {
+      if (size > config.APP.MAX_FOLDER_SIZE_BYTES) {
         doDownload = false
       }
     })

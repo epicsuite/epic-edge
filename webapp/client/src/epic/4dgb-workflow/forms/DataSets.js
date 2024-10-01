@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Card, CardBody, Col, Row, Collapse } from 'reactstrap'
 import { Header } from 'src/edge/project/forms/SectionHeader'
-import { HtmlText } from 'src/edge/project/forms/HtmlText'
+import { HtmlText } from 'src/edge/common/HtmlText'
 import { isValidFileInput } from 'src/edge/common/util'
-import { isValidTextInput } from 'src/epic/util'
+import { isValidTextInput } from '../../util'
 import { Dataset } from '../components/Dataset'
 import { components } from '../defaults'
 

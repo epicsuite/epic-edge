@@ -1,7 +1,10 @@
 const axios = require('axios');
+const ufs = require('url-file-size');
 const fs = require('fs');
 const path = require('path');
+const Upload = require('../edge-api/models/upload');
 const logger = require('./logger');
+const config = require('../config');
 
 // append message to a log
 const write2log = (log, msg) => {
@@ -112,10 +115,72 @@ const getAllFiles = (dirPath, arrayOfFilesIn, extentions, displayPath, apiPath, 
   return arrayOfFiles;
 };
 
+const linkUpload = (ufile, projHome, dir) => new Promise((resolve) => {
+  if (ufile.startsWith(config.IO.UPLOADED_FILES_DIR)) {
+    // create input dir and link uploaded file with realname
+    const inputDir = `${projHome}/${dir}`;
+    if (!fs.existsSync(inputDir)) {
+      fs.mkdirSync(inputDir);
+    }
+    const fileCode = path.basename(ufile);
+    let name = fileCode;
+    Upload.findOne({ 'code': name }).then(upload => {
+      if (upload) {
+        name = upload.name;
+      }
+      let linkFq = `${inputDir}/${name}`;
+      let i = 1;
+      while (fs.existsSync(linkFq)) {
+        i += 1;
+        if (name.includes('.')) {
+          const newName = name.replace('.', `${i}.`);
+          linkFq = `${inputDir}/${newName}`;
+        } else {
+          linkFq = `${inputDir}/${name}${i}`;
+        }
+      }
+      fs.symlinkSync(ufile, linkFq, 'file');
+      resolve(linkFq);
+    });
+  } else {
+    resolve(ufile);
+  }
+});
+
+async function fileStats(file) {
+  let stats = {};
+  if (file.toLowerCase().startsWith('http')) {
+    stats = await ufs(file)
+      .then(size => ({ size }))
+      .catch(() => ({ size: 0 }));
+  } else {
+    stats = fs.statSync(file);
+  }
+  return stats;
+}
+
+async function findInputsize(projectConf) {
+  if (!projectConf.files) {
+    return 0;
+  }
+  let size = 0;
+  await Promise.all(projectConf.files.map(async (file) => {
+    if (file !== '') {
+      // not optional file without input
+      const stats = await fileStats(file);
+      size += stats.size;
+    }
+  }));
+  // console.log('file size', size);
+  return size;
+}
+
 module.exports = {
   write2log,
   postData,
   getData,
   timeFormat,
   getAllFiles,
+  linkUpload,
+  findInputsize,
 };

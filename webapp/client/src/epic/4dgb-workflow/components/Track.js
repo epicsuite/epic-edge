@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Col, Row } from 'reactstrap'
 import { isValidFileInput } from 'src/edge/common/util'
-import { isValidTextInput } from 'src/epic/util'
+import { isValidTextInput } from '../../util'
 import { Dataset } from './Dataset'
 import { components } from './defaults'
 

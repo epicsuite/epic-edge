@@ -1,17 +1,18 @@
 const nodemailer = require('nodemailer');
 const mg = require('nodemailer-mailgun-transport');
 const Email = require('email-templates');
+const config = require('../config');
 
-const config = {};
+const mailConfig = {};
 let transporter = null;
-if (process.env.SENDMAIL_PROXY) {
-  config.proxy = process.env.SENDMAIL_PROXY;
+if (config.EMAIL.SERVICE_PROXY_URL) {
+  mailConfig.proxy = config.EMAIL.SERVICE_PROXY_URL;
 }
-config.auth = {
-  api_key: process.env.SENDMAIL_PASS,
-  domain: process.env.SENDMAIL_USER,
+mailConfig.auth = {
+  api_key: config.EMAIL.MAILGUN_API_KEY,
+  domain: config.EMAIL.MAILGUN_DOMAIN,
 };
-transporter = nodemailer.createTransport(mg(config));
+transporter = nodemailer.createTransport(mg(mailConfig));
 
 const email = new Email({
   views: {
@@ -19,7 +20,7 @@ const email = new Email({
     options: { extension: 'ejs' },
   },
   message: {
-    from: process.env.SENDMAIL_FROM,
+    from: config.EMAIL.FROM_ADDRESS,
   },
   send: true,
   transport: transporter,
@@ -28,17 +29,17 @@ const email = new Email({
 // Variables in templates
 const vars = {
   'getActivationLink': {
-    subject: process.env.ACTIVATE_USER_SUBJECT,
-    actionName: process.env.ACTIVATE_USER_ACTION,
-    actionMessage: process.env.ACTIVATE_USER_ACTION_MESSAGE,
+    subject: config.EMAIL.ACTIVATE_USER_SUBJECT,
+    actionName: config.EMAIL.ACTIVATE_USER_ACTION,
+    actionMessage: config.EMAIL.ACTIVATE_USER_ACTION_MESSAGE,
   },
   'getResetPasswordLink': {
-    subject: process.env.RESETPASSWORD_SUBJECT,
-    actionName: process.env.RESETPASSWORD_ACTION,
-    actionMessage: process.env.RESETPASSWORD_ACTION_MESSAGE,
+    subject: config.EMAIL.RESETPASSWORD_SUBJECT,
+    actionName: config.EMAIL.RESETPASSWORD_ACTION,
+    actionMessage: config.EMAIL.RESETPASSWORD_ACTION_MESSAGE,
   },
   'projectStatusNotification': {
-    subject: process.env.PROJECT_STATUS_SUBJECT,
+    subject: config.EMAIL.PROJECT_STATUS_SUBJECT,
   }
 };
 

@@ -1,4 +1,4 @@
-import { workflowList } from '../../common/util'
+import { workflowList } from 'src/util'
 
 export const workflowOptions = [{ value: 'runFaQCs', label: workflowList['runFaQCs'].label }]
 

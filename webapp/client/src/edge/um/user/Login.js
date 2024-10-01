@@ -3,9 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Button, Col, Row } from 'reactstrap'
 
-import { login } from '../../../redux/reducers/edge/userSlice'
+import { login } from 'src/redux/reducers/edge/userSlice'
 import LoginForm from './forms/LoginForm'
 import ORCIDLogin from './forms/ORCIDLogin'
+import config from 'src/config'
 
 const Login = (props) => {
   const navigate = useNavigate()
@@ -36,25 +37,24 @@ const Login = (props) => {
         <Col md="4">
           <LoginForm messages={messages} errors={loginErrors} onSubmit={handleValidSubmit} />
           <Row className="justify-content-center">
-            {process.env.REACT_APP_EMAIL_NOTIFICATION &&
-              process.env.REACT_APP_EMAIL_NOTIFICATION.toLowerCase() === 'on' && (
-                <>
-                  <Col xs="12">
-                    <Link to="/activate">
-                      <Button color="link" className="px-0">
-                        Account not active?
-                      </Button>
-                    </Link>
-                  </Col>
-                  <Col xs="12">
-                    <Link to="/resetPassword">
-                      <Button color="link" className="px-0">
-                        Forgot your password?
-                      </Button>
-                    </Link>
-                  </Col>
-                </>
-              )}
+            {config.APP.EMAIL_IS_ENABLED && (
+              <>
+                <Col xs="12">
+                  <Link to="/activate">
+                    <Button color="link" className="px-0">
+                      Account not active?
+                    </Button>
+                  </Link>
+                </Col>
+                <Col xs="12">
+                  <Link to="/resetPassword">
+                    <Button color="link" className="px-0">
+                      Forgot your password?
+                    </Button>
+                  </Link>
+                </Col>
+              </>
+            )}
             <Col xs="12">
               <Link to="/register">
                 <Button color="link" className="px-0">
@@ -62,7 +62,7 @@ const Login = (props) => {
                 </Button>
               </Link>
             </Col>
-            {process.env.REACT_APP_ORCID_AUTH === 'on' && (
+            {config.ORCID.IS_ENABLED && (
               <>
                 <Col xs="12">
                   <hr></hr>
@@ -71,11 +71,6 @@ const Login = (props) => {
               </>
             )}
           </Row>
-          {process.env.REACT_APP_DISTRIBUTION_NOTE && (
-            <span className="pt-3 text-muted edge-text-size-small">
-              {process.env.REACT_APP_DISTRIBUTION_NOTE}
-            </span>
-          )}
         </Col>
       </Row>
     </div>

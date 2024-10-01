@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const config = require('../../config');
 
 const encodePassword = async (password) => new Promise((resolve, reject) => {
   // Hash password before saving in database
@@ -17,7 +18,7 @@ const signToken = async (payload) => new Promise((resolve, reject) => {
   // Sign token
   jwt.sign(
     payload,
-    process.env.JWT_KEY,
+    config.AUTH.JWT_SECRET,
     {
       expiresIn: 31556926, // 1 year in seconds
     },

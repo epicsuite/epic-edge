@@ -3,8 +3,9 @@ const fs = require('fs');
 const Upload = require('../models/upload');
 const { updateUpload, getUploadedSize, getUploadFolderOptions } = require('../utils/upload');
 const logger = require('../../utils/logger');
+const config = require('../../config');
 
-const sysError = process.env.API_ERROR;
+const sysError = config.APP.API_ERROR;
 
 // Create a upload
 const addOne = async (req, res) => {
@@ -19,7 +20,7 @@ const addOne = async (req, res) => {
     }
 
     const newSize = Number(size) + Number(data.size);
-    if (newSize > process.env.FILEUPLOAD_MAX_STORAGE_SIZE_BYTES) {
+    if (newSize > config.FILE_UPLOADS.MAX_STORAGE_SIZE_BYTES) {
       return res.status(400).json({
         error: { upload: 'Storage limit exceeded.' },
         message: 'Action failed',
@@ -29,10 +30,10 @@ const addOne = async (req, res) => {
 
     // upload file
     let code = `${randomize('Aa0', 16)}.${data.type}`;
-    let uploadHome = `${process.env.FILEUPLOAD_FILE_DIR}/${code}`;
+    let uploadHome = `${config.IO.UPLOADED_FILES_DIR}/${code}`;
     while (fs.existsSync(uploadHome)) {
       code = randomize('Aa0', 16);
-      uploadHome = `${process.env.FILEUPLOAD_FILE_DIR}/${code}`;
+      uploadHome = `${config.IO.UPLOADED_FILES_DIR}/${code}`;
     }
 
     // save uploaded file
@@ -138,10 +139,10 @@ const getInfo = async (req, res) => {
     }
     return res.json({
       uploadedSize: size,
-      maxStorageSizeBytes: process.env.FILEUPLOAD_MAX_STORAGE_SIZE_BYTES,
-      daysKept: process.env.FILEUPLOAD_DAYS_KEPT,
-      maxFileSizeBytes: process.env.FILEUPLOAD_MAX_SIZE_BYTES,
-      allowedExtensions: process.env.FILEUPLOAD_ALLOWED_EXTENSIONS,
+      maxStorageSizeBytes: config.FILE_UPLOADS.MAX_STORAGE_SIZE_BYTES,
+      daysKept: config.FILE_UPLOADS.FILE_LIFETIME_DAYS,
+      maxFileSizeBytes: config.FILE_UPLOADS.MAX_FILE_SIZE_BYTES,
+      allowedExtensions: config.FILE_UPLOADS.ALLOWED_EXTENSIONS,
       folderOptions: options,
       message: 'Action successful',
       success: true
@@ -160,7 +161,7 @@ const getAll = async (req, res) => {
   try {
     logger.debug(`/api/auth-user/uploads/files: ${req.user.email}`);
     // find all files owned by user and shared to user or public
-    const uploadDir = process.env.FILEUPLOAD_FILE_DIR;
+    const uploadDir = config.IO.UPLOADED_FILES_DIR;
     const query = {
       status: { $ne: 'delete' },
       $or: [

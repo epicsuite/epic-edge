@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css'
 
 import { LoaderDialog } from '../../common/Dialogs'
 import { notify } from '../../common/util'
-import { update } from '../../../redux/reducers/edge/userSlice'
+import { update } from 'src/redux/reducers/edge/userSlice'
 import ProfileForm from './forms/ProfileForm'
 
 const Profile = (props) => {

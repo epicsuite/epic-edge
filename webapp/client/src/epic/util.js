@@ -1,3 +1,5 @@
+import config from 'src/config'
+
 export const apis = {
   publicStructures: '/api/public/structures',
   userStructures: '/api/auth-user/structures',
@@ -7,7 +9,7 @@ export const apis = {
   userTrame: '/api/auth-user/trame',
 }
 
-export const structureUrl = process.env.REACT_APP_API_URL + '/structures'
+export const structureUrl = config.APP.API_URI + '/structures'
 
 // validators
 export const isValidChromosome = (name) => {

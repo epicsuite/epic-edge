@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Col, Row } from 'reactstrap'
 import { MessageDialog } from '../../common/Dialogs'
 import ActivateForm from './forms/ActivateForm'
-import { activate, getActivationLink } from '../../../redux/reducers/edge/userSlice'
+import { activate, getActivationLink } from 'src/redux/reducers/edge/userSlice'
+import config from 'src/config'
 
 const Activate = (props) => {
   const navigate = useNavigate()
@@ -16,11 +17,7 @@ const Activate = (props) => {
 
   useEffect(() => {
     // If logged in and user navigates to this page, should redirect them to home page
-    if (
-      user.isAuthenticated ||
-      (process.env.REACT_APP_EMAIL_NOTIFICATION &&
-        process.env.REACT_APP_EMAIL_NOTIFICATION.toLowerCase() !== 'on')
-    ) {
+    if (user.isAuthenticated || !config.APP.EMAIL_IS_ENABLED) {
       navigate('/home')
     }
 
@@ -41,7 +38,7 @@ const Activate = (props) => {
   }
 
   const onSubmit = (data) => {
-    const userData = { ...data, actionURL: process.env.REACT_APP_ACTIVATE_ACTION_URL }
+    const userData = { ...data, actionURL: config.APP.BASE_URI + '/activate' }
     dispatch(getActivationLink(userData))
   }
 

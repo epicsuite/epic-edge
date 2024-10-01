@@ -7,6 +7,7 @@ const logger = require('./utils/logger');
 const dbBackup = require('./crons/dbBackup');
 const dbBackupClean = require('./crons/dbBackupClean');
 const trameMonitor = require('./crons/trameMonitor');
+const config = require('./config');
 
 const app = express();
 app.use(express.json());
@@ -15,29 +16,30 @@ app.use(express.json());
 app.use(cors());
 
 // backup nmdcedge DB every day at 10pm
-cron.schedule(process.env.CRON_DB_BACKUP, () => {
+cron.schedule(config.CRON.SCHEDULES.DATABASE_BACKUP_CREATOR, () => {
   dbBackup();
 });
 // delete older DB backups every day at 12am
-cron.schedule(process.env.CRON_DB_BACKUP_CLEAN, () => {
+cron.schedule(config.CRON.SCHEDULES.DATABASE_BACKUP_PRUNER, () => {
   dbBackupClean();
 });
 // monitor trames every day at 4am
-cron.schedule(process.env.CRON_TRAME_MONITOR, () => {
+cron.schedule(config.CRON.SCHEDULES.TRAME_MONITOR, () => {
   trameMonitor();
 });
 
 const runApp = async () => {
   try {
     // Connect to MongoDB
+    const db = `mongodb://${config.DATABASE.SERVER_HOST}:${config.DATABASE.SERVER_PORT}/${config.DATABASE.NAME}`;
     mongoose.set('strictQuery', false);
     mongoose
       .connect(
-        process.env.MONGO_URI,
+        db
       );
-    logger.info(`Successfully connected to database ${process.env.MONGO_URI}`);
+    logger.info(`Successfully connected to database ${db}`);
     // start server
-    app.listen(process.env.CRON_PORT, () => logger.info(`HTTP CRON server up and running on port ${process.env.CRON_PORT} !`));
+    app.listen(config.CRON.SERVER_PORT, () => logger.info(`HTTP CRON server up and running on port ${config.CRON.SERVER_PORT} !`));
   } catch (err) {
     logger.error(err);
   }

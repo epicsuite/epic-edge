@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { CContainer, CHeader, CHeaderNav, CNavLink, CNavItem } from '@coreui/react'
 
 import { AppHeaderDropdown } from './header/index'
-import logo from '../assets/img/brand/logo.png'
-import { logout } from '../redux/reducers/edge/userSlice'
+import logo from 'src/assets/img/brand/logo.png'
+import { logout } from 'src/redux/reducers/edge/userSlice'
 
 const AppHeader = () => {
   const navigate = useNavigate()
@@ -41,7 +41,7 @@ const AppHeader = () => {
                 <CNavLink
                   style={{ color: 'white' }}
                   className="edge-header-nav-link"
-                  to="/home"
+                  href="/home"
                   component={NavLink}
                 >
                   Home
@@ -51,7 +51,7 @@ const AppHeader = () => {
                 <CNavLink
                   style={{ color: 'white' }}
                   className="edge-header-nav-link"
-                  to="/user/structures-all"
+                  href="/user/structures-all"
                   component={NavLink}
                 >
                   Structure Datasets
@@ -61,7 +61,7 @@ const AppHeader = () => {
                 <CNavLink
                   style={{ color: 'white' }}
                   className="edge-header-nav-link"
-                  to="/workflow/slurpy"
+                  href="/workflow/slurpy"
                   component={NavLink}
                 >
                   Workflows
@@ -84,7 +84,7 @@ const AppHeader = () => {
                 <CNavLink
                   style={{ color: 'white' }}
                   className="edge-header-nav-link"
-                  to="/home"
+                  href="/home"
                   component={NavLink}
                 >
                   Home
@@ -94,7 +94,7 @@ const AppHeader = () => {
                 <CNavLink
                   style={{ color: 'white' }}
                   className="edge-header-nav-link"
-                  to="/public/structures"
+                  href="/public/structures"
                   component={NavLink}
                 >
                   Structure Datasets
@@ -104,7 +104,7 @@ const AppHeader = () => {
                 <CNavLink
                   style={{ color: 'white' }}
                   className="edge-header-nav-link"
-                  to="/public/projects"
+                  href="/public/projects"
                   component={NavLink}
                 >
                   Workflows

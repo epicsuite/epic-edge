@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Col, Row } from 'reactstrap'
 import { useForm, useFieldArray, Controller } from 'react-hook-form'
-import { MyTooltip } from 'src/edge/common/MyTooltip'
-import { defaults } from 'src/edge/common/util'
+import { MyTooltip } from '../../common/MyTooltip'
+import { defaults } from '../../common/util'
 import { components } from './defaults'
 import { RangeTextInput } from './RangeTextInput'
 
@@ -30,7 +30,7 @@ export const RangeTextInputArray = (props) => {
 
   //default 0 dataset
   useEffect(() => {
-    setState({ ...form, ['rangeInputs']: [] })
+    setState({ ...form, rangeInputs: [] })
     setDoValidation(doValidation + 1)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 

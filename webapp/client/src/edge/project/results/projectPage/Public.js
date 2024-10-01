@@ -5,7 +5,6 @@ import ProjectSummary from '../ProjectSummary'
 import ProjectResult from '../../ProjectResult'
 import { LoaderDialog } from '../../../common/Dialogs'
 import { getData, apis } from '../../../common/util'
-import { SubTopBar } from 'src/edge/common/SubTopBar'
 import { SideMenu } from 'src/components/SideMenu'
 
 const Public = (props) => {

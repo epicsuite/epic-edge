@@ -1,8 +1,9 @@
 const Structure = require('../models/structure');
 const { updateStructure } = require('../utils/structure');
 const logger = require('../../utils/logger');
+const config = require('../../config');
 
-const sysError = process.env.API_ERROR;
+const sysError = config.APP.API_ERROR;
 
 // Update structure
 const updateOne = async (req, res) => {

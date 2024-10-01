@@ -25,7 +25,8 @@ import { updateProject } from '../../../redux/reducers/edge/userSlice'
 import { setSubmittingForm } from '../../../redux/reducers/pageSlice'
 import { cleanError } from '../../../redux/reducers/messageSlice'
 import { ConfirmDialog } from '../../common/Dialogs'
-import { notify, getData, apis, workflowList, isValidProjectName } from '../../common/util'
+import { notify, getData, apis, isValidProjectName } from '../../common/util'
+import { workflowList } from 'src/util'
 import {
   theme,
   projectStatusColors,

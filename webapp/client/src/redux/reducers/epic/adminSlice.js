@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
-import { putData } from '../../../edge/common/util'
-import { apis } from '../../../epic/util'
+import { putData } from 'src/edge/common/util'
+import { apis } from 'src/epic/util'
 import { addError } from '../messageSlice'
 
 const updateStructureAsync = createAsyncThunk(

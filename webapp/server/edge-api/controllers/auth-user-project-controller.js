@@ -5,8 +5,9 @@ const Project = require('../models/project');
 const { getProject, getProjectConf, updateProject, getProjectOutputs, getProjectBatchOutputs, getProjectResult, getProjectRunStats } = require('../utils/project');
 const { getAllFiles } = require('../../utils/common');
 const logger = require('../../utils/logger');
+const config = require('../../config');
 
-const sysError = process.env.API_ERROR;
+const sysError = config.APP.API_ERROR;
 
 // Create a project
 const addOne = async (req, res) => {
@@ -15,10 +16,10 @@ const addOne = async (req, res) => {
     logger.debug(`/api/auth-user/projects add: ${JSON.stringify(data)}`);
     // generate project code and create project home
     let code = randomize('Aa0', 16);
-    let projHome = `${process.env.PROJECT_HOME}/${code}`;
+    let projHome = `${config.IO.PROJECT_BASE_DIR}/${code}`;
     while (fs.existsSync(projHome)) {
       code = randomize('Aa0', 16);
-      projHome = `${process.env.PROJECT_HOME}/${code}`;
+      projHome = `${config.IO.PROJECT_BASE_DIR}/${code}`;
     }
 
     const projName = data.project.name;
@@ -301,7 +302,7 @@ const getChildren = async (req, res) => {
 const getFiles = async (req, res) => {
   try {
     logger.debug(`/api/auth-user/projects/files ${JSON.stringify(req.body)}`);
-    const projDir = process.env.PROJECT_HOME;
+    const projDir = config.IO.PROJECT_BASE_DIR;
     let projStatuses = ['complete'];
     if (req.body.projectStatuses) {
       projStatuses = req.body.projectStatuses;

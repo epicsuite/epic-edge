@@ -1,16 +1,18 @@
 const fs = require('fs');
 const Project = require('../edge-api/models/project');
-const CromwellJob = require('../edge-api/models/job');
+const Job = require('../edge-api/models/job');
 const common = require('../utils/common');
 const logger = require('../utils/logger');
-const { workflowList, generateWDL, generateInputs, submitWorkflow, findInputsize } = require('../utils/workflow');
+const { workflows, workflowList, generateWDL, generateInputs, submitWorkflow } = require('../utils/nextflowWorkflow');
 
-module.exports = function workflowMonitor() {
-  logger.debug('workflow monitor');
+const config = require('../config');
+
+module.exports = function nextflowWorkflowMonitor() {
+  logger.debug('Nextflow workflow monitor');
   // only process one job at each time based on job updated time
-  CromwellJob.find({ 'status': { $in: ['Submitted', 'Running'] } }).sort({ updated: 1 }).then(jobs => {
-    // submit request only when the current cromwell running jobs less than the max allowed jobs
-    if (jobs.length >= process.env.MAX_CROMWELL_JOBS) {
+  Job.find({ 'queue': 'nextflow', 'status': { $in: ['Submitted', 'Running'] } }).sort({ updated: 1 }).then(jobs => {
+    // submit request only when the current nextflow running jobs less than the max allowed jobs
+    if (jobs.length >= config.NEXTFLOW.NUM_JOBS_MAX) {
       return;
     }
     // get current running/submitted projects' input size
@@ -19,29 +21,29 @@ module.exports = function workflowMonitor() {
       jobInputsize += job.inputSize;
     });
     // only process one request at each time
-    Project.find({ 'status': 'in queue' }).sort({ updated: 1 }).then(async projs => {
+    Project.find({ 'type': { $in: workflows }, 'status': 'in queue' }).sort({ updated: 1 }).then(async projs => {
       const proj = projs[0];
       if (!proj) {
-        logger.debug('No workflow request to process');
+        logger.debug('No nextflow workflow request to process');
         return;
       }
       // parse conf.json
-      const projHome = `${process.env.PROJECT_HOME}/${proj.code}`;
+      const projHome = `${config.IO.PROJECT_BASE_DIR}/${proj.code}`;
       const projectConf = JSON.parse(fs.readFileSync(`${projHome}/conf.json`));
 
       // check input size
-      const inputsize = await findInputsize(projectConf);
-      if (inputsize > process.env.MAX_CROMWELL_JOBS_INPUTSIZE) {
+      const inputsize = await common.findInputsize(projectConf);
+      if (inputsize > config.NEXTFLOW.JOBS_INPUT_MAX_SIZE_BYTES) {
         logger.debug(`Project ${proj.code} input size exceeded the limit.`);
         // fail project
         proj.status = 'failed';
         proj.updated = Date.now();
         proj.save();
-        common.write2log(`${process.env.PROJECT_HOME}/${proj.code}/log.txt`, 'input size exceeded the limit.');
+        common.write2log(`${config.IO.PROJECT_BASE_DIR}/${proj.code}/log.txt`, 'input size exceeded the limit.');
         return;
       }
-      if ((jobInputsize + inputsize) > process.env.MAX_CROMWELL_JOBS_INPUTSIZE) {
-        logger.debug('Cromwell is busy.');
+      if ((jobInputsize + inputsize) > config.NEXTFLOW.JOBS_INPUT_MAX_SIZE_BYTES) {
+        logger.debug('Nextflow is busy.');
         return;
       }
 
@@ -50,15 +52,15 @@ module.exports = function workflowMonitor() {
       proj.status = 'processing';
       proj.updated = Date.now();
       proj.save().then(() => {
-        common.write2log(`${process.env.PROJECT_HOME}/${proj.code}/log.txt`, 'Generate WDL and inputs json');
+        common.write2log(`${config.IO.PROJECT_BASE_DIR}/${proj.code}/log.txt`, 'Generate WDL and inputs json');
         logger.info('Generate WDL and inputs json');
         // process request
         // create output directory
         fs.mkdirSync(`${projHome}/${workflowList[projectConf.workflow.name].outdir}`, { recursive: true });
-        // in case cromwell needs permission to write to the output directory
+        // in case nextflow needs permission to write to the output directory
         fs.chmodSync(`${projHome}/${workflowList[projectConf.workflow.name].outdir}`, '777');
         // get workflow system settings
-        const workflowConf = JSON.parse(fs.readFileSync(process.env.WORKFLOW_CONF));
+        const workflowConf = JSON.parse(fs.readFileSync(config.NEXTFLOW.CONF));
         // generate pipeline.wdl and inputs.json
         // eslint-disable-next-line no-async-promise-executor
         const promise1 = new Promise(async (resolve, reject) => {
@@ -80,22 +82,22 @@ module.exports = function workflowMonitor() {
         });
 
         Promise.all([promise1, promise2]).then(() => {
-          // submit workflow to cromwell
-          common.write2log(`${process.env.PROJECT_HOME}/${proj.code}/log.txt`, 'submit workflow to cromwell');
-          logger.info('submit workflow to cromwell');
+          // submit workflow to nextflow
+          common.write2log(`${config.IO.PROJECT_BASE_DIR}/${proj.code}/log.txt`, 'submit workflow to nextflow');
+          logger.info('submit workflow to nextflow');
           submitWorkflow(proj, projectConf, inputsize);
         }).catch((err) => {
           proj.status = 'failed';
           proj.updated = Date.now();
           proj.save();
-          common.write2log(`${process.env.PROJECT_HOME}/${proj.code}/log.txt`, err);
+          common.write2log(`${config.IO.PROJECT_BASE_DIR}/${proj.code}/log.txt`, err);
           logger.error(err);
         });
       }).catch(err => {
         proj.status = 'failed';
         proj.updated = Date.now();
         proj.save();
-        common.write2log(`${process.env.PROJECT_HOME}/${proj.code}/log.txt`, err);
+        common.write2log(`${config.IO.PROJECT_BASE_DIR}/${proj.code}/log.txt`, err);
         logger.error(err);
       });
     });

@@ -3,18 +3,19 @@ const User = require('../models/user');
 const { encodePassword, signToken } = require('../utils/user');
 const Project = require('../models/project');
 const logger = require('../../utils/logger');
+const config = require('../../config');
 
-const sysError = process.env.API_ERROR;
+const sysError = config.APP.API_ERROR;
 
 // Send out info for user
 const info = async (req, res) => {
   try {
     logger.debug(`/api/auth-user/info: ${JSON.stringify(req.user.email)}`);
-    if (process.env.SYSTEM_MESSAGE) {
+    if (config.SYSTEM_MESSAGE) {
       return res.send({
         info: {
           allowNewRuns: false,
-          message: process.env.SYSTEM_MESSAGE,
+          message: config.SYSTEM_MESSAGE,
         },
         message: 'Action successful',
         success: true,
@@ -26,7 +27,7 @@ const info = async (req, res) => {
       return res.send({
         info: {
           allowNewRuns: false,
-          message: process.env.PROJECT_QUEUE_PER_USER_MSG,
+          message: 'You have reached the maximum number of running projects allowed. Please wait for running projects to complete before submitting a new project.',
         },
         message: 'Action successful',
         success: true,

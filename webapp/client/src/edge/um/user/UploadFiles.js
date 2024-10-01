@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import 'react-dropzone-uploader/dist/styles.css'
 import Dropzone from 'react-dropzone-uploader'
 import { ToastContainer } from 'react-toastify'
@@ -17,7 +16,6 @@ import { LoaderDialog } from '../../common/Dialogs'
 import { MyCreatableSelect } from '../../common/MySelect'
 
 const UploadFiles = (props) => {
-  const navigate = useNavigate()
   const defaultFolder = 'main'
   const [folder, setFolder] = useState(defaultFolder)
   const [folderOptions, setFolderOptions] = useState([])

@@ -1,8 +1,9 @@
 const Project = require('../models/project');
 const { getProject, getProjectConf, updateProject, getProjectOutputs, getProjectBatchOutputs, getProjectResult, getProjectRunStats } = require('../utils/project');
 const logger = require('../../utils/logger');
+const config = require('../../config');
 
-const sysError = process.env.API_ERROR;
+const sysError = config.APP.API_ERROR;
 
 // Get project
 const getOne = async (req, res) => {

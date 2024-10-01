@@ -1,10 +1,10 @@
 import React from 'react'
 import { CFooter } from '@coreui/react'
 
-import lanlLogo from '../assets/img/logo_LANL.png'
-import doeLogo from '../assets/img/DOE-logo.png'
-import nnsaLogo from '../assets/img/logo_NNSA.png'
-import dtraLogo from '../assets/img/logo_DTRA.png'
+import lanlLogo from 'src/assets/img/logo_LANL.png'
+import doeLogo from 'src/assets/img/DOE-logo.png'
+import nnsaLogo from 'src/assets/img/logo_NNSA.png'
+import dtraLogo from 'src/assets/img/logo_DTRA.png'
 
 const AppFooter = () => {
   return (

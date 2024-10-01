@@ -2,6 +2,7 @@ const Project = require('../edge-api/models/project');
 const User = require('../edge-api/models/user');
 const logger = require('../utils/logger');
 const { projectStatusSender } = require('../mailers/senders');
+const config = require('../config');
 
 module.exports = function projectMonitor() {
   logger.debug('project status monitor');
@@ -9,7 +10,7 @@ module.exports = function projectMonitor() {
   // notify complete/failed projects
   Project.find({ 'notified': false }).then(projs => {
     projs.forEach(proj => {
-      if (process.env.SENDMAIL_PROJECT === 'on') {
+      if (config.EMAIL.SEND_PROJECT_STATUS_EMAILS) {
         if (proj.status === 'complete' || proj.status === 'failed') {
           User.findOne({ email: proj.owner }).then(user => {
             if (!user) {
@@ -21,7 +22,7 @@ module.exports = function projectMonitor() {
                 projectCreated: proj.created,
                 projectType: proj.label,
                 projectStatus: proj.status,
-                projectPageURL: `${process.env.PROJECT_URL}${proj.code}`
+                projectPageURL: `${config.APP.UI_BASE_URL}/user/project?code=${proj.code}`
               };
               // logger.debug(`Notify user: ${user.notification.email}`);
               projectStatusSender(user.notification.email, data);

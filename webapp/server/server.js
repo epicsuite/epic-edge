@@ -14,11 +14,12 @@ const logger = require('./utils/logger');
 const indexRouter = require('./indexRouter');
 const trameMonitor = require('./crons/trameMonitor');
 const uploadMonitor = require('./crons/uploadMonitor');
-const workflowMonitor = require('./crons/workflowMonitor');
+const workflowMonitor = require('./crons/cromwellWorkflowMonitor');
 const projectMonitor = require('./crons/projectMonitor');
 const projectStatusMonitor = require('./crons/projectStatusMonitor');
 const dbBackup = require('./crons/dbBackup');
 const dbBackupClean = require('./crons/dbBackupClean');
+const config = require('./config');
 
 const app = express();
 app.use(cors({ origin: '*' }));
@@ -28,11 +29,11 @@ app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false 
 app.use(express.json());
 app.use(fileUpload({
   // max size: 5G
-  limits: { fileSize: process.env.FILEUPLOAD_MAX_SIZE_BYTES },
+  limits: { fileSize: config.FILE_UPLOADS.MAX_FILE_SIZE_BYTES },
   abortOnLimit: true,
   debug: false,
   useTempFiles: true,
-  tempFileDir: process.env.FILEUPLOAD_TMP_DIR
+  tempFileDir: config.IO.UPLOADED_FILES_TEMP_DIR
 }));
 // Bodyparser middleware
 app.use(
@@ -54,45 +55,45 @@ app.use('/api', indexRouter);
 app.use('/api-ui', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: false }));
 
 // Serving static files in Express
-app.use('/projects', express.static(process.env.PROJECT_HOME, { dotfiles: 'allow' }));
-app.use('/uploads', express.static(process.env.FILEUPLOAD_FILE_DIR));
-app.use('/publicdata', express.static(process.env.PUBLIC_DATA_HOME));
-app.use('/docs', express.static(process.env.DOCS_HOME, { dotfiles: 'allow' }));
+app.use('/projects', express.static(config.IO.PROJECT_BASE_DIR, { dotfiles: 'allow' }));
+app.use('/uploads', express.static(config.IO.UPLOADED_FILES_DIR));
+app.use('/publicdata', express.static(config.IO.PUBLIC_BASE_DIR));
+app.use('/docs', express.static(config.APP.DOCS_BASE_DIR, { dotfiles: 'allow' }));
 
 // Serving React as static files in Express and redirect url path to React client app
-if (process.env.NODE_ENV === 'prod') {
-  app.use(express.static(process.env.UI_BUILD_PATH));
+if (config.NODE_ENV === 'production') {
+  app.use(express.static(config.CLIENT.BUILD_DIR));
   app.get('*', (req, res) => {
-    res.sendFile(path.join(process.env.UI_BUILD_PATH, 'index.html'));
+    res.sendFile(path.join(config.CLIENT.BUILD_DIR, 'index.html'));
   });
 } else {
   // cron jobs
   // monitor trames every day at 4am
-  cron.schedule(process.env.CRON_TRAME_MONITOR, () => {
+  cron.schedule(config.CRON.SCHEDULES.TRAME_MONITOR, () => {
     trameMonitor();
   });
-  // monitor workflow requests on every 3 minutes
-  cron.schedule(process.env.CRON_WORKFLOW_MONITOR, () => {
+  // monitor workflow requests on every 2 minutes
+  cron.schedule(config.CRON.SCHEDULES.CROMWELL_WORKFLOW_MONITOR, () => {
     workflowMonitor();
   });
   // monitor uploads every day at midnight
-  cron.schedule(process.env.CRON_FILEUPLOAD_MONITOR, () => {
+  cron.schedule(config.CRON.SCHEDULES.FILE_UPLOAD_MONITOR, () => {
     uploadMonitor();
   });
   // monitor project status on every 1 minute
-  cron.schedule(process.env.CRON_PROJECT_STATUS_MONITOR, () => {
+  cron.schedule(config.CRON.SCHEDULES.PROJECT_STATUS_MONITOR, () => {
     projectStatusMonitor();
   });
   // monitor project deletion every day at 10pm
-  cron.schedule(process.env.CRON_PROJECT_MONITOR, () => {
+  cron.schedule(config.CRON.SCHEDULES.PROJECT_DELETION_MONITOR, () => {
     projectMonitor();
   });
   // backup nmdcedge DB every day at 10pm
-  cron.schedule(process.env.CRON_DB_BACKUP, () => {
+  cron.schedule(config.CRON.SCHEDULES.DATABASE_BACKUP_CREATOR, () => {
     dbBackup();
   });
   // delete older DB backups every day at 12am
-  cron.schedule(process.env.CRON_DB_BACKUP_CLEAN, () => {
+  cron.schedule(config.CRON.SCHEDULES.DATABASE_BACKUP_PRUNER, () => {
     dbBackupClean();
   });
 }
@@ -101,14 +102,15 @@ if (process.env.NODE_ENV === 'prod') {
 const runApp = async () => {
   try {
     // Connect to MongoDB
+    const db = `mongodb://${config.DATABASE.SERVER_HOST}:${config.DATABASE.SERVER_PORT}/${config.DATABASE.NAME}`;
     mongoose.set('strictQuery', false);
     mongoose
       .connect(
-        process.env.MONGO_URI,
+        db
       );
-    logger.info(`Successfully connected to database ${process.env.MONGO_URI}`);
+    logger.info(`Successfully connected to database ${db}`);
     // start server
-    app.listen(process.env.PORT, () => logger.info(`HTTP ${process.env.NODE_ENV} server up and running on port ${process.env.PORT} !`));
+    app.listen(config.APP.SERVER_PORT, () => logger.info(`HTTP ${config.NODE_ENV} server up and running on port ${config.APP.SERVER_PORT} !`));
   } catch (err) {
     logger.error(err);
   }
