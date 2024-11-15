@@ -1,6 +1,6 @@
 const { exec } = require('child_process');
 const logger = require('../../utils/logger');
-const { getOne, addOne, updateOne, deleteByPort, execCmd, readFirstLine, isGoodURL } = require('../utils/trame');
+const { getOne, addOne, updateOne, deleteByPort, execCmd, readFirstLine, pidIsRunning } = require('../utils/trame');
 const { getStructure } = require('../utils/structure');
 const { trameApps } = require('../utils/conf');
 const config = require('../../config');
@@ -36,13 +36,13 @@ const trame = async (req, res) => {
       // return url
       const url = `${config.EPIC.TRAME_BASE_URL}${trameObj.port}`;
       logger.debug(`url:${url}`);
-      const trameUrl = `http://127.0.0.1:${trameObj.port}`;
-      if (isGoodURL(trameUrl)) {
+      if (pidIsRunning(trameObj.pid)) {
         return res.json({
           success: true,
           url,
         });
       }
+      await deleteByPort(trameObj.port);
     }
 
     // there is an active trame process for previouse dataset and app, delete it

@@ -1,7 +1,6 @@
 const fs = require('fs');
 const readline = require('readline');
 const { spawn } = require('child_process');
-const http = require('http');
 const Trame = require('../models/trame');
 
 const getOne = (query) => new Promise((resolve, reject) => {
@@ -63,10 +62,14 @@ const readFirstLine = async (path) => {
   return line;
 };
 
-const isGoodURL = async (url) => {
-  http
-    .get(url, () => true)
-    .on('error', () => false);
+const pidIsRunning = (pid) => {
+  try {
+    // a signal of 0 can be used to test for the existence of a process.
+    process.kill(pid, 0);
+    return true;
+  } catch (e) {
+    return false;
+  }
 };
 
 module.exports = {
@@ -76,5 +79,5 @@ module.exports = {
   deleteByPort,
   execCmd,
   readFirstLine,
-  isGoodURL,
+  pidIsRunning,
 };
