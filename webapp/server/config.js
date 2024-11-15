@@ -217,7 +217,7 @@ const config = {
     STRUCTURE_BASE_DIR: process.env.EPIC_STRUCTURE_BASE_DIR || path.join(IO_BASE_DIR, 'structures'),
     // Directory to store trame applications
     TRAME_APP_BASE_DIR: process.env.EPIC_TRAME_APP_BASE_DIR || path.join(__dirname, '../../trame/apps'),
-    TRAME_BASE_URL: process.env.EPIC_TRAME_BASE_URL || 'http://localhost',
+    TRAME_BASE_URL: process.env.EPIC_TRAME_BASE_URL || 'http://localhost:',
     TRAME_PORT_START: makeIntIfDefined(process.env.EPIC_TRAME_PORT_START) || 8001,
     TRAME_PORT_END: makeIntIfDefined(process.env.EPIC_TRAME_PORT_END) || 8008,
     // in hours, trame http instance will be deleted after the grace period
