@@ -19,7 +19,7 @@ module.exports = {
     },
     {
       name: "cronserver",
-      script: "cronserver.js",
+      script: "cronServer.js",
       cwd: "./webapp/server",
       node_args: "--max_old_space_size=1024",
       max_memory_restart: "150M"
