@@ -4,9 +4,9 @@ import { CSpinner } from '@coreui/react'
 import { Row, Col } from 'reactstrap'
 
 // routes config
-import routes from '../routes'
-import privateRoutes from '../private-routes'
-import PrivateRoute from '../edge/common/PrivateRoute'
+import routes from 'src/routes'
+import privateRoutes from 'src/private-routes'
+import PrivateRoute from 'src/edge/common/PrivateRoute'
 
 const AppContent = () => {
   return (

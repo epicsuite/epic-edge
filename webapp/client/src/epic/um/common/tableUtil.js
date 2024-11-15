@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material'
 import { colors, postData } from 'src/edge/common/util'
-import { apis } from 'src/epic/util'
+import { apis } from '../../util'
 
 export const theme = createTheme({
   palette: {

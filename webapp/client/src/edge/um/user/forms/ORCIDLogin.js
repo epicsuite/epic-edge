@@ -5,8 +5,9 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { popupWindow } from '../../../common/util'
 import { LoaderDialog, ConfirmDialogNoHeader, MessageDialog } from '../../../common/Dialogs'
-import { login } from '../../../../redux/reducers/edge/userSlice'
-import { cleanMessage } from '../../../../redux/reducers/messageSlice'
+import { login } from 'src/redux/reducers/edge/userSlice'
+import { cleanMessage } from 'src/redux/reducers/messageSlice'
+import config from 'src/config'
 
 const ORCIDLogin = (props) => {
   const dispatch = useDispatch()
@@ -27,7 +28,7 @@ const ORCIDLogin = (props) => {
 
   const getORCID = () => {
     //ORICD config
-    const url = process.env.REACT_APP_ORCID_AUTH_URL
+    const url = config.ORCID.AUTH_URI
     //console.log(url)
     //open ORCiD login page
     popupWindow(url, 'ORCiD', window, 600, 700)
@@ -62,13 +63,9 @@ const ORCIDLogin = (props) => {
       <ConfirmDialogNoHeader
         html={true}
         isOpen={openConfirm}
-        action={'Continue to ' + process.env.REACT_APP_NAME + '?'}
+        action={'Continue to ' + config.APP.NAME + '?'}
         message={
-          'Hi ' +
-          userData.firstName +
-          ',<br/><br/> Welcome to ' +
-          process.env.REACT_APP_NAME +
-          '!<br/>'
+          'Hi ' + userData.firstName + ',<br/><br/> Welcome to ' + config.APP.NAME + '!<br/>'
         }
         handleClickClose={closeConfirm}
         handleClickYes={handleYes}

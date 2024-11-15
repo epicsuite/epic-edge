@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Card, CardBody, Col, Row, Collapse } from 'reactstrap'
 import { Header } from 'src/edge/project/forms/SectionHeader'
-import { HtmlText } from 'src/edge/project/forms/HtmlText'
+import { HtmlText } from 'src/edge/common/HtmlText'
 import { FileInput } from 'src/edge/project/forms/FileInput'
 import { isValidFileInput } from 'src/edge/common/util'
 import { components } from '../defaults'

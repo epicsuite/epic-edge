@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
-import { putData, deleteData, apis } from '../../../edge/common/util'
+import { putData, deleteData, apis } from 'src/edge/common/util'
 import { setSubmittingForm } from '../pageSlice'
 import { cleanMessage, addError, cleanError } from '../messageSlice'
 

@@ -4,11 +4,12 @@ import { useNavigate } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
-import { postData, getData, notify, apis, workflowList } from '../../common/util'
+import { workflowList } from 'src/util'
+import { postData, getData, notify, apis } from '../../common/util'
 import { LoaderDialog, MessageDialog } from '../../common/Dialogs'
 import MySelect from '../../common/MySelect'
 import { Project } from '../../project/forms/Project'
-import { HtmlText } from '../../project/forms/HtmlText'
+import { HtmlText } from '../../common/HtmlText'
 import { RunFaQCs } from './forms/RunFaQCs'
 import { workflowOptions } from './defaults'
 
@@ -31,6 +32,7 @@ const Main = (props) => {
     setDoValidation(doValidation + 1)
   }
   const setWorkflowParams = (params, workflowName) => {
+    console.log(workflowName, params)
     setSelectedWorkflows({ ...selectedWorkflows, [workflowName]: params })
     setDoValidation(doValidation + 1)
   }
@@ -61,6 +63,10 @@ const Main = (props) => {
           selectedWorkflows[workflow].inputs[key].value
       }
     })
+    //update input for nextflow
+    if (!myWorkflow.input['artifactFile']) {
+      myWorkflow.input['artifactFile'] = '${projectDir}/nf_assets/NO_FILE3'
+    }
     // set form data
     formData.workflow = myWorkflow
     formData.inputDisplay = inputDisplay

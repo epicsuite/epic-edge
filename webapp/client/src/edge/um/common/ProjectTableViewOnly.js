@@ -7,7 +7,8 @@ import Fab from '@mui/material/Fab'
 import { Refresh, Explore } from '@mui/icons-material'
 import moment from 'moment'
 import { theme, projectStatusColors, projectStatusNames } from '../common/tableUtil'
-import { getData, workflowList } from '../../common/util'
+import { getData } from '../../common/util'
+import { workflowList } from 'src/util'
 
 const ProjectTableViewOnly = (props) => {
   const navigate = useNavigate()
@@ -122,6 +123,7 @@ const ProjectTableViewOnly = (props) => {
                     aria-label="refresh"
                   >
                     <Refresh
+                      className="edge-table-icon"
                       onClick={() => {
                         getProjects()
                         table.reset()

@@ -25,7 +25,8 @@ import { updateProject } from '../../../redux/reducers/edge/userSlice'
 import { setSubmittingForm } from '../../../redux/reducers/pageSlice'
 import { cleanError } from '../../../redux/reducers/messageSlice'
 import { ConfirmDialog } from '../../common/Dialogs'
-import { notify, getData, apis, workflowList, isValidProjectName } from '../../common/util'
+import { notify, getData, apis, isValidProjectName } from '../../common/util'
+import { workflowList } from 'src/util'
 import {
   theme,
   projectStatusColors,
@@ -491,6 +492,7 @@ const ProjectTable = (props) => {
                       aria-label="refresh"
                     >
                       <Refresh
+                        className="edge-table-icon"
                         onClick={() => {
                           handleAction('refresh')
                           table.reset()
@@ -506,6 +508,7 @@ const ProjectTable = (props) => {
                       aria-label="delete"
                     >
                       <Delete
+                        className="edge-table-icon"
                         onClick={() => {
                           setTable(table)
                           handleAction('delete', table.getSelectedRowModel().flatRows)
@@ -513,7 +516,6 @@ const ProjectTable = (props) => {
                       />
                     </Fab>
                   </Tooltip>
-                  <br></br>
                   <Tooltip title="Share selected projects" aria-label="share">
                     <Fab
                       color="primary"
@@ -522,6 +524,7 @@ const ProjectTable = (props) => {
                       aria-label="share"
                     >
                       <PersonAdd
+                        className="edge-table-icon"
                         onClick={() => {
                           setTable(table)
                           handleAction('share', table.getSelectedRowModel().flatRows)
@@ -537,6 +540,7 @@ const ProjectTable = (props) => {
                       aria-label="unshare"
                     >
                       <PersonAddDisabled
+                        className="edge-table-icon"
                         onClick={() => {
                           setTable(table)
                           handleAction('unshare', table.getSelectedRowModel().flatRows)
@@ -552,6 +556,7 @@ const ProjectTable = (props) => {
                       aria-label="publish"
                     >
                       <LockOpen
+                        className="edge-table-icon"
                         onClick={() => {
                           setTable(table)
                           handleAction('publish', table.getSelectedRowModel().flatRows)
@@ -567,6 +572,7 @@ const ProjectTable = (props) => {
                       aria-label="unpublish"
                     >
                       <Lock
+                        className="edge-table-icon"
                         onClick={() => {
                           setTable(table)
                           handleAction('unpublish', table.getSelectedRowModel().flatRows)

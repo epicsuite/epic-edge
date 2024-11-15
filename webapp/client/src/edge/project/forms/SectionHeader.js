@@ -7,7 +7,6 @@ import { ErrorTooltip } from '../../common/MyTooltip'
 
 export const Header = (props) => {
   const [headerColor, setHeaderColor] = useState(colors.light)
-
   return (
     <CardHeader
       key={props.id}

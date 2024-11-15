@@ -1,4 +1,4 @@
-import { workflowList } from 'src/edge/common/util'
+import { workflowList } from 'src/util'
 
 export const workflowOptions = [{ value: '4dgb', label: workflowList['4dgb'].label }]
 

@@ -4,8 +4,9 @@ const Project = require('../models/project');
 const Upload = require('../models/upload');
 const { encodePassword } = require('../utils/user');
 const logger = require('../../utils/logger');
+const config = require('../../config');
 
-const sysError = process.env.API_ERROR;
+const sysError = config.APP.API_ERROR;
 
 // Insert new user
 const addOne = async (req, res) => {

@@ -4,10 +4,11 @@ import { useNavigate } from 'react-router-dom'
 import { Col, Row } from 'reactstrap'
 
 import { LoaderDialog, MessageDialog } from '../../common/Dialogs'
-import { cleanMessage } from '../../../redux/reducers/messageSlice'
-import { register } from '../../../redux/reducers/edge/userSlice'
+import { cleanMessage } from 'src/redux/reducers/messageSlice'
+import { register } from 'src/redux/reducers/edge/userSlice'
 
 import RegisterForm from './forms/RegisterForm'
+import config from 'src/config'
 
 const Register = (props) => {
   const navigate = useNavigate()
@@ -28,14 +29,14 @@ const Register = (props) => {
     let newUser = {
       ...data,
       active: true,
-      message: process.env.REACT_APP_REGISTER_MSG,
+      message: config.UM.REGISTER_MSG,
     }
-    if (process.env.REACT_APP_EMAIL_NOTIFICATION === 'on') {
+    if (config.APP.EMAIL_IS_ENABLED) {
       newUser = {
         ...data,
         active: false,
-        actionURL: process.env.REACT_APP_ACTIVATE_ACTION_URL,
-        message: process.env.REACT_APP_REGISTER_MSG_EMAIL,
+        actionURL: config.UM.ACTIVATE_ACTION_URL,
+        message: config.UM.REGISTER_MSG_EMAIL,
       }
     }
     dispatch(register(newUser))

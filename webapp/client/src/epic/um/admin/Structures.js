@@ -5,14 +5,16 @@ import StructureTable from '../common/StructureTable'
 const Structures = (props) => {
   return (
     <div className="animated fadeIn">
-      <div className="clearfix">
-        <Badge color="danger" pill>
-          Admin tool
-        </Badge>
-      </div>
-      <br></br>
       <Row className="justify-content-center">
-        <Col xs="12" sm="12" md="12">
+        <Col xs="12" sm="12" md="10">
+          <div className="clearfix">
+            <Badge color="danger" pill>
+              Admin tool
+            </Badge>
+          </div>
+          <br></br>
+        </Col>
+        <Col xs="12" sm="12" md="10">
           <StructureTable
             title={'Manage Structure Datasetss'}
             structurePageUrl={'/admin/structure?code='}

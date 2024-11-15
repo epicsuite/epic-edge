@@ -1,7 +1,8 @@
 const { body, validationResult } = require('express-validator');
 
 const validationRules = () => [
-  body('project.name').trim().isLength({ min: 3, max: 30 }).escape().withMessage('Invalid project name, at least 3 but less than 30 characters.'),
+  // disabled for sra project name (list of accessions)
+  // body('project.name').trim().isLength({ min: 3, max: 30 }).escape().withMessage('Invalid project name, at least 3 but less than 30 characters.'),
   body('project.desc').optional(),
 ];
 

@@ -6,10 +6,14 @@ import { WindowedMenuList } from 'react-windowed-select'
 import { clone } from 'lodash'
 import { colors, isValidFolder } from './util'
 const selectStyles = {
-  menu: (styles) => ({
-    ...styles,
+  control: (provided) => ({
+    ...provided,
+    background: 'transparent',
+  }),
+  menu: (provided) => ({
+    ...provided,
+    // background: 'transparent',
     zIndex: 999999,
-    //backgroundColor: colors.light,
   }),
 }
 export const MyCreatableSelect = (props) => {
@@ -166,9 +170,9 @@ const groupStyles = {
   justifyContent: 'space-between',
 }
 const groupBadgeStyles = {
-  backgroundColor: '#EBECF0',
+  //backgroundColor: '#EBECF0',
   borderRadius: '2em',
-  color: '#172B4D',
+  //color: '#172B4D',
   display: 'inline-block',
   fontSize: 12,
   fontWeight: 'normal',

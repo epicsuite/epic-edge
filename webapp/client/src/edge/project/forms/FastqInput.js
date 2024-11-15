@@ -41,10 +41,10 @@ export const FastqInput = (props) => {
 
   useEffect(() => {
     //set interleaved
-    if (!props.isInterleaved) {
+    if (props.isInterleaved != null) {
       setNewState2('interleaved', props.isInterleaved)
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [props]) // eslint-disable-line react-hooks/exhaustive-deps
 
   //trigger validation method when input changes
   useEffect(() => {

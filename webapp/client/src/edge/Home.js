@@ -1,6 +1,6 @@
 import React from 'react'
 import { Col, Row } from 'reactstrap'
-import { colors } from '../edge/common/util'
+import { colors } from './common/util'
 
 const Home = () => {
   return (

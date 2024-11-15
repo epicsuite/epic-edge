@@ -2,18 +2,19 @@ const fs = require('fs');
 const moment = require('moment');
 const Upload = require('../edge-api/models/upload');
 const logger = require('../utils/logger');
+const config = require('../config');
 
-module.exports = function fileUploadMonitor() {
+module.exports = async function fileUploadMonitor() {
   logger.debug('file upload monitor');
-
-  // delete file after deleteGracePeriod
-  const deleteGracePeriod = moment().subtract(process.env.FILEUPLOAD_DELETE_GRACE_PERIOD, 'days');
-  Upload.find({ 'status': 'delete', 'updated': { '$lte': deleteGracePeriod } }).then(uploads => {
+  try {
+    // delete file after deleteGracePeriod
+    const deleteGracePeriod = moment().subtract(config.FILE_UPLOADS.DELETION_GRACE_PERIOD_DAYS, 'days');
+    let uploads = await Upload.find({ 'status': 'delete', 'updated': { '$lte': deleteGracePeriod } });
     let i;
     for (i = 0; i < uploads.length; i += 1) {
       const { code } = uploads[i];
       // delete file
-      const path = `${process.env.FILEUPLOAD_FILE_DIR}/${code}`;
+      const path = `${config.IO.UPLOADED_FILES_DIR}/${code}`;
       fs.unlink(path, (err) => {
         if (err) {
           logger.error(`Failed to delete ${path}:${err}`);
@@ -29,12 +30,10 @@ module.exports = function fileUploadMonitor() {
         }
       });
     }
-  });
 
-  // change status to 'delete' if upload is older than daysKept
-  const daysKept = moment().subtract(process.env.FILEUPLOAD_DAYS_KEPT, 'days');
-  Upload.find({ status: 'live', 'created': { '$lte': daysKept } }).then(uploads => {
-    let i;
+    // change status to 'delete' if upload is older than daysKept
+    const daysKept = moment().subtract(config.FILE_UPLOADS.FILE_LIFETIME_DAYS, 'days');
+    uploads = await Upload.find({ status: 'live', 'created': { '$lte': daysKept } });
     for (i = 0; i < uploads.length; i += 1) {
       const { code } = uploads[i];
       logger.info(`mark file for deleting ${code}`);
@@ -50,5 +49,7 @@ module.exports = function fileUploadMonitor() {
         }
       });
     }
-  });
+  } catch (err) {
+    logger.error(`fileUploadMonitor failed:${err}`);
+  }
 };

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Card, CardBody, Collapse } from 'reactstrap'
 import { Header } from 'src/edge/project/forms/SectionHeader'
-import { HtmlText } from 'src/edge/project/forms/HtmlText'
+import { HtmlText } from 'src/edge/common/HtmlText'
 import { TextInput } from 'src/edge/project/forms/TextInput'
 import { RangeInput } from 'src/edge/project/forms/RangeInput'
 import { IntegerInput } from 'src/edge/project/forms/IntegerInput'
 import { RangeTextInputArray } from 'src/edge/project/forms/RangeTextInputArray'
-import { isValidChromosome } from 'src/epic/util'
+import { isValidChromosome } from '../../util'
 import { components } from '../defaults'
 
 export const ProjectSettings = (props) => {

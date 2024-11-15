@@ -5,10 +5,12 @@ import CIcon from '@coreui/icons-react'
 import { cilUser, cilLockLocked } from '@coreui/icons'
 import { MyTooltip } from '../../../common/MyTooltip'
 import { umTips } from '../../defaults'
+import config from 'src/config'
 
 const Profile = (props) => {
   const [changePw, setChangePw] = useState(false)
   const [notification, setNotification] = useState(props.user.profile.notification.isOn)
+  const isORCiDUser = props.user.profile.email.match(/\d+-\d+-\d+-\d+@orcid\.org/) ? true : false
 
   const {
     register,
@@ -84,7 +86,7 @@ const Profile = (props) => {
     setValue('notification', notification)
     // disable form errors
     if (!notification) {
-      setValue('notificationEmail', 'admin@my.edge')
+      setValue('notificationEmail', 'email@your.com')
     } else {
       setValue(
         'notificationEmail',
@@ -146,83 +148,84 @@ const Profile = (props) => {
       </InputGroup>
       {errors.lastName && <p className="edge-form-input-error">{errors.lastName.message}</p>}
       <br></br>
-      {process.env.REACT_APP_EMAIL_NOTIFICATION &&
-        process.env.REACT_APP_EMAIL_NOTIFICATION.toLowerCase() === 'on' && (
-          <>
-            <b>Project Status Notification</b>
-            <br></br>
-            <div className="d-none d-sm-inline-block">
-              <ButtonGroup className="mr-3" aria-label="First group" size="sm">
-                <Button
-                  color="outline-primary"
-                  onClick={() => {
-                    setNotification(true)
+      {config.APP.EMAIL_IS_ENABLED && (
+        <>
+          <b>Project Status Notification</b>
+          <br></br>
+          <div className="d-none d-sm-inline-block">
+            <ButtonGroup className="mr-3" aria-label="First group" size="sm">
+              <Button
+                color="outline-primary"
+                onClick={() => {
+                  setNotification(true)
+                }}
+                active={notification}
+              >
+                On
+              </Button>
+              <Button
+                color="outline-primary"
+                onClick={() => {
+                  setNotification(false)
+                }}
+                active={!notification}
+              >
+                Off
+              </Button>
+            </ButtonGroup>
+          </div>
+          <br />
+          <br />
+          <Input type="hidden" name="notification" value={notification} />
+          {notification && (
+            <>
+              <InputGroup className="mb-3">
+                <InputGroupText>Email</InputGroupText>
+                <Input
+                  type="text"
+                  name="notificationEmail"
+                  onChange={(e) => {
+                    emailReg.onChange(e) // method from hook form register
                   }}
-                  active={notification}
-                >
-                  On
-                </Button>
-                <Button
-                  color="outline-primary"
-                  onClick={() => {
-                    setNotification(false)
-                  }}
-                  active={!notification}
-                >
-                  Off
-                </Button>
-              </ButtonGroup>
-            </div>
-            <br />
-            <br />
-            <Input type="hidden" name="notification" value={notification} />
-            {notification && (
-              <>
-                <InputGroup className="mb-3">
-                  <InputGroupText>Email</InputGroupText>
-                  <Input
-                    type="text"
-                    name="notificationEmail"
-                    onChange={(e) => {
-                      emailReg.onChange(e) // method from hook form register
-                    }}
-                    innerRef={emailReg.ref}
-                  />
-                </InputGroup>
-                {errors.notificationEmail && (
-                  <p className="edge-form-input-error">{errors.notificationEmail.message}</p>
-                )}
-              </>
-            )}
-            <br></br>
-          </>
-        )}
-      <b>Change Password</b>
-      <br></br>
-      <div className="d-none d-sm-inline-block">
-        <ButtonGroup className="mr-3" aria-label="First group" size="sm">
-          <Button
-            color="outline-primary"
-            onClick={() => {
-              setChangePw(true)
-            }}
-            active={changePw}
-          >
-            Yes
-          </Button>
-          <Button
-            color="outline-primary"
-            onClick={() => {
-              setChangePw(false)
-            }}
-            active={!changePw}
-          >
-            No
-          </Button>
-        </ButtonGroup>
-      </div>
-      <br />
-      <br />
+                  innerRef={emailReg.ref}
+                />
+              </InputGroup>
+              {errors.notificationEmail && (
+                <p className="edge-form-input-error">{errors.notificationEmail.message}</p>
+              )}
+            </>
+          )}
+          <br></br>
+        </>
+      )}
+      {!isORCiDUser && (<>
+        <b>Change Password</b>
+        <br></br>
+        <div className="d-none d-sm-inline-block">
+          <ButtonGroup className="mr-3" aria-label="First group" size="sm">
+            <Button
+              color="outline-primary"
+              onClick={() => {
+                setChangePw(true)
+              }}
+              active={changePw}
+            >
+              Yes
+            </Button>
+            <Button
+              color="outline-primary"
+              onClick={() => {
+                setChangePw(false)
+              }}
+              active={!changePw}
+            >
+              No
+            </Button>
+          </ButtonGroup>
+        </div>
+        <br />
+        <br />
+      </>)}
       <Input type="hidden" name="changePw" value={changePw} />
       {changePw && (
         <div>

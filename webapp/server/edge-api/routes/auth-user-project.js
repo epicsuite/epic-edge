@@ -16,6 +16,7 @@ const {
   getBatchOutputs,
   getResult,
   getRunStats,
+  getProjectsByType,
 } = require('../controllers/auth-user-project-controller');
 
 /**
@@ -272,6 +273,45 @@ router.put('/projects/:code', updateValidationRules(), updateValidate, async (re
  */
 router.get('/projects/:code', projectCodeValidationRules(), projectCodeValidate, async (req, res) => {
   await getOne(req, res);
+});
+
+/**
+ * @swagger
+ * /api/auth-user/projects/type/{type}:
+ *   get:
+ *     summary: Get projects by type
+ *     tags: [AuthUser]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *      - in: path
+ *        name: type
+ *        required: true
+ *        type: string
+ *        value: test
+ *        description: The project type.
+ *     responses:
+ *       200:
+ *         description: Action successful.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/models/projectActionSuccessful'
+ *       400:
+ *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/models/actionFailed'
+ *       500:
+ *         description: API server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/models/serverError'
+ */
+router.get('/projects/type/:type', async (req, res) => {
+  await getProjectsByType(req, res);
 });
 
 /**

@@ -4,8 +4,9 @@ const yaml = require('js-yaml');
 const Structure = require('../models/structure');
 const { getStructure, updateStructure } = require('../utils/structure');
 const logger = require('../../utils/logger');
+const config = require('../../config');
 
-const sysError = process.env.API_ERROR;
+const sysError = config.APP.API_ERROR;
 
 // Create a structure
 const addOne = async (req, res) => {
@@ -15,7 +16,7 @@ const addOne = async (req, res) => {
 
     const productId = data.id;
     // validate input id
-    const productHome = `${process.env.PRODUCT_HOME}/${productId}`;
+    const productHome = `${config.EPIC.PRODUCT_BASE_DIR}/${productId}`;
     if (!fs.existsSync(productHome)) {
       throw new Error('Dataset not found.');
     }
@@ -39,10 +40,10 @@ const addOne = async (req, res) => {
           if (fs.existsSync(structureFile)) {
             // generate structure code and create structure home
             let code = randomize('Aa0', 16);
-            let structureHome = `${process.env.STRUCTURE_HOME}/${code}`;
+            let structureHome = `${config.EPIC.STRUCTURE_BASE_DIR}/${code}`;
             while (fs.existsSync(structureHome)) {
               code = randomize('Aa0', 16);
-              structureHome = `${process.env.STRUCTURE_HOME}/${code}`;
+              structureHome = `${config.EPIC.STRUCTURE_BASE_DIR}/${code}`;
             }
             fs.mkdirSync(structureHome);
 

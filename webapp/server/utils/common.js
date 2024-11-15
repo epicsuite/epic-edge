@@ -1,6 +1,9 @@
 const axios = require('axios');
+const ufs = require('url-file-size');
 const fs = require('fs');
 const path = require('path');
+const { exec } = require('child_process');
+const nodeUtil = require('util');
 const logger = require('./logger');
 
 // append message to a log
@@ -112,10 +115,57 @@ const getAllFiles = (dirPath, arrayOfFilesIn, extentions, displayPath, apiPath, 
   return arrayOfFiles;
 };
 
+const fileStats = async (file) => {
+  let stats = {};
+  if (!file) {
+    return { size: 0 };
+  }
+  if (file.toLowerCase().startsWith('http')) {
+    stats = await ufs(file)
+      .then(size => ({ size }))
+      .catch(() => ({ size: 0 }));
+  } else {
+    stats = fs.statSync(file);
+  }
+  return stats;
+};
+
+const findInputsize = async (projectConf) => {
+  if (!projectConf.files) {
+    return 0;
+  }
+  let size = 0;
+  await Promise.all(projectConf.files.map(async (file) => {
+    if (file !== '') {
+      // not optional file without input
+      const stats = await fileStats(file);
+      size += stats.size;
+    }
+  }));
+  // console.log('file size', size);
+  return size;
+};
+
+const execCmd = async (cmd) => {
+  logger.info(cmd);
+  // run local
+  exec(cmd, (error, stdout, stderr) => {
+    if (error) {
+      logger.error(error.message);
+      logger.error(nodeUtil.inspect(stderr));
+      return { code: -1, message: error.message };
+    }
+    logger.info(nodeUtil.inspect(stdout));
+    return { code: 0, message: stdout };
+  });
+};
+
 module.exports = {
   write2log,
   postData,
   getData,
   timeFormat,
   getAllFiles,
+  findInputsize,
+  execCmd,
 };

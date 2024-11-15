@@ -4,8 +4,8 @@ import { MaterialReactTable } from 'material-react-table'
 import { Badge, Row, Col } from 'reactstrap'
 import { ThemeProvider } from '@mui/material'
 import { theme, projectStatusColors, projectStatusNames } from '../common/tableUtil'
-import { getData, apis, workflowList } from '../../common/util'
-import { SubTopBar } from 'src/edge/common/SubTopBar'
+import { getData, apis } from '../../common/util'
+import { workflowList } from 'src/util'
 import { SideMenu } from 'src/components/SideMenu'
 
 const JobQueue = () => {

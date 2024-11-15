@@ -2,7 +2,6 @@ import React from 'react'
 import { Button, Row, Col } from 'reactstrap'
 import { useNavigate } from 'react-router-dom'
 import ProjectTable from '../common/ProjectTable'
-import { SubTopBar } from 'src/edge/common/SubTopBar'
 import { SideMenu } from 'src/components/SideMenu'
 
 const Projects = (props) => {

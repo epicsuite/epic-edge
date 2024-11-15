@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { jwtDecode } from 'jwt-decode'
 
-import { setAuthToken, postData, putData, apis } from '../../../edge/common/util'
+import { setAuthToken, postData, putData, apis } from 'src/edge/common/util'
 import { setSubmittingForm } from '../pageSlice'
 import { addMessage, cleanMessage, addError, cleanError } from '../messageSlice'
+import config from 'src/config'
 
 const initialState = {
   isAuthenticated: false,
@@ -95,7 +96,7 @@ const loginAsync = createAsyncThunk('user/login', async (userData, { dispatch })
 const activateAsync = createAsyncThunk('user/activate', async (userData, { dispatch }) => {
   try {
     await putData(apis.activate, userData)
-    dispatch(addMessage({ activate: process.env.REACT_APP_ACTIVATE_MSG }))
+    dispatch(addMessage({ activate: config.UM.REGISTER_MSG }))
     dispatch(setSubmittingForm(false))
   } catch (err) {
     if (typeof err === 'string') {
@@ -116,7 +117,7 @@ const getActivationLinkAsync = createAsyncThunk(
   async (userData, { dispatch }) => {
     try {
       await postData(apis.getActivationLink, userData)
-      dispatch(addMessage({ getActivationLink: process.env.REACT_APP_ACTIVATIONLINK_MSG }))
+      dispatch(addMessage({ getActivationLink: config.UM.ACTIVATIONLINK_MSG }))
       dispatch(setSubmittingForm(false))
     } catch (err) {
       if (typeof err === 'string') {
@@ -138,7 +139,11 @@ const resetPasswordAsync = createAsyncThunk(
   async (userData, { dispatch }) => {
     try {
       await putData(apis.resetPassword, userData)
-      dispatch(addMessage({ resetPassword: process.env.REACT_APP_RESETPASSWORD_MSG }))
+      dispatch(
+        addMessage({
+          resetPassword: config.UM.RESETPASSWORD_MSG,
+        }),
+      )
       dispatch(setSubmittingForm(false))
     } catch (err) {
       if (typeof err === 'string') {
@@ -160,7 +165,7 @@ const getResetPasswordLinkAsync = createAsyncThunk(
   async (userData, { dispatch }) => {
     try {
       await postData(apis.getResetPasswordLink, userData)
-      dispatch(addMessage({ getResetPasswordLink: process.env.REACT_APP_RESETPASSWORDLINK_MSG }))
+      dispatch(addMessage({ getResetPasswordLink: config.UM.RESETPASSWORDLINK_MSG }))
       dispatch(setSubmittingForm(false))
     } catch (err) {
       if (typeof err === 'string') {

@@ -2,8 +2,10 @@ const logger = require('../../utils/logger');
 const { getOne, addOne, updateOne, execCmd, readFirstLine } = require('../utils/trame');
 const { getStructure } = require('../utils/structure');
 const { trameApps } = require('../utils/conf');
+const config = require('../../config');
 
-const sysError = process.env.API_ERROR;
+const sysError = config.APP.API_ERROR;
+
 
 // eslint-disable-next-line consistent-return
 const trame = async (req, res) => {
@@ -23,7 +25,7 @@ const trame = async (req, res) => {
       });
     }
 
-    const structureData = `${process.env.STRUCTURE_HOME}/${params.structure}/structure-with-tracks.csv`;
+    const structureData = `${config.EPIC.STRUCTURE_BASE_DIR}/${params.structure}/structure-with-tracks.csv`;
     const input = { user: 'public', app: params.app, data: structureData };
     const trameObj = await getOne(input);
     // there is an active trame process for the selected structure dataset and app, return it
@@ -31,7 +33,7 @@ const trame = async (req, res) => {
       // set updated time to new time
       await updateOne({ port: trameObj.port });
       // return url
-      const url = `${process.env.TRAME_BASE_URL}${trameObj.port}`;
+      const url = `${config.EPIC.TRAME_BASE_URL}:${trameObj.port}`;
       logger.debug(`url:${url}`);
       return res.json({
         success: true,
@@ -40,7 +42,7 @@ const trame = async (req, res) => {
     }
 
     // get unique port
-    let port = process.env.TRAME_PORT_START;
+    let port = config.EPIC.TRAME_PORT_START;
     // eslint-disable-next-line no-await-in-loop
     while (await getOne({ port }) !== null) {
       // eslint-disable-next-line no-plusplus
@@ -48,7 +50,7 @@ const trame = async (req, res) => {
     }
 
     // check if port is available
-    if (port > process.env.TRAME_PORT_END) {
+    if (port > config.EPIC.TRAME_PORT_END) {
       return res.status(400).json({
         success: false,
         message: 'The system is busy. Please try again later.'
@@ -59,15 +61,15 @@ const trame = async (req, res) => {
     // find the track name, temp solution for now
     const firstLine = await readFirstLine(input.data);
     const track = firstLine.split(',')[4];
-    const cmd = `${process.env.PYTHON} ${process.env.TRAME_APP_HOME}/${trameApps[input.app]} ${input.data} ${track} --server --port ${input.port} &`;
+    const cmd = `${config.EPIC.PYTHON} ${config.EPIC.TRAME_APP_BASE_DIR}/${trameApps[input.app]} ${input.data} ${track} --server --port ${input.port} &`;
     logger.info(cmd);
-    const outLog = `${process.env.STRUCTURE_HOME}/${params.structure}/out.log`;
+    const outLog = `${config.EPIC.STRUCTURE_BASE_DIR}/${params.structure}/out.log`;
     const pid = execCmd(cmd, outLog);
     // run local
     if (pid) {
       input.pid = pid + 1;
       await addOne(input);
-      const url = `${process.env.TRAME_BASE_URL}${input.port}`;
+      const url = `${config.EPIC.TRAME_BASE_URL}:${input.port}`;
       logger.info(`trame ${url}`);
       // wait for the trame server to be up running
       setTimeout(() => res.json({

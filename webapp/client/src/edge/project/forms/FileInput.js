@@ -30,6 +30,9 @@ export const FileInput = (props) => {
   //trigger validation method when input changes
   useEffect(() => {
     //force updating parent's inputParams
+    if (props.isOptional && !form.fileInput) {
+      form.validForm = true
+    }
     props.setParams(form, props.name)
   }, [doValidation]) // eslint-disable-line react-hooks/exhaustive-deps
 

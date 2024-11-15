@@ -1,4 +1,4 @@
-import { workflowList } from 'src/edge/common/util'
+import { workflowList } from 'src/util'
 
 export const slurpy = {
   label: 'Slurpy',

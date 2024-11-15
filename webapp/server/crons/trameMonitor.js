@@ -2,11 +2,12 @@ const moment = require('moment');
 const { exec } = require('child_process');
 const Trame = require('../epic-api/models/trame');
 const logger = require('../utils/logger');
+const config = require('../config');
 
 module.exports = function trameMonitor() {
   logger.debug('Trame monitor');
   // kill the trame instance process and delete trame from DB after deleteGracePeriod
-  const deleteGracePeriod = moment().subtract(process.env.TRAME_DELETE_GRACE_PERIOD, 'hours');
+  const deleteGracePeriod = moment().subtract(config.EPIC.TRAME_DELETE_GRACE_PERIOD_HOURS, 'hours');
   Trame.find({ 'updated': { '$lte': deleteGracePeriod } }).then(trames => {
     trames.forEach((trame) => {
       logger.debug(`Delete trame ${trame}`);
@@ -20,7 +21,7 @@ module.exports = function trameMonitor() {
         }
       });
       // delete from database
-      Trame.deleteOne({ ipAddress: trame.ipAddress }, (err) => {
+      Trame.deleteOne({ user: trame.user }, (err) => {
         if (err) {
           logger.info('Failed to delete trame');
         }

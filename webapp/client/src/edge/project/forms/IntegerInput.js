@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Col, Row, Input } from 'reactstrap'
 import { useForm } from 'react-hook-form'
-import { MyTooltip } from 'src/edge/common/MyTooltip'
-import { defaults } from 'src/edge/common/util'
+import { MyTooltip } from '../../common/MyTooltip'
+import { defaults } from '../../common/util'
 import { components } from './defaults'
 
 export const IntegerInput = (props) => {

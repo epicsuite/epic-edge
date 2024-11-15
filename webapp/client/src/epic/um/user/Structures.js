@@ -7,7 +7,7 @@ const Structures = (props) => {
   const navigate = useNavigate()
   return (
     <Row className="justify-content-center">
-      <Col xs="12" sm="12" md="12">
+      <Col xs="12" sm="12" md="10">
         <div className="edge-right">
           <Button
             color="primary"
