@@ -75,7 +75,7 @@ const trame = async (req, res) => {
       setTimeout(() => res.json({
         success: true,
         url,
-      }), 9000);
+      }), 3000);
     } else {
       setTimeout(() => res.status(400).json({ success: false, errMessage: 'Failed to create trame instance.' }), 3000);
     }
