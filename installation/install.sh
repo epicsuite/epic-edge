@@ -16,7 +16,7 @@ if [ ! -d  $io_home ]; then
     "projects"
     "public"
     "db"
-    "datasets"
+    "structures"
     "sra"
     "nextflow"
     "nextflow/work"
