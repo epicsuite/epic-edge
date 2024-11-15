@@ -56,6 +56,7 @@ const trame = async (req, res) => {
           // throw new Error(stderr);
         }
       });
+      // delete trame from db
       await deleteByPort(trameObj.port);
     }
 
