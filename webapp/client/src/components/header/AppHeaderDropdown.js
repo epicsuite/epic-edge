@@ -7,14 +7,7 @@ import {
   CDropdownMenu,
   CDropdownToggle,
 } from '@coreui/react'
-import {
-  cilFile,
-  cilLockLocked,
-  cilSettings,
-  cilGrid,
-  cilList,
-  cilPeople,
-} from '@coreui/icons'
+import { cilFile, cilLockLocked, cilSettings, cilGrid, cilList, cilPeople } from '@coreui/icons'
 import CIcon from '@coreui/icons-react'
 
 import Avatar from 'react-avatar'
