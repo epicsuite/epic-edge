@@ -4,7 +4,7 @@ process foo {
 
   """
   echo $x 
-  sleep 100
+  sleep 3600
   """
 }
 

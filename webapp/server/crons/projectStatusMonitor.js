@@ -4,11 +4,11 @@ const logger = require('../utils/logger');
 const { projectStatusSender } = require('../mailers/senders');
 const config = require('../config');
 
-module.exports = function projectMonitor() {
+module.exports = async function projectMonitor() {
   logger.debug('project status monitor');
-
-  // notify complete/failed projects
-  Project.find({ 'notified': false }).then(projs => {
+  try {
+    // notify complete/failed projects
+    const projs = await Project.find({ 'notified': false });
     projs.forEach(proj => {
       if (config.EMAIL.SEND_PROJECT_STATUS_EMAILS) {
         if (proj.status === 'complete' || proj.status === 'failed') {
@@ -40,5 +40,7 @@ module.exports = function projectMonitor() {
         proj.save();
       }
     });
-  });
+  } catch (err) {
+    logger.error(`projectStatusMonitor failed:${err}`);
+  }
 };

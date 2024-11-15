@@ -315,6 +315,7 @@ const UserTable = (props) => {
                       aria-label="refresh"
                     >
                       <Refresh
+                        className="edge-table-icon"
                         onClick={() => {
                           getUsers()
                           table.reset()

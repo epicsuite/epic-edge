@@ -48,7 +48,7 @@ const actionDialogs = {
   export: { message: 'Export metadata of the selected projects to a csv file.' },
 }
 
-const ProjectTable = (props) => {
+const SraDataTable = (props) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
@@ -160,22 +160,12 @@ const ProjectTable = (props) => {
   const columns = useMemo(
     () => [
       {
-        header: 'Project',
+        header: 'Name',
         accessorKey: 'name',
+        Cell: ({ cell }) => <>{cell.getValue().replace(/,/g, ', ')}</>,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
-      },
-      { header: 'Description', accessorKey: 'desc' },
-      {
-        header: 'Owner',
-        accessorKey: 'owner',
-        enableEditing: false,
-      },
-      {
-        header: 'Type',
-        accessorKey: 'type',
-        Cell: ({ cell }) => <>{workflowList[cell.getValue()].label}</>,
         enableEditing: false,
       },
       {
@@ -240,6 +230,8 @@ const ProjectTable = (props) => {
     if (props.tableType === 'admin') {
       url = apis.adminProjects
     }
+    url += '/type/sra2fastq'
+    console.log(url)
     setLoading(true)
     getData(url)
       .then((data) => {
@@ -590,4 +582,4 @@ const ProjectTable = (props) => {
   )
 }
 
-export default ProjectTable
+export default SraDataTable

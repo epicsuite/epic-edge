@@ -1,38 +1,29 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Form } from 'reactstrap'
-import { useNavigate } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 import { workflowList } from 'src/util'
 import { postData, getData, notify, apis } from '../../common/util'
 import { LoaderDialog, MessageDialog } from '../../common/Dialogs'
-import MySelect from '../../common/MySelect'
-import { Project } from '../../project/forms/Project'
 import { HtmlText } from '../../common/HtmlText'
-import { RunFaQCs } from './forms/RunFaQCs'
+import SraDataTable from '../../um/common/SraDataTable'
+import { Sra2fastq } from './forms/Sra2fastq'
 import { workflowOptions } from './defaults'
 
 const Main = (props) => {
-  const navigate = useNavigate()
   const [submitting, setSubmitting] = useState(false)
   const [requestSubmit, setRequestSubmit] = useState(false)
-  const [projectParams, setProjectParams] = useState()
   const [selectedWorkflows, setSelectedWorkflows] = useState({})
   const [doValidation, setDoValidation] = useState(0)
   const [workflow, setWorkflow] = useState(workflowOptions[0].value)
+  const [resetText, setResetText] = useState(0)
   const [openDialog, setOpenDialog] = useState(false)
   const [disabled, setDisabled] = useState(false)
   const [sysMsg, setSysMsg] = useState()
 
-  //callback function for child component
-  const setProject = (params) => {
-    //console.log('main project:', params)
-    setProjectParams(params)
-    setDoValidation(doValidation + 1)
-  }
   const setWorkflowParams = (params, workflowName) => {
-    console.log(workflowName, params)
+    //console.log('workflow:', params, workflowName)
     setSelectedWorkflows({ ...selectedWorkflows, [workflowName]: params })
     setDoValidation(doValidation + 1)
   }
@@ -44,8 +35,8 @@ const Main = (props) => {
     formData.category = workflowList[workflow].category
     // set project info
     formData.project = {
-      name: projectParams.projectName,
-      desc: projectParams.projectDesc,
+      name: selectedWorkflows[workflow].inputs.accessions.display,
+      desc: selectedWorkflows[workflow].inputs.accessions.display,
       type: workflow,
     }
 
@@ -63,23 +54,17 @@ const Main = (props) => {
           selectedWorkflows[workflow].inputs[key].value
       }
     })
-    //update input for nextflow
-    if (!myWorkflow.input['artifactFile']) {
-      myWorkflow.input['artifactFile'] = '${projectDir}/nf_assets/NO_FILE3'
-    }
+
     // set form data
     formData.workflow = myWorkflow
     formData.inputDisplay = inputDisplay
-
-    // files used for caculating total input size on server side
-    formData.files = selectedWorkflows[workflow].files
-
+    console.log(formData, apis.userProjects)
     // submit to server via api
     postData(apis.userProjects, formData)
       .then((data) => {
         setSubmitting(false)
-        notify('success', 'Your workflow request was submitted successfully!', 2000)
-        setTimeout(() => navigate('/user/projects'), 2000)
+        notify('success', 'Your request was submitted successfully!')
+        setResetText(resetText + 1)
       })
       .catch((error) => {
         setSubmitting(false)
@@ -93,11 +78,6 @@ const Main = (props) => {
 
   useEffect(() => {
     setRequestSubmit(true)
-
-    if (projectParams && !projectParams.validForm) {
-      setRequestSubmit(false)
-    }
-
     if (
       !workflow ||
       !selectedWorkflows[workflow] ||
@@ -126,7 +106,7 @@ const Main = (props) => {
       .catch((err) => {
         alert(err)
       })
-  }, [props])
+  }, [])
 
   return (
     <div
@@ -141,9 +121,6 @@ const Main = (props) => {
         message={'<div><b>' + sysMsg + '</b></div>'}
         handleClickClose={closeMsgModal}
       />
-      <span className="pt-3 text-muted edge-text-size-small">
-        Metagenomics | Run Single Workflow{' '}
-      </span>
       <ToastContainer />
       <LoaderDialog loading={submitting === true} text="Submitting..." />
       <Form
@@ -152,28 +129,9 @@ const Main = (props) => {
         }}
       >
         <div className="clearfix">
-          <h4 className="pt-3">Run a Single Workflow</h4>
-          <hr />
-          <Project setParams={setProject} />
-
-          <br></br>
-          <b>Workflow</b>
-          <MySelect
-            //defaultValue={workflowOptions[0]}
-            options={workflowOptions}
-            value={workflowOptions[0]}
-            onChange={(e) => {
-              if (e) {
-                setWorkflow(e.value)
-              } else {
-                setWorkflow()
-              }
-            }}
-            placeholder="Select a Workflow..."
-            isClearable={true}
-          />
+          <h4 className="pt-3">Retrieve SRA Data</h4>
           {workflow && (
-            <div className="pt-3 text-muted edge-text-size-small">
+            <>
               <HtmlText
                 text={
                   workflowList[workflow].info +
@@ -183,11 +141,12 @@ const Main = (props) => {
                 }
               />
               <br></br>
-            </div>
+            </>
           )}
           <br></br>
-          {workflow === 'runFaQCs' && (
-            <RunFaQCs
+          {workflow === 'sra2fastq' && (
+            <Sra2fastq
+              reset={resetText}
               name={workflow}
               full_name={workflow}
               setParams={setWorkflowParams}
@@ -212,6 +171,10 @@ const Main = (props) => {
         <br></br>
         <br></br>
       </Form>
+
+      <br></br>
+      <br></br>
+      <SraDataTable tableType="user" title={'My SRA Data'} {...props} />
     </div>
   )
 }

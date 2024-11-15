@@ -183,6 +183,9 @@ button:hover {
 .edge-table-toptoolbar {
   display: flex;
 }
+.edge-table-icon:hover {
+  color:#321fdb;
+}
 
 .edge-sub-field {
   color: $success !important;
@@ -333,5 +336,10 @@ button:hover {
   font-size: 1.0em;
   text-decoration: none;
   color: black;
+}
+
+//remove under line from react-keyed-file-browser file name
+.rendered-file-browser .file a {
+  text-decoration: none;
 }
 

@@ -22,6 +22,7 @@ export const MyTooltip = (props) => {
         </span>
       </a>
       <Tooltip
+        style={{ zIndex: 99 }}
         id={props.id}
         type={props.type}
         place={props.place ? props.place : 'right'}
@@ -58,11 +59,7 @@ export const ErrorTooltip = (props) => {
       <a data-tooltip-id={'error-' + props.id}>
         <span className="edge-text-size-large red-text">*</span>
       </a>
-      <Tooltip
-        id={'error-' + props.id}
-        type={'error'}
-        place={props.place ? props.place : 'right'}
-      >
+      <Tooltip id={'error-' + props.id} type={'error'} place={props.place ? props.place : 'right'}>
         <HtmlText text={props.tooltip} />
       </Tooltip>
     </>

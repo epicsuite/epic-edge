@@ -4,12 +4,12 @@ const Upload = require('../edge-api/models/upload');
 const logger = require('../utils/logger');
 const config = require('../config');
 
-module.exports = function fileUploadMonitor() {
+module.exports = async function fileUploadMonitor() {
   logger.debug('file upload monitor');
-
-  // delete file after deleteGracePeriod
-  const deleteGracePeriod = moment().subtract(config.FILE_UPLOADS.DELETION_GRACE_PERIOD_DAYS, 'days');
-  Upload.find({ 'status': 'delete', 'updated': { '$lte': deleteGracePeriod } }).then(uploads => {
+  try {
+    // delete file after deleteGracePeriod
+    const deleteGracePeriod = moment().subtract(config.FILE_UPLOADS.DELETION_GRACE_PERIOD_DAYS, 'days');
+    let uploads = await Upload.find({ 'status': 'delete', 'updated': { '$lte': deleteGracePeriod } });
     let i;
     for (i = 0; i < uploads.length; i += 1) {
       const { code } = uploads[i];
@@ -30,12 +30,10 @@ module.exports = function fileUploadMonitor() {
         }
       });
     }
-  });
 
-  // change status to 'delete' if upload is older than daysKept
-  const daysKept = moment().subtract(config.FILE_UPLOADS.FILE_LIFETIME_DAYS, 'days');
-  Upload.find({ status: 'live', 'created': { '$lte': daysKept } }).then(uploads => {
-    let i;
+    // change status to 'delete' if upload is older than daysKept
+    const daysKept = moment().subtract(config.FILE_UPLOADS.FILE_LIFETIME_DAYS, 'days');
+    uploads = await Upload.find({ status: 'live', 'created': { '$lte': daysKept } });
     for (i = 0; i < uploads.length; i += 1) {
       const { code } = uploads[i];
       logger.info(`mark file for deleting ${code}`);
@@ -51,5 +49,7 @@ module.exports = function fileUploadMonitor() {
         }
       });
     }
-  });
+  } catch (err) {
+    logger.error(`fileUploadMonitor failed:${err}`);
+  }
 };

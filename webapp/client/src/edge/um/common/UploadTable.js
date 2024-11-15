@@ -472,6 +472,7 @@ const UploadTable = (props) => {
                       aria-label="refresh"
                     >
                       <Refresh
+                        className="edge-table-icon"
                         onClick={() => {
                           handleAction('refresh')
                           table.reset()
@@ -487,6 +488,7 @@ const UploadTable = (props) => {
                       aria-label="delete"
                     >
                       <Delete
+                        className="edge-table-icon"
                         onClick={() => {
                           setTable(table)
                           handleAction('delete', table.getSelectedRowModel().flatRows)
@@ -494,7 +496,6 @@ const UploadTable = (props) => {
                       />
                     </Fab>
                   </Tooltip>
-                  <br></br>
                   <Tooltip title="Share selected uploads" aria-label="share">
                     <Fab
                       color="primary"
@@ -503,6 +504,7 @@ const UploadTable = (props) => {
                       aria-label="share"
                     >
                       <PersonAdd
+                        className="edge-table-icon"
                         onClick={() => {
                           setTable(table)
                           handleAction('share', table.getSelectedRowModel().flatRows)
@@ -518,6 +520,7 @@ const UploadTable = (props) => {
                       aria-label="unshare"
                     >
                       <PersonAddDisabled
+                        className="edge-table-icon"
                         onClick={() => {
                           handleAction('unshare', table.getSelectedRowModel().flatRows)
                           table.reset()
@@ -533,6 +536,7 @@ const UploadTable = (props) => {
                       aria-label="publish"
                     >
                       <LockOpen
+                        className="edge-table-icon"
                         onClick={() => {
                           setTable(table)
                           handleAction('publish', table.getSelectedRowModel().flatRows)
@@ -548,6 +552,7 @@ const UploadTable = (props) => {
                       aria-label="unpublish"
                     >
                       <Lock
+                        className="edge-table-icon"
                         onClick={() => {
                           setTable(table)
                           handleAction('unpublish', table.getSelectedRowModel().flatRows)

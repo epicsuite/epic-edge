@@ -2,9 +2,9 @@ const axios = require('axios');
 const ufs = require('url-file-size');
 const fs = require('fs');
 const path = require('path');
-const Upload = require('../edge-api/models/upload');
+const { exec } = require('child_process');
+const nodeUtil = require('util');
 const logger = require('./logger');
-const config = require('../config');
 
 // append message to a log
 const write2log = (log, msg) => {
@@ -115,40 +115,11 @@ const getAllFiles = (dirPath, arrayOfFilesIn, extentions, displayPath, apiPath, 
   return arrayOfFiles;
 };
 
-const linkUpload = (ufile, projHome, dir) => new Promise((resolve) => {
-  if (ufile.startsWith(config.IO.UPLOADED_FILES_DIR)) {
-    // create input dir and link uploaded file with realname
-    const inputDir = `${projHome}/${dir}`;
-    if (!fs.existsSync(inputDir)) {
-      fs.mkdirSync(inputDir);
-    }
-    const fileCode = path.basename(ufile);
-    let name = fileCode;
-    Upload.findOne({ 'code': name }).then(upload => {
-      if (upload) {
-        name = upload.name;
-      }
-      let linkFq = `${inputDir}/${name}`;
-      let i = 1;
-      while (fs.existsSync(linkFq)) {
-        i += 1;
-        if (name.includes('.')) {
-          const newName = name.replace('.', `${i}.`);
-          linkFq = `${inputDir}/${newName}`;
-        } else {
-          linkFq = `${inputDir}/${name}${i}`;
-        }
-      }
-      fs.symlinkSync(ufile, linkFq, 'file');
-      resolve(linkFq);
-    });
-  } else {
-    resolve(ufile);
-  }
-});
-
-async function fileStats(file) {
+const fileStats = async (file) => {
   let stats = {};
+  if (!file) {
+    return { size: 0 };
+  }
   if (file.toLowerCase().startsWith('http')) {
     stats = await ufs(file)
       .then(size => ({ size }))
@@ -157,9 +128,9 @@ async function fileStats(file) {
     stats = fs.statSync(file);
   }
   return stats;
-}
+};
 
-async function findInputsize(projectConf) {
+const findInputsize = async (projectConf) => {
   if (!projectConf.files) {
     return 0;
   }
@@ -173,7 +144,21 @@ async function findInputsize(projectConf) {
   }));
   // console.log('file size', size);
   return size;
-}
+};
+
+const execCmd = async (cmd) => {
+  logger.info(cmd);
+  // run local
+  exec(cmd, (error, stdout, stderr) => {
+    if (error) {
+      logger.error(error.message);
+      logger.error(nodeUtil.inspect(stderr));
+      return { code: -1, message: error.message };
+    }
+    logger.info(nodeUtil.inspect(stdout));
+    return { code: 0, message: stdout };
+  });
+};
 
 module.exports = {
   write2log,
@@ -181,6 +166,6 @@ module.exports = {
   getData,
   timeFormat,
   getAllFiles,
-  linkUpload,
   findInputsize,
+  execCmd,
 };

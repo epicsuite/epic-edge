@@ -1,29 +1,18 @@
-/* eslint-disable guard-for-in */
 const fs = require('fs');
-const ufs = require('url-file-size');
 const moment = require('moment');
 const FormData = require('form-data');
 const ejs = require('ejs');
 const YAML = require('json-to-pretty-yaml');
 const Job = require('../edge-api/models/job');
-const common = require('./common');
+const { workflowList, generateWorkflowResult } = require('./workflow');
+const { write2log, postData, getData, timeFormat } = require('./common');
 const logger = require('./logger');
-
-const workflows = ['hic'];
-
-const workflowList = {
-  'hic': {
-    wdl: '4dgb.wdl',
-    wdl_imports: 'imports.zip',
-    inputs_tmpl: '4dgb_inputs.tmpl',
-    outdir: 'output/hic',
-  },
-};
+const config = require('../config');
 
 const generateWDL = async (projHome, projectConf) => {
   // projectConf: project conf.js
-  // workflowList in utils/conf
-  const wdl = `${process.env.WORKFLOW_WDL_HOME}/${projectConf.category}/${workflowList[projectConf.workflow.name].wdl}`;
+  // workflowList in utils/workflow
+  const wdl = `${config.CROMWELL.WDL_DIR}/${projectConf.category}/${workflowList[projectConf.workflow.name].wdl}`;
   if (fs.existsSync(wdl)) {
     // add pipeline.wdl link
     fs.symlinkSync(wdl, `${projHome}/pipeline.wdl`, 'file');
@@ -34,11 +23,14 @@ const generateWDL = async (projHome, projectConf) => {
 
 const generateInputs = async (projHome, projectConf, workflowConf, proj) => {
   // projectConf: project conf.js
-  // workflowList in utils/conf
-  // workflowConf: data/workflow/conf.json
+  // workflowList in utils/workflow
   const workflowSettings = workflowList[projectConf.workflow.name];
-  const template = String(fs.readFileSync(`${process.env.WORKFLOW_TEMPLATE_HOME}/${projectConf.category}/${workflowSettings.inputs_tmpl}`));
+  const template = String(fs.readFileSync(`${config.CROMWELL.TEMPLATE_DIR}/${projectConf.category}/${workflowSettings.inputs_tmpl}`));
   const params = { ...workflowConf, ...projectConf.workflow.input, outdir: `${projHome}/${workflowSettings.outdir}` };
+
+  if (projectConf.workflow.name === 'sra2fastq') {
+    params.outdir = config.IO.SRA_BASE_DIR;
+  }
 
   if (projectConf.workflow.name === '4dgb') {
     // set up FDGB workflow input directory
@@ -64,7 +56,7 @@ const generateInputs = async (projHome, projectConf, workflowConf, proj) => {
 
     const fdgbProj = { project: fdgbSettings, datasets: fdgbDatasets };
     if (workflow.tracks) {
-      // eslint-disable-next-line no-restricted-syntax
+      // eslint-disable-next-line no-restricted-syntax, guard-for-in
       for (const i in workflow.tracks) {
         src = workflow.tracks[i].file;
         dest = `${inputDir}/track${i}.csv`;
@@ -141,8 +133,8 @@ const generateInputs = async (projHome, projectConf, workflowConf, proj) => {
   const inputs = ejs.render(template, params);
   await fs.promises.writeFile(`${projHome}/pipeline_inputs.json`, inputs);
   // render options template and write to pipeline_options.json
-  if (fs.existsSync(`${process.env.WORKFLOW_TEMPLATE_HOME}/${projectConf.category}/${workflowSettings.options_tmpl}`)) {
-    const optionsTemplate = String(fs.readFileSync(`${process.env.WORKFLOW_TEMPLATE_HOME}/${projectConf.category}/${workflowSettings.options_tmpl}`));
+  if (fs.existsSync(`${config.CROMWELL.TEMPLATE_DIR}/${projectConf.category}/${workflowSettings.options_tmpl}`)) {
+    const optionsTemplate = String(fs.readFileSync(`${config.CROMWELL.TEMPLATE_DIR}/${projectConf.category}/${workflowSettings.options_tmpl}`));
     const options = ejs.render(optionsTemplate, params);
     await fs.promises.writeFile(`${projHome}/pipeline_options.json`, options);
   }
@@ -151,14 +143,14 @@ const generateInputs = async (projHome, projectConf, workflowConf, proj) => {
 
 // submit workflow to cromwell through api
 const submitWorkflow = (proj, projectConf, inputsize) => {
-  const projHome = `${process.env.PROJECT_HOME}/${proj.code}`;
+  const projHome = `${config.IO.PROJECT_BASE_DIR}/${proj.code}`;
   const formData = new FormData();
   formData.append('workflowSource', fs.createReadStream(`${projHome}/pipeline.wdl`));
   // logger.debug(`workflowSource: ${projHome}/pipeline.wdl`);
   formData.append('workflowInputs', fs.createReadStream(`${projHome}/pipeline_inputs.json`));
   // logger.debug(`workflowInputs${projHome}/pipeline_inputs.json`);
 
-  const imports = `${process.env.WORKFLOW_WDL_HOME}/${projectConf.category}/${workflowList[projectConf.workflow.name].wdl_imports}`;
+  const imports = `${config.CROMWELL.WDL_DIR}/${projectConf.category}/${workflowList[projectConf.workflow.name].wdl_imports}`;
   const optionsJson = `${projHome}/pipeline_options.json`;
 
   if (fs.existsSync(optionsJson)) {
@@ -166,7 +158,7 @@ const submitWorkflow = (proj, projectConf, inputsize) => {
     logger.debug(`workflowOptions:${optionsJson}`);
   }
 
-  formData.append('workflowType', process.env.CROMWELL_WORKFLOW_TYPE);
+  formData.append('workflowType', config.CROMWELL.WORKFLOW_TYPE);
   let wdlVersion = workflowList[projectConf.workflow.name].wdl_version;
   if (!wdlVersion) {
     wdlVersion = workflowList.default_wdl_version;
@@ -179,7 +171,7 @@ const submitWorkflow = (proj, projectConf, inputsize) => {
   const formHeaders = formData.getHeaders();
   const formBoundary = formData.getBoundary();
 
-  common.postData(process.env.CROMWELL_API_URL, formData, {
+  postData(config.CROMWELL.API_BASE_URL, formData, {
     headers: {
       ...formHeaders, formBoundary
     },
@@ -190,9 +182,10 @@ const submitWorkflow = (proj, projectConf, inputsize) => {
       project: proj.code,
       type: proj.type,
       inputsize,
+      queue: 'cromwell',
       status: 'Submitted'
     });
-    newJob.save().catch(err => { logger.error('falied to save to cromwelljobs: ', err); });
+    newJob.save().catch(err => { logger.error('falied to save to cromwelljob: ', err); });
     proj.status = 'submitted';
     proj.updated = Date.now();
     proj.save();
@@ -204,45 +197,45 @@ const submitWorkflow = (proj, projectConf, inputsize) => {
     if (error.data) {
       message = error.data.message;
     }
-    common.write2log(`${process.env.PROJECT_HOME}/${proj.code}/log.txt`, message);
+    write2log(`${config.IO.PROJECT_BASE_DIR}/${proj.code}/log.txt`, message);
     logger.error(`Failed to submit workflow to Cromwell: ${message}`);
   });
 };
 
 const abortJob = (job) => {
   // abort job through api
-  logger.debug(`POST: ${process.env.CROMWELL_API_URL}/${job.id}/abort`);
-  common.postData(`${process.env.CROMWELL_API_URL}/${job.id}/abort`).then(response => {
+  logger.debug(`POST: ${config.CROMWELL.API_BASE_URL}/${job.id}/abort`);
+  postData(`${config.CROMWELL.API_BASE_URL}/${job.id}/abort`).then(response => {
     logger.debug(response);
     // update job status
     job.status = 'Aborted';
     job.updated = Date.now();
     job.save();
-    common.write2log(`${process.env.PROJECT_HOME}/${job.project}/log.txt`, 'Cromwell job aborted.');
+    write2log(`${config.IO.PROJECT_BASE_DIR}/${job.project}/log.txt`, 'Cromwell job aborted.');
   }).catch(error => {
     let message = error;
     if (error.message) {
       message = error.message;
     }
-    common.write2log(`${process.env.PROJECT_HOME}/${job.project}/log.txt`, message);
+    write2log(`${config.IO.PROJECT_BASE_DIR}/${job.project}/log.txt`, message);
     logger.error(message);
     // not cromwell api server error, job may already complete/fail
     if (error.status !== 500) {
       job.status = 'Aborted';
       job.updated = Date.now();
       job.save();
-      common.write2log(`${process.env.PROJECT_HOME}/${job.project}/log.txt`, 'Cromwell job aborted.');
+      write2log(`${config.IO.PROJECT_BASE_DIR}/${job.project}/log.txt`, 'Cromwell job aborted.');
     }
   });
 };
 
 const getJobMetadata = (job) => {
   // get job metadata through api
-  logger.debug(`GET: ${process.env.CROMWELL_API_URL}/${job.id}/metadata`);
-  common.getData(`${process.env.CROMWELL_API_URL}/${job.id}/metadata`).then(metadata => {
+  logger.debug(`GET: ${config.CROMWELL.API_BASE_URL}/${job.id}/metadata`);
+  getData(`${config.CROMWELL.API_BASE_URL}/${job.id}/metadata`).then(metadata => {
     // logger.debug(JSON.stringify(metadata));
-    logger.debug(`${process.env.PROJECT_HOME}/${job.project}/cromwell_job_metadata.json`);
-    fs.writeFileSync(`${process.env.PROJECT_HOME}/${job.project}/cromwell_job_metadata.json`, JSON.stringify(metadata));
+    logger.debug(`${config.IO.PROJECT_BASE_DIR}/${job.project}/cromwell_job_metadata.json`);
+    fs.writeFileSync(`${config.IO.PROJECT_BASE_DIR}/${job.project}/cromwell_job_metadata.json`, JSON.stringify(metadata));
 
     // dump error logs
     Object.keys(metadata.calls).forEach((callkey) => {
@@ -251,10 +244,10 @@ const getJobMetadata = (job) => {
 
       // get cromwell logs
       if (subStatus === 'Failed' && subId) {
-        logger.debug(`GET: ${process.env.CROMWELL_API_URL}/${subId}/logs`);
-        common.getData(`${process.env.CROMWELL_API_URL}/${subId}/logs`).then(logs => {
+        logger.debug(`GET: ${config.CROMWELL.API_BASE_URL}/${subId}/logs`);
+        getData(`${config.CROMWELL.API_BASE_URL}/${subId}/logs`).then(logs => {
           logger.debug(JSON.stringify(logs));
-          fs.writeFileSync(`${process.env.PROJECT_HOME}/${job.project}/${callkey}.cromwell_job_logs.json`, JSON.stringify(logs));
+          fs.writeFileSync(`${config.IO.PROJECT_BASE_DIR}/${job.project}/${callkey}.cromwell_job_logs.json`, JSON.stringify(logs));
           // dump stderr to log.txt
           Object.keys(logs.calls).forEach((call) => {
             logger.debug(call);
@@ -263,8 +256,8 @@ const getJobMetadata = (job) => {
               logger.debug(stderr);
               if (fs.existsSync(stderr)) {
                 const errs = fs.readFileSync(stderr);
-                common.write2log(`${process.env.PROJECT_HOME}/${job.project}/log.txt`, call);
-                common.write2log(`${process.env.PROJECT_HOME}/${job.project}/log.txt`, errs);
+                write2log(`${config.IO.PROJECT_BASE_DIR}/${job.project}/log.txt`, call);
+                write2log(`${config.IO.PROJECT_BASE_DIR}/${job.project}/log.txt`, errs);
               }
             });
           });
@@ -277,29 +270,6 @@ const getJobMetadata = (job) => {
   }).catch(error => {
     logger.error(`Failed to get metadata from Cromwell API: ${error}`);
   });
-};
-
-const generateWorkflowResult = (proj) => {
-  const projHome = `${process.env.PROJECT_HOME}/${proj.code}`;
-  const resultJson = `${projHome}/result.json`;
-
-  if (!fs.existsSync(resultJson)) {
-    const result = {};
-    const projectConf = JSON.parse(fs.readFileSync(`${projHome}/conf.json`));
-    const outdir = `${projHome}/${workflowList[projectConf.workflow.name].outdir}`;
-
-    if (projectConf.workflow.name === 'sra2fastq') {
-      // use relative path
-      const { accessions } = projectConf.workflow.input;
-      accessions.forEach((accession) => {
-        // link sra downloads to project output
-        fs.symlinkSync(`../../../../sra/${accession}`, `${outdir}/${accession}`);
-
-      });
-    }
-
-    fs.writeFileSync(resultJson, JSON.stringify(result));
-  }
 };
 
 const getWorkflowStats = (jobStats, cromwellCalls, workflow, workflowStats, stats) => {
@@ -332,14 +302,14 @@ const getWorkflowStats = (jobStats, cromwellCalls, workflow, workflowStats, stat
   if (myStart && myEnd) {
     const ms = moment(myEnd, 'YYYY-MM-DD HH:mm:ss').diff(moment(myStart, 'YYYY-MM-DD HH:mm:ss'));
     const d = moment.duration(ms);
-    workflowStats['Running Time'] = common.timeFormat(d);
+    workflowStats['Running Time'] = timeFormat(d);
   }
   stats.push(workflowStats);
 };
 
 const generateRunStats = (project) => {
-  const confFile = `${process.env.PROJECT_HOME}/${project.code}/conf.json`;
-  const jobMetadataFile = `${process.env.PROJECT_HOME}/${project.code}/cromwell_job_metadata.json`;
+  const confFile = `${config.IO.PROJECT_BASE_DIR}/${project.code}/conf.json`;
+  const jobMetadataFile = `${config.IO.PROJECT_BASE_DIR}/${project.code}/cromwell_job_metadata.json`;
 
   let rawdata = fs.readFileSync(confFile);
   const conf = JSON.parse(rawdata);
@@ -357,13 +327,13 @@ const generateRunStats = (project) => {
     }
   }
 
-  fs.writeFileSync(`${process.env.PROJECT_HOME}/${project.code}/run_stats.json`, JSON.stringify({ 'stats': stats }));
+  fs.writeFileSync(`${config.IO.PROJECT_BASE_DIR}/${project.code}/run_stats.json`, JSON.stringify({ 'stats': stats }));
 };
 
 const updateJobStatus = (job, proj) => {
   // get job status through api
-  logger.debug(`GET: ${process.env.CROMWELL_API_URL}/${job.id}/status`);
-  common.getData(`${process.env.CROMWELL_API_URL}/${job.id}/status`).then(response => {
+  logger.debug(`GET: ${config.CROMWELL.API_BASE_URL}/${job.id}/status`);
+  getData(`${config.CROMWELL.API_BASE_URL}/${job.id}/status`).then(response => {
     logger.debug(JSON.stringify(response));
     // update project status
     if (job.status !== response.status) {
@@ -394,7 +364,7 @@ const updateJobStatus = (job, proj) => {
       proj.status = status;
       proj.updated = Date.now();
       proj.save();
-      common.write2log(`${process.env.PROJECT_HOME}/${job.project}/log.txt`, `Cromwell job status: ${response.status}`);
+      write2log(`${config.IO.PROJECT_BASE_DIR}/${job.project}/log.txt`, `Cromwell job status: ${response.status}`);
     }
     // update job even its status unchanged. We need set new updated time for this job.
     if (response.status === 'Aborted') {
@@ -415,49 +385,17 @@ const updateJobStatus = (job, proj) => {
     if (error.message) {
       message = error.message;
     }
-    common.write2log(`${process.env.PROJECT_HOME}/${job.project}/log.txt`, message);
+    write2log(`${config.IO.PROJECT_BASE_DIR}/${job.project}/log.txt`, message);
     logger.error(message);
   });
 };
 
-async function fileStats(file) {
-  let stats = {};
-  if (file.toLowerCase().startsWith('http')) {
-    stats = await ufs(file)
-      .then(size => ({ size }))
-      .catch(() => ({ size: 0 }));
-  } else {
-    stats = fs.statSync(file);
-  }
-  return stats;
-}
-
-async function findInputsize(projectConf) {
-  if (!projectConf.files) {
-    return 0;
-  }
-  let size = 0;
-  await Promise.all(projectConf.files.map(async (file) => {
-    if (file !== '') {
-      // not optional file without input
-      const stats = await fileStats(file);
-      size += stats.size;
-    }
-  }));
-  // console.log('file size', size);
-  return size;
-}
-
 module.exports = {
-  workflows,
-  workflowList,
   generateWDL,
   generateInputs,
   submitWorkflow,
-  generateWorkflowResult,
   generateRunStats,
   abortJob,
   getJobMetadata,
   updateJobStatus,
-  findInputsize,
 };

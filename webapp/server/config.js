@@ -84,6 +84,13 @@ const config = {
     // Note: 161061273600 Bytes is 150 Gibibytes (161 Gigabytes).
     JOBS_INPUT_MAX_SIZE_BYTES: makeIntIfDefined(process.env.NEXTFLOW_JOBS_INPUT_MAX_SIZE_BYTES) || 161061273600,
     CONF: process.env.NEXTFLOW_CONF || path.join(DATA_BASE_DIR, 'workflow/nextflow/nextflow.config'),
+    WORK_DIR: process.env.NEXTFLOW_WORK_DIR || path.join(IO_BASE_DIR, 'nextflow/work'),
+    // Directory of the workflow files.
+    WORKFLOW_DIR: process.env.NEXTFLOW_WORKFLOW_DIR || path.join(DATA_BASE_DIR, 'workflow/nextflow/workflows'),
+    // Nextflow wrapper script
+    WRAPPER: process.env.NEXTFLOW_WRAPPER || path.join(DATA_BASE_DIR, 'workflow/nextflow/scripts/wrapper.py'),
+    // Directory of the workflow templates. The Workflow templates are used for creating cromwell inputs.
+    TEMPLATE_DIR: process.env.NEXTFLOW_TEMPLATE_DIR || path.join(DATA_BASE_DIR, 'workflow/nextflow/templates'),
   },
   CROMWELL: {
     // Base URL at which HTTP clients can access the Cromwell API.
@@ -209,7 +216,7 @@ const config = {
     // Directory to store structure datasets
     STRUCTURE_BASE_DIR: process.env.EPIC_STRUCTURE_BASE_DIR || path.join(IO_BASE_DIR, 'structures'),
     // Directory to store trame applications
-    TRAME_APP_BASE_DIR: process.env.EPIC_TRAME_APP_BASE_DIR || path.join(IO_BASE_DIR, 'trame/apps'),
+    TRAME_APP_BASE_DIR: process.env.EPIC_TRAME_APP_BASE_DIR || path.join(__dirname, '../../trame/apps'),
     TRAME_BASE_URL: process.env.EPIC_TRAME_BASE_URL || 'http://localhost',
     TRAME_PORT_START: makeIntIfDefined(process.env.EPIC_TRAME_PORT_START) || 8001,
     TRAME_PORT_END: makeIntIfDefined(process.env.EPIC_TRAME_PORT_END) || 8008,

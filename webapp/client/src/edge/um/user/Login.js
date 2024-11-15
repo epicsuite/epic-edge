@@ -4,6 +4,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Button, Col, Row } from 'reactstrap'
 
 import { login } from 'src/redux/reducers/edge/userSlice'
+import { cleanMessage, cleanError } from '../../../redux/reducers/messageSlice'
 import LoginForm from './forms/LoginForm'
 import ORCIDLogin from './forms/ORCIDLogin'
 import config from 'src/config'
@@ -15,6 +16,11 @@ const Login = (props) => {
   const user = useSelector((state) => state.user)
   const loginErrors = useSelector((state) => state.message.errors)
   const messages = useSelector((state) => state.message.messages)
+
+  useEffect(() => {
+    dispatch(cleanMessage())
+    dispatch(cleanError())
+  }, [])
 
   useEffect(() => {
     if (user.isAuthenticated) {

@@ -2,9 +2,13 @@ import { createTheme } from '@mui/material'
 import { colors } from '../../common/util'
 
 export const theme = createTheme({
+  colorSchemes: { light: true, dark: true },
   palette: {
     primary: {
       main: colors.primary,
+      dark: '#FFFFFF',
+      light: '#000000',
+      contrastText: '#fff',
     },
     secondary: {
       main: colors.info,

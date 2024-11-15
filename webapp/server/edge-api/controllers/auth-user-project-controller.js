@@ -4,6 +4,7 @@ const moment = require('moment');
 const Project = require('../models/project');
 const { getProject, getProjectConf, updateProject, getProjectOutputs, getProjectBatchOutputs, getProjectResult, getProjectRunStats } = require('../utils/project');
 const { getAllFiles } = require('../../utils/common');
+const { workflowList } = require('../../utils/workflow');
 const logger = require('../../utils/logger');
 const config = require('../../config');
 
@@ -213,7 +214,7 @@ const getRunStats = async (req, res) => {
 const getOwn = async (req, res) => {
   try {
     logger.debug(`/api/auth-user/projects: ${req.user.email}`);
-    const projects = await Project.find({ 'status': { $ne: 'delete' }, 'owner': { $eq: req.user.email } }).sort([['updated', -1]]);
+    const projects = await Project.find({ 'type': { $ne: 'sra2fastq' }, 'status': { $ne: 'delete' }, 'owner': { $eq: req.user.email } }).sort([['updated', -1]]);
 
     return res.send({
       projects,
@@ -233,7 +234,7 @@ const getOwn = async (req, res) => {
 const getAll = async (req, res) => {
   try {
     logger.debug(`/api/auth-user/projects/all: ${req.user.email}`);
-    const projects = await Project.find({ 'status': { $ne: 'delete' }, $or: [{ 'owner': { $eq: req.user.email } }, { 'sharedTo': req.user.email }, { 'public': true }] }).sort([['updated', -1]]);
+    const projects = await Project.find({ 'type': { $ne: 'sra2fastq' }, 'status': { $ne: 'delete' }, $or: [{ 'owner': { $eq: req.user.email } }, { 'sharedTo': req.user.email }, { 'public': true }] }).sort([['updated', -1]]);
 
     return res.send({
       projects,
@@ -322,9 +323,21 @@ const getFiles = async (req, res) => {
     for (i; i < projects.length; i += 1) {
       const proj = projects[i];
       let projName = `${proj.owner}/${proj.name}`;
-      projName += ` (${proj.type}, ${moment(proj.created).format('YYYY-MM-DD, h:mm:ss A')})`;
+      // get project output dir
+      let outdir = '';
+      Object.keys(workflowList).forEach((key) => {
+        if (key === proj.type) {
+          outdir = workflowList[key].outdir;
+        }
+      });
 
-      files = getAllFiles(`${projDir}/${proj.code}`, files, req.body.fileTypes, `projects/${projName}`, `/projects/${proj.code}`, `${projDir}/${proj.code}`);
+      if (proj.type === 'sra2fastq') {
+        projName += ` (${moment(proj.created).format('YYYY-MM-DD, h:mm:ss A')})`;
+        files = getAllFiles(`${projDir}/${proj.code}/${outdir}`, files, req.body.fileTypes, `sradata/${projName}`, `/sradata/${proj.code}/${outdir}`, `${projDir}/${proj.code}/${outdir}`, req.body.endsWith);
+      } else {
+        projName += ` (${proj.type}, ${moment(proj.created).format('YYYY-MM-DD, h:mm:ss A')})`;
+        files = getAllFiles(`${projDir}/${proj.code}/${outdir}`, files, req.body.fileTypes, `projects/${projName}`, `/projects/${proj.code}/${outdir}`, `${projDir}/${proj.code}/${outdir}`, req.body.endsWith);
+      }
     };
 
     return res.json({
@@ -381,6 +394,26 @@ const getBatchOutputs = async (req, res) => {
   }
 };
 
+// Find all projects owned by user with type
+const getProjectsByType = async (req, res) => {
+  try {
+    logger.debug(`/api/auth-user/projects/type: ${req.params.type}`);
+    const projects = await Project.find({ 'status': { $ne: 'delete' }, 'type': { $eq: req.params.type }, 'owner': { $eq: req.user.email } }).sort([['updated', -1]]);
+
+    return res.send({
+      projects,
+      message: 'Action successful',
+      success: true,
+    });
+  } catch (err) {
+    logger.error(`List user projects failed: ${err}`);
+    return res.status(500).json({
+      message: sysError,
+      success: false,
+    });
+  }
+};
+
 module.exports = {
   addOne,
   getOne,
@@ -395,4 +428,5 @@ module.exports = {
   getBatchOutputs,
   getResult,
   getRunStats,
+  getProjectsByType,
 };

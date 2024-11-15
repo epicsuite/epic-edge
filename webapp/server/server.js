@@ -14,8 +14,10 @@ const logger = require('./utils/logger');
 const indexRouter = require('./indexRouter');
 const trameMonitor = require('./crons/trameMonitor');
 const uploadMonitor = require('./crons/uploadMonitor');
-const workflowMonitor = require('./crons/cromwellWorkflowMonitor');
-const projectMonitor = require('./crons/projectMonitor');
+// const cromwellWorkflowMonitor = require('./crons/cromwellWorkflowMonitor');
+// const nextflowJobMonitor = require('./crons/nextflowJobMonitor');
+const nextflowWorkflowMonitor = require('./crons/nextflowWorkflowMonitor');
+const projectDeletionMonitor = require('./crons/projectDeletionMonitor');
 const projectStatusMonitor = require('./crons/projectStatusMonitor');
 const dbBackup = require('./crons/dbBackup');
 const dbBackupClean = require('./crons/dbBackupClean');
@@ -24,11 +26,9 @@ const config = require('./config');
 const app = express();
 app.use(cors({ origin: '*' }));
 // Helmet helps to secure Express apps by setting various HTTP headers.
-// app.use(helmet());
 app.use(helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false }));
 app.use(express.json());
 app.use(fileUpload({
-  // max size: 5G
   limits: { fileSize: config.FILE_UPLOADS.MAX_FILE_SIZE_BYTES },
   abortOnLimit: true,
   debug: false,
@@ -52,7 +52,7 @@ require('./edge-api/utils/passport')(passport);
 // APIs
 app.use('/api', indexRouter);
 // API docs
-app.use('/api-ui', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: false }));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: false }));
 
 // Serving static files in Express
 app.use('/projects', express.static(config.IO.PROJECT_BASE_DIR, { dotfiles: 'allow' }));
@@ -73,20 +73,20 @@ if (config.NODE_ENV === 'production') {
     trameMonitor();
   });
   // monitor workflow requests on every 2 minutes
-  cron.schedule(config.CRON.SCHEDULES.CROMWELL_WORKFLOW_MONITOR, () => {
-    workflowMonitor();
+  cron.schedule(config.CRON.SCHEDULES.NEXTFLOW_WORKFLOW_MONITOR, async () => {
+    await nextflowWorkflowMonitor();
   });
   // monitor uploads every day at midnight
-  cron.schedule(config.CRON.SCHEDULES.FILE_UPLOAD_MONITOR, () => {
-    uploadMonitor();
+  cron.schedule(config.CRON.SCHEDULES.FILE_UPLOAD_MONITOR, async () => {
+    await uploadMonitor();
   });
   // monitor project status on every 1 minute
-  cron.schedule(config.CRON.SCHEDULES.PROJECT_STATUS_MONITOR, () => {
-    projectStatusMonitor();
+  cron.schedule(config.CRON.SCHEDULES.PROJECT_STATUS_MONITOR, async () => {
+    await projectStatusMonitor();
   });
   // monitor project deletion every day at 10pm
-  cron.schedule(config.CRON.SCHEDULES.PROJECT_DELETION_MONITOR, () => {
-    projectMonitor();
+  cron.schedule(config.CRON.SCHEDULES.PROJECT_DELETION_MONITOR, async () => {
+    await projectDeletionMonitor();
   });
   // backup nmdcedge DB every day at 10pm
   cron.schedule(config.CRON.SCHEDULES.DATABASE_BACKUP_CREATOR, () => {
@@ -97,7 +97,6 @@ if (config.NODE_ENV === 'production') {
     dbBackupClean();
   });
 }
-
 
 const runApp = async () => {
   try {

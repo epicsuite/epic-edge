@@ -5,12 +5,12 @@ const Job = require('../edge-api/models/job');
 const logger = require('../utils/logger');
 const config = require('../config');
 
-module.exports = function projectMonitor() {
-  logger.debug('project monitor');
-
-  // delete file after deleteGracePeriod
-  const deleteGracePeriod = moment().subtract(config.CRON.PROJECT_DELETION_GRACE_PERIOD_DAYS, 'days');
-  Project.find({ 'status': 'delete', 'updated': { '$lte': deleteGracePeriod } }).then(projs => {
+module.exports = async function projectDeletionMonitor() {
+  logger.debug('project deletion monitor');
+  try {
+    // delete file after deleteGracePeriod
+    const deleteGracePeriod = moment().subtract(config.CRON.PROJECT_DELETION_GRACE_PERIOD_DAYS, 'days');
+    const projs = await Project.find({ 'status': 'delete', 'updated': { '$lte': deleteGracePeriod } });
     let i;
     for (i = 0; i < projs.length; i += 1) {
       const { code } = projs[i];
@@ -36,5 +36,7 @@ module.exports = function projectMonitor() {
         }
       });
     }
-  });
+  } catch (err) {
+    logger.error(`projectMonitor failed:${err}`);
+  }
 };

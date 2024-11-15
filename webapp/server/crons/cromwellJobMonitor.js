@@ -1,13 +1,14 @@
 const Project = require('../edge-api/models/project');
 const Job = require('../edge-api/models/job');
-const { abortJob, updateJobStatus } = require('../utils/cromwellWorkflow');
+const { abortJob, updateJobStatus } = require('../utils/cromwell');
 const logger = require('../utils/logger');
 
-module.exports = function cromwellJobMonitor() {
-  logger.debug('cromwell monitor');
+module.exports = async function cromWellJobMonitor() {
+  logger.debug('cromwell job monitor');
+  try {
+    // only process one job at each time based on job updated time
+    const jobs = await Job.find({ 'queue': 'cromwell', 'status': { $in: ['Submitted', 'Running'] } }).sort({ updated: 1 });
 
-  // only process one job at each time based on job updated time
-  Job.find({ 'queue': 'cromwell', 'status': { $in: ['Submitted', 'Running'] } }).sort({ updated: 1 }).then(jobs => {
     const job = jobs[0];
     if (!job) {
       logger.debug('No cromwell job to process');
@@ -15,23 +16,19 @@ module.exports = function cromwellJobMonitor() {
     }
     logger.debug(`cromwell ${job}`);
     // find related project
-    Project.findOne({ 'code': job.project }).then(proj => {
-      if (proj) {
-        if (proj.status === 'delete') {
-          // abort job
-          abortJob(job);
-        } else {
-          updateJobStatus(job, proj);
-        }
+    const proj = await Project.findOne({ 'code': job.project });
+    if (proj) {
+      if (proj.status === 'delete') {
+        // abort job
+        abortJob(job);
       } else {
-        // delete from database
-        Job.deleteOne({ project: job.project }, (err) => {
-          if (err) {
-            logger.error(`Failed to delete job from DB ${job.project}:${err}`);
-          }
-        });
+        updateJobStatus(job, proj);
       }
-    });
-  });
+    } else {
+      // delete from database
+      await Job.deleteOne({ project: job.project });
+    }
+  } catch (err) {
+    logger.error(`cromwellJobMonitor failed:${err}`);
+  }
 };
-

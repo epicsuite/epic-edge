@@ -46,11 +46,10 @@ export const defaults = {
   showTooltip: true,
   tooltipPlace: 'right',
   tooltipColor: colors.app,
-  inputStyle: { borderRadius: '5px', backgroundColor: 'white' },
+  inputStyle: { borderRadius: '5px' },
   inputStyleWarning: {
     borderRadius: '5px',
     borderLeftColor: colors.danger,
-    backgroundColor: 'white',
   },
 }
 
@@ -166,13 +165,13 @@ export const notify = (type, msg, timeout) => {
   if (!timeout) timeout = 2000
   if (type === 'success') {
     toast.success(msg, {
-      position: toast.POSITION.TOP_CENTER,
+      position: 'top-center',
       autoClose: timeout,
     })
   }
   if (type === 'error') {
     toast.error(msg, {
-      position: toast.POSITION.TOP_CENTER,
+      position: 'top-center',
       autoClose: false,
     })
   }

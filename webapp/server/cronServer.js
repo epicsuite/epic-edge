@@ -4,9 +4,16 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const cron = require('node-cron');
 const logger = require('./utils/logger');
+const uploadMonitor = require('./crons/uploadMonitor');
+const cromwellJobMonitor = require('./crons/cromwellJobMonitor');
+const cromwellWorkflowMonitor = require('./crons/cromwellWorkflowMonitor');
+// const nextflowJobMonitor = require('./crons/nextflowJobMonitor');
+const nextflowWorkflowMonitor = require('./crons/nextflowWorkflowMonitor');
+const projectDeletionMonitor = require('./crons/projectDeletionMonitor');
+const projectStatusMonitor = require('./crons/projectStatusMonitor');
+const trameMonitor = require('./crons/trameMonitor');
 const dbBackup = require('./crons/dbBackup');
 const dbBackupClean = require('./crons/dbBackupClean');
-const trameMonitor = require('./crons/trameMonitor');
 const config = require('./config');
 
 const app = express();
@@ -15,6 +22,36 @@ app.use(express.json());
 // allow cross-origin requests
 app.use(cors());
 
+// cron jobs
+// monitor cromwell jobs on every 2 minutes
+cron.schedule(config.CRON.SCHEDULES.CROMWELL_JOB_MONITOR, async () => {
+  await cromwellJobMonitor();
+});
+// monitor workflow requests on every 2 minutes
+cron.schedule(config.CRON.SCHEDULES.CROMWELL_WORKFLOW_MONITOR, async () => {
+  await cromwellWorkflowMonitor();
+});
+// monitor nextflow jobs on every 2 minutes
+cron.schedule(config.CRON.SCHEDULES.NEXTFLOW_JOB_MONITOR, async () => {
+  // await nextflowJobMonitor();
+});
+// cron jobs
+// monitor workflow requests on every 2 minutes
+cron.schedule(config.CRON.SCHEDULES.NEXTFLOW_WORKFLOW_MONITOR, async () => {
+  await nextflowWorkflowMonitor();
+});
+// monitor uploads every day at midnight
+cron.schedule(config.CRON.SCHEDULES.FILE_UPLOAD_MONITOR, async () => {
+  await uploadMonitor();
+});
+// monitor project status on every 1 minute
+cron.schedule(config.CRON.SCHEDULES.PROJECT_STATUS_MONITOR, async () => {
+  await projectStatusMonitor();
+});
+// monitor project deletion every day at 10pm
+cron.schedule(config.CRON.SCHEDULES.PROJECT_DELETION_MONITOR, async () => {
+  await projectDeletionMonitor();
+});
 // backup nmdcedge DB every day at 10pm
 cron.schedule(config.CRON.SCHEDULES.DATABASE_BACKUP_CREATOR, () => {
   dbBackup();

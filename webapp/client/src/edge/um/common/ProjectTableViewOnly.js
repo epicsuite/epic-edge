@@ -123,6 +123,7 @@ const ProjectTableViewOnly = (props) => {
                     aria-label="refresh"
                   >
                     <Refresh
+                      className="edge-table-icon"
                       onClick={() => {
                         getProjects()
                         table.reset()

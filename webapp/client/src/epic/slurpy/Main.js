@@ -23,7 +23,7 @@ const Main = (props) => {
   const [projectParams, setProjectParams] = useState()
   const [workflowComponent, setWorkflowComponent] = useState({})
   const [doValidation, setDoValidation] = useState(0)
-  const [workflow, setWorkflow] = useState('')
+  const [workflow, setWorkflow] = useState(workflowOptions[0].value)
   const [openDialog, setOpenDialog] = useState(false)
   const [disabled, setDisabled] = useState(false)
   const [sysMsg, setSysMsg] = useState()
@@ -170,7 +170,7 @@ const Main = (props) => {
                   <hr />
                   <Project setParams={setProject} />
                   <br></br>
-                  <b>Workflow</b>
+                  {/* <b>Workflow</b>
                   <MySelect
                     //defaultValue={workflowOptions[0]}
                     options={workflowOptions}
@@ -183,7 +183,7 @@ const Main = (props) => {
                     }}
                     placeholder="Select a Workflow..."
                     isClearable={true}
-                  />
+                  /> */}
                   {workflow === 'hic' && (
                     <>
                       <HiC

@@ -33,7 +33,7 @@ const trame = async (req, res) => {
       // set updated time to new time
       await updateOne({ port: trameObj.port });
       // return url
-      const url = `${config.EPIC.TRAME_BASE_URL}${trameObj.port}`;
+      const url = `${config.EPIC.TRAME_BASE_URL}:${trameObj.port}`;
       logger.debug(`url:${url}`);
       return res.json({
         success: true,
@@ -69,7 +69,7 @@ const trame = async (req, res) => {
     if (pid) {
       input.pid = pid + 1;
       await addOne(input);
-      const url = `${config.EPIC.TRAME_BASE_URL}${input.port}`;
+      const url = `${config.EPIC.TRAME_BASE_URL}:${input.port}`;
       logger.info(`trame ${url}`);
       // wait for the trame server to be up running
       setTimeout(() => res.json({
