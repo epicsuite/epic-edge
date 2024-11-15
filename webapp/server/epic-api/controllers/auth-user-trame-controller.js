@@ -36,7 +36,8 @@ const trame = async (req, res) => {
       // return url
       const url = `${config.EPIC.TRAME_BASE_URL}${trameObj.port}`;
       logger.debug(`url:${url}`);
-      if (isGoodURL(url)) {
+      const trameUrl = `http://127.0.0.1:${trameObj.port}`;
+      if (isGoodURL(trameUrl)) {
         return res.json({
           success: true,
           url,

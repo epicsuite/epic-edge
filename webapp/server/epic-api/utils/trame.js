@@ -1,7 +1,7 @@
 const fs = require('fs');
 const readline = require('readline');
 const { spawn } = require('child_process');
-const https = require('https');
+const http = require('http');
 const Trame = require('../models/trame');
 
 const getOne = (query) => new Promise((resolve, reject) => {
@@ -64,7 +64,7 @@ const readFirstLine = async (path) => {
 };
 
 const isGoodURL = async (url) => {
-  https
+  http
     .get(url, () => true)
     .on('error', () => false);
 };
