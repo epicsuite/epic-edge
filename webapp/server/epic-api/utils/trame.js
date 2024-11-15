@@ -1,6 +1,7 @@
 const fs = require('fs');
 const readline = require('readline');
 const { spawn } = require('child_process');
+const https = require('https');
 const Trame = require('../models/trame');
 
 const getOne = (query) => new Promise((resolve, reject) => {
@@ -62,6 +63,12 @@ const readFirstLine = async (path) => {
   return line;
 };
 
+const isGoodURL = async (url) => {
+  https
+    .get(url, () => true)
+    .on('error', () => false);
+};
+
 module.exports = {
   getOne,
   addOne,
@@ -69,4 +76,5 @@ module.exports = {
   deleteByPort,
   execCmd,
   readFirstLine,
+  isGoodURL,
 };

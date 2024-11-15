@@ -1,5 +1,5 @@
 const logger = require('../../utils/logger');
-const { getOne, addOne, updateOne, execCmd, readFirstLine } = require('../utils/trame');
+const { getOne, addOne, updateOne, execCmd, readFirstLine, isGoodURL } = require('../utils/trame');
 const { getStructure } = require('../utils/structure');
 const { trameApps } = require('../utils/conf');
 const config = require('../../config');
@@ -35,10 +35,12 @@ const trame = async (req, res) => {
       // return url
       const url = `${config.EPIC.TRAME_BASE_URL}${trameObj.port}`;
       logger.debug(`url:${url}`);
-      return res.json({
-        success: true,
-        url,
-      });
+      if (isGoodURL(url)) {
+        return res.json({
+          success: true,
+          url,
+        });
+      }
     }
 
     // get unique port
