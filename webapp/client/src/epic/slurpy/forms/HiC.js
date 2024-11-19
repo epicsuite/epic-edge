@@ -26,8 +26,13 @@ export const HiC = (props) => {
   const setFastqInput = (inForm, name) => {
     if (inForm.validForm) {
       form.inputs['pairedFile'].value = !inForm.interleaved
-      form.inputs[name].value = inForm.fileInput
-      form.inputs[name].display = inForm.fileInput_display
+      if (inForm.interleaved) {
+        form.inputs[name].value = inForm.fileInput
+        form.inputs[name].display = inForm.fileInput_display
+      } else {
+        form.inputs[name].value = [inForm.fileInput[0].f1, inForm.fileInput[0].f2]
+        form.inputs[name].display = [inForm.fileInput_display[0].f1, inForm.fileInput_display[0].f2]
+      }
       if (validInputs[name]) {
         validInputs[name].isValid = true
       }

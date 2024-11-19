@@ -40,6 +40,7 @@ export const TextInput = (props) => {
     setState({
       ...form,
       [name]: value,
+      validForm: value ? true : false,
     })
     setDoValidation(doValidation + 1)
   }
@@ -51,7 +52,7 @@ export const TextInput = (props) => {
     } else {
       setNewState2('textInput', '')
     }
-  }, [props.reset, props.defaultValue]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     //validate form
@@ -98,7 +99,7 @@ export const TextInput = (props) => {
             type="text"
             name="textInput"
             id={props.name}
-            value={form.textInput}
+            defaultValue={props.defaultValue}
             placeholder={props.placeholder}
             style={errors.textInput ? defaults.inputStyleWarning : defaults.inputStyle}
             onInput={(e) => {

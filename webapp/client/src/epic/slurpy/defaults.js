@@ -68,7 +68,7 @@ export const components = {
         value: 'chrM',
         textInput: {
           placeholder: '(required)',
-          tooltip: 'Name of the mitochondrial contig (default: chrM).',
+          tooltip: 'Name of the mitochondrial contig (default: chrM). At least 3 characters',
           showError: false,
           isOptional: false,
           showErrorTooltip: true,
