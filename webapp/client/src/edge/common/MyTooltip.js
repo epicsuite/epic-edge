@@ -29,7 +29,16 @@ export const MyTooltip = (props) => {
         openOnClick={props.openOnClick ? props.openOnClick : false}
         offset={10}
       >
-        <HtmlText text={props.tooltip} />
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            wordWrap: 'break-word',
+            maxWidth: '300px',
+          }}
+        >
+          <HtmlText text={props.tooltip} />
+        </div>
       </Tooltip>
     </>
   )
