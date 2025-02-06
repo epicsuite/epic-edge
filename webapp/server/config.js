@@ -225,10 +225,10 @@ const config = {
     // python path
     PYTHON: process.env.PYTHON || 'python3',
     // pvpython
-    PVPYTHON: process.env.PVPYTHON || '/panses/bio4/epicdev/ParaView-5.13.2.app/Contents/bin/pvpython',
-    PVPYTHON_PLUGIN_DIR: process.env.PVPYTHON_PLUGIN_DIR || '/pa/bio4/epicdev/ParaView-5.13.2.app/Contents/Plugins',
-    COMPARE_APP: process.env.COMPARE_APP || '/pa/bio/epicdev/apps/epicview/compare/compare.py',
-    COMPARE_ENV_PYTHONPATH: process.env.COMPARE_ENV_PYTHONPATH || 'pa/bio4/epicdev/apps/appenv/lib/python3.10/site-packages',
+    PVPYTHON: process.env.PVPYTHON || 'PVPYTHON-not-found-in-env',
+    PVPYTHON_PLUGIN_DIR: process.env.PVPYTHON_PLUGIN_DIR || 'PVPYTHON_PLUGIN_DIR-not-found-in-env',
+    COMPARE_APP: process.env.COMPARE_APP || 'COMPARE_APP-not-found-in-env',
+    COMPARE_ENV_PYTHONPATH: process.env.COMPARE_ENV_PYTHONPATH || 'COMPARE_ENV_PYTHONPATH-not-found-in-env',
   }
 };
 
