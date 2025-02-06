@@ -1,6 +1,5 @@
 import { createTheme } from '@mui/material'
-import { colors, postData } from 'src/edge/common/util'
-import { apis } from '../../util'
+import { colors } from 'src/edge/common/util'
 
 export const theme = createTheme({
   palette: {
@@ -30,30 +29,3 @@ export const validateRequired = (value) => !!value.length
 export const validateBoolean = (value) => ['true', 'false'].includes(value)
 const productId2 = new RegExp(/^[a-zA-Z]{3}-[a-zA-Z0-9]{8}$/)
 export const isValid4dgbProductId = (value) => !value.length || productId2.test(value)
-
-export const submitSession = (params, userType) => {
-  return new Promise((resolve, reject) => {
-    // call api to launch a trame instance and redirect to genomeBrowser
-    let formData = new FormData()
-    formData.append('params', JSON.stringify(params))
-    let apiUrl = apis.userTrame
-    if (userType === 'public') {
-      apiUrl = apis.publicTrame
-    }
-    postData(apiUrl, formData)
-      .then((data) => {
-        if (data.success) {
-          resolve(data)
-        } else {
-          reject(data.message)
-        }
-      })
-      .catch((error) => {
-        if (error.message) {
-          reject(error.message)
-        } else {
-          reject(error)
-        }
-      })
-  })
-}

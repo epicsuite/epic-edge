@@ -2,6 +2,7 @@ const router = require('express').Router();
 const passport = require('passport');
 const userRoutes = require('./edge-api/routes/user');
 const projectRoutes = require('./edge-api/routes/project');
+const dataRoutes = require('./edge-api/routes/data');
 const authUserRoutes = require('./edge-api/routes/auth-user');
 const authUserProjectRoutes = require('./edge-api/routes/auth-user-project');
 const authUserUploadRoutes = require('./edge-api/routes/auth-user-upload');
@@ -22,6 +23,7 @@ router.get('/', (req, res) => {
 
 router.use('/user', userRoutes);
 router.use('/public/projects', projectRoutes);
+router.use('/public/data', dataRoutes);
 router.use('/auth-user', passport.authenticate('user', { session: false }), authUserRoutes);
 router.use('/auth-user', passport.authenticate('user', { session: false }), authUserProjectRoutes);
 router.use('/auth-user', passport.authenticate('user', { session: false }), authUserUploadRoutes);

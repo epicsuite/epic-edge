@@ -90,11 +90,11 @@ const makeOrcidAuthUri = (
 const config = {
   APP: {
     // The user-facing name of the application.
-    NAME: import.meta.env.VITE_NAME || 'EDGE',
+    NAME: import.meta.env.VITE_NAME || 'EPIC EDGE',
     // Boolean flag indicating whether the client will request that the server send emails to the user.
     EMAIL_IS_ENABLED: makeBoolean(import.meta.env.VITE_EMAIL_NOTIFICATION_ENABLED) || false,
     // Boolean flag indicating whether the client will allow user to upload files.
-    UPLOAD_IS_ENABLED: makeBoolean(import.meta.env.VITE_FILEUPLOAD_ENABLED) || false,
+    UPLOAD_IS_ENABLED: makeBoolean(import.meta.env.VITE_FILEUPLOAD_ENABLED) || true,
     // Base URI at which visitors can access the application.
     // Note: This is written under the assumption that the client and API server share a domain.
     BASE_URI: makeLocalUri(),

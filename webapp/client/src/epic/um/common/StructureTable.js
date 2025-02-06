@@ -35,8 +35,8 @@ import {
   validateRequired,
   validateBoolean,
   actionDialogMessages,
-  submitSession,
 } from './tableUtil'
+import { submitTrameSession } from '../../util'
 import UserSelector from 'src/edge/um/common/UserSelector'
 import StructureFormDialog from './StructureFormDialog'
 
@@ -330,13 +330,13 @@ const StructureTable = (props) => {
     } else if (action === 'create-session') {
       // // store selectedData to localstorage
       // localStorage.setItem('structures', JSON.stringify(selectedData))
-      // // redirect to /genomeBrowser page
-      // navigate('/genomeBrowser')
+      // // redirect to /trame page
+      // navigate('/trame')
 
-      // call api to launch a trame instance and redirect to genomeBrowser
-      let params = { structure: selectedData[0]['code'], app: 'default' }
+      // call api to launch a trame instance and redirect to trame
+      let params = { structure: selectedData[0]['code'], app: 'structure' }
       setSubmitting(true)
-      submitSession(params, 'user')
+      submitTrameSession(params, 'user')
         .then((data) => {
           setSubmitting(false)
           navigate('/trame', { state: { url: data.url } })

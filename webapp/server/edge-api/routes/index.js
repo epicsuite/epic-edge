@@ -2,6 +2,7 @@ const router = require('express').Router();
 const passport = require('passport');
 const userRoutes = require('./user');
 const projectRoutes = require('./project');
+const dataRoutes = require('./data');
 const authUserRoutes = require('./auth-user');
 const authUserProjectRoutes = require('./auth-user-project');
 const authUserUploadRoutes = require('./auth-user-upload');
@@ -17,6 +18,7 @@ router.get('/', (req, res) => {
 
 router.use('/user', userRoutes);
 router.use('/public/projects', projectRoutes);
+router.use('/public/data', dataRoutes);
 router.use('/auth-user', passport.authenticate('user', { session: false }), authUserRoutes);
 router.use('/auth-user', passport.authenticate('user', { session: false }), authUserProjectRoutes);
 router.use('/auth-user', passport.authenticate('user', { session: false }), authUserUploadRoutes);

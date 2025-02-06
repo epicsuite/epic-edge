@@ -71,7 +71,7 @@ export const FileSelector = (props) => {
     //public files
     var promise3 = new Promise((resolve, reject) => {
       if (props.dataSources.includes('public')) {
-        let serverFiles = postData(apis.userPublicFiles, userData)
+        let serverFiles = postData(apis.publicFiles, userData)
           .then((data) => {
             return data.fileData
           })

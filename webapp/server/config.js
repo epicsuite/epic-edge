@@ -223,7 +223,12 @@ const config = {
     // in hours, trame http instance will be deleted after the grace period
     TRAME_DELETE_GRACE_PERIOD_HOURS: makeIntIfDefined(process.env.EPIC_TRAME_DELETE_GRACE_PERIOD_HOURS) || 12,
     // python path
-    PYTHON: process.env.PYTHON || 'python3'
+    PYTHON: process.env.PYTHON || 'python3',
+    // pvpython
+    PVPYTHON: process.env.PVPYTHON || '/panses/bio4/epicdev/ParaView-5.13.2.app/Contents/bin/pvpython',
+    PVPYTHON_PLUGIN_DIR: process.env.PVPYTHON_PLUGIN_DIR || '/pa/bio4/epicdev/ParaView-5.13.2.app/Contents/Plugins',
+    COMPARE_APP: process.env.COMPARE_APP || '/pa/bio/epicdev/apps/epicview/compare/compare.py',
+    COMPARE_ENV_PYTHONPATH: process.env.COMPARE_ENV_PYTHONPATH || 'pa/bio4/epicdev/apps/appenv/lib/python3.10/site-packages',
   }
 };
 

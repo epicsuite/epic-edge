@@ -41,6 +41,14 @@ const options = {
         description: 'Public user endpoints',
       },
       {
+        name: 'Project',
+        description: 'Public project endpoints',
+      },
+      {
+        name: 'Data',
+        description: 'Public data endpoints',
+      },
+      {
         name: 'Structure',
         description: 'Public structure endpoints',
       },

@@ -11,6 +11,7 @@ const UserResetPassword = React.lazy(() => import('./edge/um/user/ResetPassword'
 const Home = React.lazy(() => import('./epic/Home'))
 const PublicStructures = React.lazy(() => import('./epic/um/public/Structures'))
 const Trame = React.lazy(() => import('./epic/trame/Main'))
+const ComparativeViewerPublic = React.lazy(() => import('./epic/comparative-viewer/Main'))
 
 const routes = [
   { path: '/', exact: true, name: 'Home' },
@@ -24,6 +25,12 @@ const routes = [
   { path: '/resetPassword', exact: true, name: 'ResetPassword', element: UserResetPassword },
   { path: '/public/structures', exact: true, name: 'PublicStructures', element: PublicStructures },
   { path: '/trame', exact: true, name: 'Trame', element: Trame },
+  {
+    path: '/public/comparative-viewer',
+    exact: true,
+    name: 'publicCompare',
+    element: ComparativeViewerPublic,
+  },
 ]
 
 export default routes

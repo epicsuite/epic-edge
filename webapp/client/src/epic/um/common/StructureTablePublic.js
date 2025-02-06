@@ -13,7 +13,8 @@ import { setSubmittingForm } from 'src/redux/reducers/pageSlice'
 import { cleanError } from 'src/redux/reducers/messageSlice'
 import { ConfirmDialog, LoaderDialog } from 'src/edge/common/Dialogs'
 import { getData } from 'src/edge/common/util'
-import { theme, actionDialogMessages, submitSession } from './tableUtil'
+import { theme, actionDialogMessages } from './tableUtil'
+import { submitTrameSession } from '../../util'
 
 const StructureTableViewOnly = (props) => {
   const navigate = useNavigate()
@@ -144,10 +145,10 @@ const StructureTableViewOnly = (props) => {
 
     //get user selector options
     if (action === 'create-session') {
-      // call api to launch a trame instance and redirect to genomeBrowser
-      let params = { structure: selectedData[0]['code'], app: 'default' }
+      // call api to launch a trame instance and redirect to trame
+      let params = { structure: selectedData[0]['code'], app: 'structure' }
       setSubmitting(true)
-      submitSession(params, 'public')
+      submitTrameSession(params, 'public')
         .then((data) => {
           setSubmitting(false)
           navigate('/trame', { state: { url: data.url } })
