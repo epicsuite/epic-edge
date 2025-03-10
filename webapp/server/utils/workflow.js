@@ -3,41 +3,18 @@ const fs = require('fs');
 const Upload = require('../edge-api/models/upload');
 const config = require('../config');
 
-const cromwellWorkflows = ['sra2fastq'];
-const nextflowWorkflows = ['runFaQCs'];
+const cromwellWorkflows = [];
+const nextflowWorkflows = [];
+const nextflowConfigs = {
+  report_config: 'report.config',
+};
 
 const workflowList = {
-  default_wdl_version: '1.0',
-  '4dgb': {
-    wdl: '4dgb.wdl',
-    wdl_imports: 'imports.zip',
-    inputs_tmpl: '4dgb_inputs.tmpl',
-    outdir: 'output/4DGB',
-    // set if not default 1.0
-    // wdl_version: '1.0',
-  },
   'hic': {
     wdl: '4dgb.wdl',
     wdl_imports: 'imports.zip',
     inputs_tmpl: '4dgb_inputs.tmpl',
     outdir: 'output/hic',
-  },
-  sra2fastq: {
-    wdl: 'sra2fastq.wdl',
-    wdl_imports: 'imports.zip',
-    inputs_tmpl: 'sra2fastq_inputs.tmpl',
-    cromwell_calls: ['sra.sra2fastq'],
-    outdir: 'output/sra2fastq',
-    // set if not default 1.0
-    // wdl_version: '1.0',
-  },
-  runFaQCs: {
-    wdl: 'runQC.wdl',
-    wdl_imports: 'imports.zip',
-    inputs_tmpl: 'runFaQCs_inputs.tmpl',
-    outdir: 'output/runFaQCs',
-    nextflow_main: 'runFaQCs_main.nf',
-    config_tmpl: 'runFaQCs_config.tmpl',
   },
 };
 
@@ -101,6 +78,7 @@ const generateWorkflowResult = (proj) => {
 module.exports = {
   cromwellWorkflows,
   nextflowWorkflows,
+  nextflowConfigs,
   workflowList,
   linkUpload,
   generateWorkflowResult,

@@ -30,7 +30,6 @@ const updateProjectExample = {
     name: 'newproject-name', desc: 'newproject-desc', public: false, sharedTo: ['test@my.edge'],
   },
 };
-const getPublicDataExample = { example: { fileTypes: ['fq', 'csv'] }, };
 const addUploadExample = {
   example: {
     name: 'test.fa',
@@ -237,15 +236,6 @@ module.exports = {
       },
     },
     ...actionSuccessfulExample,
-  },
-  publicData: {
-    properties: {
-      fileTypes: {
-        description: 'List of file extentions', type: 'array',
-      },
-    },
-    required: [],
-    ...getPublicDataExample,
   },
   addUpload: {
     properties: {

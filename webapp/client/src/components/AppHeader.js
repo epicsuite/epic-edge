@@ -51,16 +51,6 @@ const AppHeader = () => {
                 <CNavLink
                   style={{ color: 'white' }}
                   className="edge-header-nav-link"
-                  href="/user/structures-all"
-                  component={NavLink}
-                >
-                  Structure Datasets
-                </CNavLink>
-              </CNavItem>
-              <CNavItem>
-                <CNavLink
-                  style={{ color: 'white' }}
-                  className="edge-header-nav-link"
                   href="/user/comparative-viewer"
                   component={NavLink}
                 >
@@ -98,16 +88,6 @@ const AppHeader = () => {
                   component={NavLink}
                 >
                   Home
-                </CNavLink>
-              </CNavItem>
-              <CNavItem>
-                <CNavLink
-                  style={{ color: 'white' }}
-                  className="edge-header-nav-link"
-                  href="/public/structures"
-                  component={NavLink}
-                >
-                  Structure Datasets
                 </CNavLink>
               </CNavItem>
               <CNavItem>

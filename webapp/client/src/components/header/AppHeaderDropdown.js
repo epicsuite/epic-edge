@@ -28,52 +28,11 @@ const AppHeaderDropdown = (props) => {
         <Avatar name={userName} color={colors.app} size="40" round={true} />
       </CDropdownToggle>
       <CDropdownMenu className="pt-0" placement="bottom-end">
-        <CDropdownHeader className="dropdown-header text-center fw-semibold py-2">
-          Structure Datasets
-        </CDropdownHeader>
-        <CDropdownItem href="/user/structures" component={NavLink}>
-          <CIcon icon={cilGrid} className="me-2" />
-          My Structure Datasets
-        </CDropdownItem>
-        <CDropdownItem href="/user/structures-all" component={NavLink}>
-          <CIcon icon={cilGrid} className="me-2" />
-          All Structure Datasets Available to Me
-        </CDropdownItem>
-        <CDropdownHeader className="dropdown-header text-center fw-semibold py-2">
-          Workflow Projects
-        </CDropdownHeader>
-        <CDropdownItem href="/user/projects" component={NavLink}>
-          <CIcon icon={cilGrid} className="me-2" />
-          My Projects
-        </CDropdownItem>
-        <CDropdownItem href="/user/allProjects" component={NavLink}>
-          <CIcon icon={cilGrid} className="me-2" />
-          All Projects Available to Me
-        </CDropdownItem>
-        <CDropdownItem href="/public/projects" component={NavLink}>
-          <CIcon icon={cilGrid} className="me-2" />
-          Public Projects
-        </CDropdownItem>
-        <CDropdownItem href="/user/jobQueue" component={NavLink}>
-          <CIcon icon={cilGrid} className="me-2" />
-          Job Queue
-        </CDropdownItem>
-        <CDropdownHeader className="dropdown-header text-center fw-semibold py-2">
-          Data
-        </CDropdownHeader>
-        <CDropdownItem href="/user/uploads" component={NavLink}>
-          <CIcon icon={cilGrid} className="me-2" />
-          Upload Files/My Uploads
-        </CDropdownItem>
         {props.user && props.user.profile && props.user.profile.role === 'admin' && (
           <>
             <CDropdownHeader className="dropdown-header text-center fw-semibold py-2">
               Admin Tools
             </CDropdownHeader>
-            <CDropdownItem href="/admin/structures" component={NavLink}>
-              <CIcon icon={cilList} className="me-2" />
-              Manage Structure Datasets
-            </CDropdownItem>
             <CDropdownItem href="/admin/projects" component={NavLink}>
               <CIcon icon={cilGrid} className="me-2" />
               Manage Projects

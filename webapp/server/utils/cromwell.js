@@ -2,7 +2,6 @@ const fs = require('fs');
 const moment = require('moment');
 const FormData = require('form-data');
 const ejs = require('ejs');
-const YAML = require('json-to-pretty-yaml');
 const Job = require('../edge-api/models/job');
 const { workflowList, generateWorkflowResult } = require('./workflow');
 const { write2log, postData, getData, timeFormat } = require('./common');
@@ -12,7 +11,7 @@ const config = require('../config');
 const generateWDL = async (projHome, projectConf) => {
   // projectConf: project conf.js
   // workflowList in utils/workflow
-  const wdl = `${config.CROMWELL.WDL_DIR}/${projectConf.category}/${workflowList[projectConf.workflow.name].wdl}`;
+  const wdl = `${config.CROMWELL.WDL_DIR}/${workflowList[projectConf.workflow.name].wdl}`;
   if (fs.existsSync(wdl)) {
     // add pipeline.wdl link
     fs.symlinkSync(wdl, `${projHome}/pipeline.wdl`, 'file');
@@ -21,120 +20,23 @@ const generateWDL = async (projHome, projectConf) => {
   return false;
 };
 
-const generateInputs = async (projHome, projectConf, workflowConf, proj) => {
+const generateInputs = async (projHome, projectConf, workflowConf) => {
   // projectConf: project conf.js
   // workflowList in utils/workflow
   const workflowSettings = workflowList[projectConf.workflow.name];
-  const template = String(fs.readFileSync(`${config.CROMWELL.TEMPLATE_DIR}/${projectConf.category}/${workflowSettings.inputs_tmpl}`));
+  const template = String(fs.readFileSync(`${config.CROMWELL.TEMPLATE_DIR}/${workflowSettings.inputs_tmpl}`));
   const params = { ...workflowConf, ...projectConf.workflow.input, outdir: `${projHome}/${workflowSettings.outdir}` };
 
   if (projectConf.workflow.name === 'sra2fastq') {
     params.outdir = config.IO.SRA_BASE_DIR;
   }
 
-  if (projectConf.workflow.name === '4dgb') {
-    // set up FDGB workflow input directory
-    const inputDir = `${projHome}/input`;
-    if (!fs.existsSync(inputDir)) {
-      fs.mkdirSync(inputDir);
-    }
-    // setup datasets
-    const workflow = projectConf.workflow.input;
-    let src = workflow.datasets[0].data;
-    let dest = `${inputDir}/dataset1.hic`;
-    fs.copyFileSync(src, dest);
-    src = workflow.datasets[1].data;
-    dest = `${inputDir}/dataset2.hic`;
-    fs.copyFileSync(src, dest);
-    // generate FDGB workflow project.yaml
-    const fdgbSettings = { id: proj.code, name: proj.name, ...workflow.projectSettings };
-    if (fdgbSettings.blackout.length === 0) {
-      delete fdgbSettings.blackout;
-    }
-
-    const fdgbDatasets = [{ name: workflow.datasets[0].name, data: 'dataset1.hic' }, { name: workflow.datasets[1].name, data: 'dataset2.hic' }];
-
-    const fdgbProj = { project: fdgbSettings, datasets: fdgbDatasets };
-    if (workflow.tracks) {
-      // eslint-disable-next-line no-restricted-syntax, guard-for-in
-      for (const i in workflow.tracks) {
-        src = workflow.tracks[i].file;
-        dest = `${inputDir}/track${i}.csv`;
-        fs.copyFileSync(src, dest);
-        workflow.tracks[i].file = `track${i}.csv`;
-        if (workflow.tracks[i].columns[0].file) {
-          src = workflow.tracks[i].columns[0].file;
-          dest = `${inputDir}/track${i}_column_1.csv`;
-          fs.copyFileSync(src, dest);
-          workflow.tracks[i].columns[0].file = `track${i}_column_1.csv`;
-        } else {
-          delete workflow.tracks[i].columns[0].file;
-        }
-        if (workflow.tracks[i].columns[1].file) {
-          src = workflow.tracks[i].columns[1].file;
-          dest = `${inputDir}/track${i}_column_2.csv`;
-          fs.copyFileSync(src, dest);
-          workflow.tracks[i].columns[1].file = `track${i}_column_2.csv`;
-        } else {
-          delete workflow.tracks[i].columns[1].file;
-        }
-      }
-      fdgbProj.tracks = workflow.tracks;
-    }
-    if (workflow.annotations) {
-      if (workflow.annotations.genes && workflow.annotations.genes.file) {
-        if (!fdgbProj.annotations) {
-          fdgbProj.annotations = {};
-        }
-        fdgbProj.annotations.genes = {};
-        src = workflow.annotations.genes.file;
-        dest = `${inputDir}/annotations_genes.gff`;
-        fs.copyFileSync(src, dest);
-        fdgbProj.annotations.genes.file = 'annotations_genes.gff';
-        if (workflow.annotations.genes.description) {
-          fdgbProj.annotations.genes.description = workflow.annotations.genes.description;
-        }
-      }
-      if (workflow.annotations.features && workflow.annotations.features.file) {
-        if (!fdgbProj.annotations) {
-          fdgbProj.annotations = {};
-        }
-        fdgbProj.annotations.features = {};
-        src = workflow.annotations.features.file;
-        dest = `${inputDir}/annotations_features.csv`;
-        fs.copyFileSync(src, dest);
-        fdgbProj.annotations.features.file = 'annotations_features.csv';
-        if (workflow.annotations.features.description) {
-          fdgbProj.annotations.features.description = workflow.annotations.features.description;
-        }
-      }
-    }
-    if (workflow.bookmarks) {
-      if (workflow.bookmarks.locations && workflow.bookmarks.locations.length > 0) {
-        if (!fdgbProj.bookmarks) {
-          fdgbProj.bookmarks = {};
-        }
-        fdgbProj.bookmarks.locations = workflow.bookmarks.locations;
-      }
-      if (workflow.bookmarks.features && workflow.bookmarks.features.length > 0) {
-        if (!fdgbProj.bookmarks) {
-          fdgbProj.bookmarks = {};
-        }
-        fdgbProj.bookmarks.features = workflow.bookmarks.features;
-      }
-    }
-    const YAMLfile = YAML.stringify(fdgbProj);
-    fs.writeFileSync(`${inputDir}/workflow.yaml`, YAMLfile);
-    // inputs template var
-    params.projdir = inputDir;
-  }
-
   // render input template and write to pipeline_inputs.json
   const inputs = ejs.render(template, params);
   await fs.promises.writeFile(`${projHome}/pipeline_inputs.json`, inputs);
   // render options template and write to pipeline_options.json
-  if (fs.existsSync(`${config.CROMWELL.TEMPLATE_DIR}/${projectConf.category}/${workflowSettings.options_tmpl}`)) {
-    const optionsTemplate = String(fs.readFileSync(`${config.CROMWELL.TEMPLATE_DIR}/${projectConf.category}/${workflowSettings.options_tmpl}`));
+  if (fs.existsSync(`${config.CROMWELL.TEMPLATE_DIR}/${workflowSettings.options_tmpl}`)) {
+    const optionsTemplate = String(fs.readFileSync(`${config.CROMWELL.TEMPLATE_DIR}/${workflowSettings.options_tmpl}`));
     const options = ejs.render(optionsTemplate, params);
     await fs.promises.writeFile(`${projHome}/pipeline_options.json`, options);
   }
@@ -150,7 +52,7 @@ const submitWorkflow = (proj, projectConf, inputsize) => {
   formData.append('workflowInputs', fs.createReadStream(`${projHome}/pipeline_inputs.json`));
   // logger.debug(`workflowInputs${projHome}/pipeline_inputs.json`);
 
-  const imports = `${config.CROMWELL.WDL_DIR}/${projectConf.category}/${workflowList[projectConf.workflow.name].wdl_imports}`;
+  const imports = `${config.CROMWELL.WDL_DIR}/${workflowList[projectConf.workflow.name].wdl_imports}`;
   const optionsJson = `${projHome}/pipeline_options.json`;
 
   if (fs.existsSync(optionsJson)) {
