@@ -11,7 +11,6 @@ const AdminUsers = React.lazy(() => import('./edge/um/admin/Users'))
 const AdminUploads = React.lazy(() => import('./edge/um/admin/Uploads'))
 const AdminProjects = React.lazy(() => import('./edge/um/admin/Projects'))
 const AdminProjectPage = React.lazy(() => import('./edge/project/results/projectPage/Admin'))
-const DataWorkflow = React.lazy(() => import('./edge/workflows/data/Main'))
 const MetaGWorkflow = React.lazy(() => import('./edge/workflows/metagenomics/Main'))
 
 const UserStructures = React.lazy(() => import('./epic/um/user/Structures'))
@@ -34,7 +33,6 @@ const privateRoutes = [
   { path: '/admin/uploads', name: 'AdminUploads', element: AdminUploads },
   { path: '/admin/projects', exact: true, name: 'AdminProjects', element: AdminProjects },
   { path: '/admin/project', name: 'AdminProjectPage', element: AdminProjectPage },
-  { path: '/workflow/data', name: 'Data', element: DataWorkflow },
   { path: '/workflow/metagenomics', name: 'MetaG', element: MetaGWorkflow },
   { path: '/user/structures', exact: true, name: 'UserStructures', element: UserStructures },
   { path: '/user/structures-all', exact: true, name: 'UserStructures', element: UserStructuresAll },
