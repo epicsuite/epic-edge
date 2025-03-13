@@ -37,6 +37,11 @@ export const components = {
     fileInput: null,
     fileInput_display: null,
   },
+  fileUpload: {
+    file: '',
+    validForm: false,
+    errMessage: 'File is required',
+  },
   fileInputArray: {
     validForm: false,
     fileInput: [],

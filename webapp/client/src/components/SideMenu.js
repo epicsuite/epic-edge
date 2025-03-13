@@ -26,6 +26,16 @@ export const SideMenu = (props) => {
         >
           Slurpy
         </NavLink>
+        <br></br>
+        <br></br>
+        <NavLink
+          to="/workflow/fq2hic"
+          className={({ isActive, isPending }) =>
+            isPending ? 'pending' : isActive ? 'active' : ''
+          }
+        >
+          Fastq to HiC
+        </NavLink>
       </div>
       <br></br>
       <br></br>

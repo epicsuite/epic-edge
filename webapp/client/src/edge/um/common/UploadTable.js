@@ -428,7 +428,7 @@ const UploadTable = (props) => {
             sorting: [{ id: 'updated', desc: true }],
           }}
           muiTablePaginationProps={{
-            rowsPerPageOptions: [10, 20, 50, 100],
+            rowsPerPageOptions: [5, 10, 20, 50, 100],
             labelRowsPerPage: 'uploads per page',
           }}
           renderEmptyRowsFallback={() => (

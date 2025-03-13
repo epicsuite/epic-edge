@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import moment from 'moment'
 import { MaterialReactTable } from 'material-react-table'
-import { Badge } from 'reactstrap'
+import { Badge, Row, Col } from 'reactstrap'
 import { ThemeProvider } from '@mui/material'
-import { theme, projectStatusColors, projectStatusNames } from '../common/tableUtil'
-import { getData, apis } from '../../common/util'
+import { theme, projectStatusColors, projectStatusNames } from 'src/edge/um/common/tableUtil'
+import { getData, apis } from 'src/edge/common/util'
 import { workflowList } from 'src/util'
+import { SideMenu } from 'src/components/SideMenu'
 
 const JobQueue = () => {
   //should be memoized or stable
@@ -14,6 +15,10 @@ const JobQueue = () => {
       {
         accessorKey: 'name', //access nested data with dot notation
         header: 'project',
+      },
+      {
+        accessorKey: 'owner',
+        header: 'Owner',
       },
       {
         accessorKey: 'type', //normal accessorKey
@@ -69,27 +74,41 @@ const JobQueue = () => {
   }, [])
 
   return (
-    <ThemeProvider theme={theme}>
-      <MaterialReactTable
-        columns={columns}
-        data={tableData}
-        enableFullScreenToggle={false}
-        enableColumnActions={false}
-        enableSorting={true}
-        enableColumnFilters={true}
-        state={{
-          isLoading: loading,
-        }}
-        renderEmptyRowsFallback={() => (
-          <center>
-            <br></br>No jobs to display
-          </center>
-        )}
-        renderTopToolbarCustomActions={({ table }) => {
-          return <div className="edge-table-title">Job Queue</div>
-        }}
-      />
-    </ThemeProvider>
+    <>
+      <Row className="justify-content-center">
+        <Col xs="12" sm="12" md="2">
+          <SideMenu />
+        </Col>
+        <Col xs="12" sm="12" md="10">
+          <Row className="justify-content-center">
+            <Col xs="12" sm="12" md="10">
+              <ThemeProvider theme={theme}>
+                <MaterialReactTable
+                  columns={columns}
+                  data={tableData}
+                  enableFullScreenToggle={false}
+                  enableColumnActions={false}
+                  enableSorting={false}
+                  enableColumnFilters={false}
+                  state={{
+                    isLoading: loading,
+                  }}
+                  renderEmptyRowsFallback={() => (
+                    <center>
+                      <br></br>No jobs to display
+                    </center>
+                  )}
+                  renderTopToolbarCustomActions={({ table }) => {
+                    return <div className="edge-table-title">Job Queue</div>
+                  }}
+                />
+              </ThemeProvider>
+            </Col>
+            <Col xs="12" sm="12" md="2"></Col>
+          </Row>
+        </Col>
+      </Row>
+    </>
   )
 }
 

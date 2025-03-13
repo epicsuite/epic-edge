@@ -1,15 +1,14 @@
 import React from 'react'
 
 // const Home = React.lazy(() => import('./edge/Home'))
-const PublicProjects = React.lazy(() => import('./edge/um/public/Projects'))
-const PublicProjectPage = React.lazy(() => import('./edge/project/results/projectPage/Public'))
+const PublicProjects = React.lazy(() => import('./epic/edge/um/public/Projects'))
+const PublicProjectPage = React.lazy(() => import('./epic/edge/project/results/projectPage/Public'))
 const UserRegister = React.lazy(() => import('./edge/um/user/Register'))
 const UserLogin = React.lazy(() => import('./edge/um/user/Login'))
 const OAuth = React.lazy(() => import('./edge/um/user/ORCIDOAuthCallback'))
 const UserActivate = React.lazy(() => import('./edge/um/user/Activate'))
 const UserResetPassword = React.lazy(() => import('./edge/um/user/ResetPassword'))
 const Home = React.lazy(() => import('./epic/Home'))
-const PublicStructures = React.lazy(() => import('./epic/um/public/Structures'))
 const Trame = React.lazy(() => import('./epic/trame/Main'))
 const ComparativeViewerPublic = React.lazy(() => import('./epic/comparative-viewer/Main'))
 
@@ -23,7 +22,6 @@ const routes = [
   { path: '/oauth', name: 'OAuth', element: OAuth },
   { path: '/activate', exact: true, name: 'Activate', element: UserActivate },
   { path: '/resetPassword', exact: true, name: 'ResetPassword', element: UserResetPassword },
-  { path: '/public/structures', exact: true, name: 'PublicStructures', element: PublicStructures },
   { path: '/trame', exact: true, name: 'Trame', element: Trame },
   {
     path: '/public/comparative-viewer',
