@@ -76,6 +76,13 @@ const config = {
     // Path to the client's "build" directory on the filesystem.
     BUILD_DIR: process.env.CLIENT_BASE_DIR || path.join(CLIENT_BASE_DIR, 'build'),
   },
+  SLURM: {
+    // Max allowed number of jobs in slurm.
+    NUM_JOBS_MAX: makeIntIfDefined(process.env.SLURM_NUM_JOBS_MAX) || 100000,
+    // Total size of the input files allowed per job.
+    // Note: 161061273600 Bytes is 150 Gibibytes (161 Gigabytes).
+    JOBS_INPUT_MAX_SIZE_BYTES: makeIntIfDefined(process.env.SLURM_JOBS_INPUT_MAX_SIZE_BYTES) || 161061273600,
+  },
   NEXTFLOW: {
     PATH: process.env.NEXTFLOW_PATH || 'nextflow',
     // Max allowed number of jobs in nextflow.
@@ -117,13 +124,17 @@ const config = {
     // Reference: https://crontab.guru/ (cron schedule decoder)
     SCHEDULES: {
       // monitor workflow requests on every 2 minutes
-      CROMWELL_WORKFLOW_MONITOR: process.env.CRON_CROMWELL_WORKFLOW_MONITOR_SCHEDULE || '0-59/2 * * * *',
+      CROMWELL_WORKFLOW_MONITOR: process.env.CRON_CROMWELL_WORKFLOW_MONITOR_SCHEDULE || '0-59/1 * * * *',
       // monitor cromwell jobs on every 2 minutes
-      CROMWELL_JOB_MONITOR: process.env.CRON_CROMWELL_JOB_MONITOR_SCHEDULE || '1-59/2 * * * *',
+      CROMWELL_JOB_MONITOR: process.env.CRON_CROMWELL_JOB_MONITOR_SCHEDULE || '1-59/1 * * * *',
       // monitor nextflow jobs on every 2 minutes
       NEXTFLOW_WORKFLOW_MONITOR: process.env.CRON_NEXTFLOW_WORKFLOW_MONITOR_SCHEDULE || '0-59/2 * * * *',
       // monitor nextflow jobs on every 2 minutes
       NEXTFLOW_JOB_MONITOR: process.env.CRON_NEXTFLOW_JOB_MONITOR_SCHEDULE || '1-59/2 * * * *',
+      // monitor nextflow jobs on every 2 minutes
+      SLURM_WORKFLOW_MONITOR: process.env.CRON_SLURM_WORKFLOW_MONITOR_SCHEDULE || '0-59/3 * * * *',
+      // monitor nextflow jobs on every 2 minutes
+      SLURM_JOB_MONITOR: process.env.CRON_SLURM_JOB_MONITOR_SCHEDULE || '1-59/3 * * * *',
       // monitor file upload deletion/expiration every day at midnight
       FILE_UPLOAD_MONITOR: process.env.CRON_FILE_UPLOAD_MONITOR_SCHEDULE || '0 0 * * *',
       // monitor project status on every 1 minute

@@ -85,7 +85,7 @@ const Main = (props) => {
       })
     })
     // set form data
-    formData.append('workflows', JSON.stringify(myWorkflow))
+    formData.append('workflow', JSON.stringify(myWorkflow))
     formData.append('inputDisplay', JSON.stringify(inputDisplay))
 
     // submit to server via api
@@ -187,6 +187,14 @@ const Main = (props) => {
                   <br></br>
                   {workflow === 'fq2hic' && (
                     <>
+                      <UploadData
+                        title={'Upload Files'}
+                        info={
+                          'Upload fastq files required by the experimental design. You can skip this step if the fastq files have already been uploaded. Use the "My Uploads" table below to manage your uploads.'
+                        }
+                        isValid={true}
+                        extensions={['fq', 'fastq']}
+                      />
                       <WorkflowInput
                         title={
                           inputComponents['workflowInput']
@@ -204,14 +212,6 @@ const Main = (props) => {
                             ? inputComponents['workflowInput'].errMessage
                             : null
                         }
-                      />
-                      <UploadData
-                        title={'Upload Files'}
-                        info={
-                          'Upload fastq files required by the experimental design. You can skip this step if the fastq files have already been loaded. Use the "My Uploads" table below to manage your uploads.'
-                        }
-                        isValid={true}
-                        extensions={['fq', 'fastq']}
                       />
                     </>
                   )}

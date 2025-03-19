@@ -5,6 +5,7 @@ const config = require('../config');
 
 const cromwellWorkflows = [];
 const nextflowWorkflows = [];
+const slurmWorkflows = ['fq2hic'];
 const nextflowConfigs = {
   report_config: 'report.config',
 };
@@ -16,11 +17,14 @@ const workflowList = {
     inputs_tmpl: '4dgb_inputs.tmpl',
     outdir: 'output/hic',
   },
+  'fq2hic': {
+    outdir: 'output/epic',
+  },
 };
 
 const linkUpload = async (fq, projHome) => {
   try {
-    if (fq.startsWith(config.FILE_UPLOADS.FILEUPLOAD_FILE_DIR)) {
+    if (fq.startsWith(config.IO.UPLOADED_FILES_DIR)) {
       // create input dir and link uploaded file with realname
       const inputDir = `${projHome}/input`;
       if (!fs.existsSync(inputDir)) {
@@ -78,6 +82,7 @@ const generateWorkflowResult = (proj) => {
 module.exports = {
   cromwellWorkflows,
   nextflowWorkflows,
+  slurmWorkflows,
   nextflowConfigs,
   workflowList,
   linkUpload,
