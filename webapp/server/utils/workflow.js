@@ -7,9 +7,11 @@ const cromwellWorkflows = [];
 const nextflowWorkflows = [];
 const slurmWorkflows = ['fq2hic'];
 const nextflowConfigs = {
-  report_config: 'report.config',
+  executor_config: {
+    slurm: 'slurm.config',
+    local: 'local.config',
+  }
 };
-
 const workflowList = {
   'hic': {
     wdl: '4dgb.wdl',
@@ -19,6 +21,8 @@ const workflowList = {
   },
   'fq2hic': {
     outdir: 'output/epic',
+    nextflow_main: 'main.nf',
+    config_tmpl: 'fq2hic_config.tmpl',
   },
 };
 

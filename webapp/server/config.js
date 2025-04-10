@@ -47,17 +47,18 @@ const makeIntIfDefined = (val) => typeof val === 'string' ? parseInt(val, 10) : 
 
 // Determine several reusable directory paths based upon environment variables
 // and/or the path to the directory containing this `config.js` file.
-const CLIENT_BASE_DIR = path.join(__dirname, '../client');
-const NEXTFLOW_BASE_DIR = path.join(__dirname, '../../workflows/Nextflow');
-const CROMWELL_BASE_DIR = path.join(__dirname, '../../workflows/Cromwell');
-const IO_BASE_DIR = process.env.IO_BASE_DIR || path.join(__dirname, '../../io');
+const appServerDir = process.env.APP_SERVER_DIR ? process.env.APP_SERVER_DIR : __dirname;
+const CLIENT_BASE_DIR = path.join(appServerDir, '../client');
+const NEXTFLOW_BASE_DIR = path.join(appServerDir, '../../workflows/Nextflow');
+const CROMWELL_BASE_DIR = path.join(appServerDir, '../../workflows/Cromwell');
+const IO_BASE_DIR = process.env.IO_BASE_DIR || path.join(appServerDir, '../../io');
 
 const config = {
   // Name of environment in which application is running (either "production" or "development").
   // Reference: https://expressjs.com/en/advanced/best-practice-performance.html#set-node_env-to-production
   NODE_ENV: process.env.NODE_ENV || 'production',
   APP: {
-    // Base URL at which visitors can access the web server (e.g. "https://edge.bioinformatics.org").
+    // Base URL at which visitors can access the web server (e.g. "https://epic.lanl.gov").
     // Note: Some emails the server sends to visitors will contain URLs based upon this one.
     UI_BASE_URL: process.env.APP_UI_BASE_URL || 'https://epic.lanl.gov',
     // Port number on which the web server will listen for HTTP requests.
@@ -84,7 +85,10 @@ const config = {
     JOBS_INPUT_MAX_SIZE_BYTES: makeIntIfDefined(process.env.SLURM_JOBS_INPUT_MAX_SIZE_BYTES) || 161061273600,
   },
   NEXTFLOW: {
-    PATH: process.env.NEXTFLOW_PATH || 'nextflow',
+    EDGE_ROOT: process.env.NEXTFLOW_EDGE_ROOT || null,
+    SLURM_EDGE_ROOT: process.env.NEXTFLOW_SLURM_EDGE_ROOT || null,
+    SLURM_SSH: process.env.NEXTFLOW_SLURM_SSH || '',
+    EXECUTOR: process.env.NEXTFLOW_EXECUTOR || 'local',
     // Max allowed number of jobs in nextflow.
     NUM_JOBS_MAX: makeIntIfDefined(process.env.NEXTFLOW_NUM_JOBS_MAX) || 100000,
     // Total size of the input files allowed per job.
@@ -124,17 +128,13 @@ const config = {
     // Reference: https://crontab.guru/ (cron schedule decoder)
     SCHEDULES: {
       // monitor workflow requests on every 2 minutes
-      CROMWELL_WORKFLOW_MONITOR: process.env.CRON_CROMWELL_WORKFLOW_MONITOR_SCHEDULE || '0-59/1 * * * *',
+      CROMWELL_WORKFLOW_MONITOR: process.env.CRON_CROMWELL_WORKFLOW_MONITOR_SCHEDULE || '0-59/2 * * * *',
       // monitor cromwell jobs on every 2 minutes
-      CROMWELL_JOB_MONITOR: process.env.CRON_CROMWELL_JOB_MONITOR_SCHEDULE || '1-59/1 * * * *',
+      CROMWELL_JOB_MONITOR: process.env.CRON_CROMWELL_JOB_MONITOR_SCHEDULE || '1-59/2 * * * *',
       // monitor nextflow jobs on every 2 minutes
       NEXTFLOW_WORKFLOW_MONITOR: process.env.CRON_NEXTFLOW_WORKFLOW_MONITOR_SCHEDULE || '0-59/2 * * * *',
       // monitor nextflow jobs on every 2 minutes
       NEXTFLOW_JOB_MONITOR: process.env.CRON_NEXTFLOW_JOB_MONITOR_SCHEDULE || '1-59/2 * * * *',
-      // monitor nextflow jobs on every 2 minutes
-      SLURM_WORKFLOW_MONITOR: process.env.CRON_SLURM_WORKFLOW_MONITOR_SCHEDULE || '0-59/3 * * * *',
-      // monitor nextflow jobs on every 2 minutes
-      SLURM_JOB_MONITOR: process.env.CRON_SLURM_JOB_MONITOR_SCHEDULE || '1-59/3 * * * *',
       // monitor file upload deletion/expiration every day at midnight
       FILE_UPLOAD_MONITOR: process.env.CRON_FILE_UPLOAD_MONITOR_SCHEDULE || '0 0 * * *',
       // monitor project status on every 1 minute
@@ -145,6 +145,10 @@ const config = {
       DATABASE_BACKUP_CREATOR: process.env.CRON_DATABASE_BACKUP_CREATOR_SCHEDULE || '0 1 * * *',
       // delete old db backups every day at 2 am
       DATABASE_BACKUP_PRUNER: process.env.CRON_DATABASE_BACKUP_PRUNER_SCHEDULE || '0 2 * * *',
+      // monitor nextflow jobs on every 2 minutes
+      SLURM_WORKFLOW_MONITOR: process.env.CRON_SLURM_WORKFLOW_MONITOR_SCHEDULE || '0-59/3 * * * *',
+      // monitor nextflow jobs on every 2 minutes
+      SLURM_JOB_MONITOR: process.env.CRON_SLURM_JOB_MONITOR_SCHEDULE || '1-59/3 * * * *',
       // monitor trame instance deletion/expiration every day at 4am
       TRAME_MONITOR: process.env.CRON_TRAME_MONITOR_SCHEDULE || '0 4 * * *',
     },
@@ -174,11 +178,11 @@ const config = {
     MAILGUN_DOMAIN: process.env.EMAIL_MAILGUN_DOMAIN,
     MAILGUN_API_KEY: process.env.EMAIL_MAILGUN_API_KEY,
     // activate user
-    ACTIVATE_USER_SUBJECT: process.env.ACTIVATE_USER_SUBJECT || 'Your EDGE login account',
+    ACTIVATE_USER_SUBJECT: process.env.ACTIVATE_USER_SUBJECT || 'Your EPIC EDGE login account',
     ACTIVATE_USER_ACTION: process.env.ACTIVATE_USER_ACTION || 'Activate Your Account',
     ACTIVATE_USER_ACTION_MESSAGE: process.env.ACTIVATE_USER_ACTION_MESSAGE || 'Please activate your account.',
     // resetpassword
-    RESETPASSWORD_SUBJECT: process.env.RESETPASSWORD_SUBJECT || 'Reset your EDGE login password',
+    RESETPASSWORD_SUBJECT: process.env.RESETPASSWORD_SUBJECT || 'Reset your EPIC EDGE login password',
     RESETPASSWORD_ACTION: process.env.RESETPASSWORD_ACTION || 'Reset Your Password',
     RESETPASSWORD_ACTION_MESSAGE: process.env.RESETPASSWORD_ACTION_MESSAGE || 'Someone requested a password reset for your account. If this was not you, please disregard this email. If you would like to continue, click the button to reset your password.',
     // project status

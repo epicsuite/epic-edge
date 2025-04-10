@@ -32,15 +32,15 @@ export const components = {
     validForm: false,
     selectInput: null,
   },
-  fileInput: {
-    validForm: false,
-    fileInput: null,
-    fileInput_display: null,
-  },
   fileUpload: {
     file: '',
     validForm: false,
     errMessage: 'File is required',
+  },
+  fileInput: {
+    validForm: false,
+    fileInput: null,
+    fileInput_display: null,
   },
   fileInputArray: {
     validForm: false,
@@ -54,13 +54,17 @@ export const components = {
     fileInput_display: [],
     fileInput_isValid: [],
   },
+  optionSelector: {
+    validForm: true,
+    option: '',
+  },
   fastqInput: {
     params: {
-      interleaved: {
+      paired: {
         trueText: 'Yes',
         falseText: 'No',
         defaultValue: true,
-        text: 'Is interleaved?',
+        text: 'Paired-End',
       },
       fastq: {
         text: 'Fastq',
@@ -72,7 +76,8 @@ export const components = {
     init: {
       validForm: false,
       errMessage: '',
-      interleaved: true,
+      paired: true,
+      platform: 'illumina',
       fileInput: [],
       fileInput_display: [],
     },

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Form, Row, Col } from 'reactstrap'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, NavLink } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -55,29 +55,29 @@ const Main = (props) => {
     // set workflow inputs
     let myWorkflow = { name: workflow, input: {} }
     // set workflow input display
-    let inputDisplay = { workflow: workflowList[workflow].label, input: {} }
+    let inputDisplay = { workflow: workflowList[workflow].label }
 
     mainComponents.forEach((component) => {
       if (!inputComponents[component]) {
         return
       }
       myWorkflow.input[component] = {}
-      inputDisplay.input[inputComponents[component].text] = {}
+      inputDisplay[inputComponents[component].text] = {}
       Object.keys(inputComponents[component].inputs).forEach((key) => {
         if (key === 'csvFile') {
           formData.append('file', inputComponents[component].inputs[key].value)
           myWorkflow.input[component][key] = inputComponents[component].inputs[key].value.name
-          inputDisplay.input[inputComponents[component].text][
+          inputDisplay[inputComponents[component].text][
             inputComponents[component].inputs[key].text
           ] = inputComponents[component].inputs[key].value.name
         } else {
           myWorkflow.input[component][key] = inputComponents[component].inputs[key].value
           if (inputComponents[component].inputs[key].display) {
-            inputDisplay.input[inputComponents[component].text][
+            inputDisplay[inputComponents[component].text][
               inputComponents[component].inputs[key].text
             ] = inputComponents[component].inputs[key].display
           } else {
-            inputDisplay.input[inputComponents[component].text][
+            inputDisplay[inputComponents[component].text][
               inputComponents[component].inputs[key].text
             ] = inputComponents[component].inputs[key].value
           }
@@ -187,14 +187,21 @@ const Main = (props) => {
                   <br></br>
                   {workflow === 'fq2hic' && (
                     <>
-                      <UploadData
+                      {/* <UploadData
                         title={'Upload Files'}
                         info={
                           'Upload fastq files required by the experimental design. You can skip this step if the fastq files have already been uploaded. Use the "My Uploads" table below to manage your uploads.'
                         }
                         isValid={true}
                         extensions={['fq', 'fastq']}
-                      />
+                      /> */}
+                      <span className="pt-3 text-muted edge-text-size-small">
+                        NOTE: Use <NavLink to="/user/uploads">Upload Files</NavLink> to upload fastq
+                        files in the experimental design csv file before submitting the workflow
+                        request.
+                      </span>
+                      <br></br>
+                      <br></br>
                       <WorkflowInput
                         title={
                           inputComponents['workflowInput']

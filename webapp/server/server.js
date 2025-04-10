@@ -16,7 +16,7 @@ const trameMonitor = require('./crons/trameMonitor');
 const uploadMonitor = require('./crons/uploadMonitor');
 // const cromwellWorkflowMonitor = require('./crons/cromwellWorkflowMonitor');
 // const nextflowJobMonitor = require('./crons/nextflowJobMonitor');
-// const nextflowWorkflowMonitor = require('./crons/nextflowWorkflowMonitor');
+const nextflowWorkflowMonitor = require('./crons/nextflowWorkflowMonitor');
 const slurmWorkflowMonitor = require('./crons/slurmWorkflowMonitor');
 const projectDeletionMonitor = require('./crons/projectDeletionMonitor');
 const projectStatusMonitor = require('./crons/projectStatusMonitor');
@@ -75,6 +75,10 @@ if (config.NODE_ENV === 'production') {
   // monitor workflow requests on every 2 minutes
   cron.schedule(config.CRON.SCHEDULES.NEXTFLOW_WORKFLOW_MONITOR, async () => {
     await slurmWorkflowMonitor();
+  });
+  // monitor workflow requests on every 2 minutes
+  cron.schedule(config.CRON.SCHEDULES.NEXTFLOW_WORKFLOW_MONITOR, async () => {
+    await nextflowWorkflowMonitor();
   });
   // monitor uploads every day at midnight
   cron.schedule(config.CRON.SCHEDULES.FILE_UPLOAD_MONITOR, async () => {

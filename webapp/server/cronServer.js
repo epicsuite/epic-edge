@@ -7,7 +7,7 @@ const logger = require('./utils/logger');
 const uploadMonitor = require('./crons/uploadMonitor');
 const cromwellJobMonitor = require('./crons/cromwellJobMonitor');
 const cromwellWorkflowMonitor = require('./crons/cromwellWorkflowMonitor');
-// const nextflowJobMonitor = require('./crons/nextflowJobMonitor');
+const nextflowJobMonitor = require('./crons/nextflowJobMonitor');
 const nextflowWorkflowMonitor = require('./crons/nextflowWorkflowMonitor');
 const projectDeletionMonitor = require('./crons/projectDeletionMonitor');
 const projectStatusMonitor = require('./crons/projectStatusMonitor');
@@ -33,7 +33,7 @@ cron.schedule(config.CRON.SCHEDULES.CROMWELL_WORKFLOW_MONITOR, async () => {
 });
 // monitor nextflow jobs on every 2 minutes
 cron.schedule(config.CRON.SCHEDULES.NEXTFLOW_JOB_MONITOR, async () => {
-  // await nextflowJobMonitor();
+  await nextflowJobMonitor();
 });
 // cron jobs
 // monitor workflow requests on every 2 minutes
