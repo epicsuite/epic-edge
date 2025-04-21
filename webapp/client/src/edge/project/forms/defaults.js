@@ -32,6 +32,10 @@ export const components = {
     validForm: false,
     selectInput: null,
   },
+  multSelectInput: {
+    validForm: false,
+    selections: [],
+  },
   fileUpload: {
     file: '',
     validForm: false,
@@ -57,6 +61,7 @@ export const components = {
   optionSelector: {
     validForm: true,
     option: '',
+    display: '',
   },
   fastqInput: {
     params: {
@@ -78,6 +83,7 @@ export const components = {
       errMessage: '',
       paired: true,
       platform: 'illumina',
+      platform_display: 'Illumina',
       fileInput: [],
       fileInput_display: [],
     },
@@ -110,6 +116,28 @@ export const components = {
       errMessage: null,
       projectName: null,
       projectDesc: null,
+    },
+  },
+  sraAccessionInput: {
+    params: {
+      accessions: {
+        text: 'SRA Accession(s)',
+        tooltip: 'Input SRA accessions (comma separate for > 1 input)',
+        placeholder: 'ex: SRR1553609',
+        showError: false,
+        isOptional: false,
+        toUpperCase: true,
+        errMessage: 'Invalid SRA accession(s) input',
+      },
+    },
+    validInputs: {
+      accessions: { isValid: false, error: 'Invalid SRA accession(s) input' },
+    },
+    init: {
+      validForm: false,
+      errMessage: null,
+      accessions: [],
+      accessions_display: '',
     },
   },
 }

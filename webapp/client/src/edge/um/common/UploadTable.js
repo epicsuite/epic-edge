@@ -426,11 +426,9 @@ const UploadTable = (props) => {
           initialState={{
             columnVisibility: { desc: false, owner: false, created: false },
             sorting: [{ id: 'updated', desc: true }],
-            //customize the default page size
-            pagination: { pageSize: 5 },
           }}
           muiTablePaginationProps={{
-            rowsPerPageOptions: [5, 10, 20, 50, 100],
+            rowsPerPageOptions: [10, 20, 50, 100],
             labelRowsPerPage: 'uploads per page',
           }}
           renderEmptyRowsFallback={() => (
