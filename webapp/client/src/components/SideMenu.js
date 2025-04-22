@@ -18,7 +18,7 @@ export const SideMenu = (props) => {
         </NavLink>
         <br></br>
         <br></br> */}
-        <NavLink
+        {/*  <NavLink
           to="/workflow/slurpy"
           className={({ isActive, isPending }) =>
             isPending ? 'pending' : isActive ? 'active' : ''
@@ -27,7 +27,7 @@ export const SideMenu = (props) => {
           Slurpy
         </NavLink>
         <br></br>
-        <br></br>
+        <br></br> */}
         <NavLink
           to="/workflow/fq2hic"
           className={({ isActive, isPending }) =>

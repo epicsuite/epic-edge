@@ -99,7 +99,7 @@ const config = {
     // Directory of the workflow templates. The Workflow templates are used for creating nextflow workflow inputs.
     TEMPLATE_DIR: process.env.NEXTFLOW_TEMPLATE_DIR || path.join(NEXTFLOW_BASE_DIR, 'templates'),
     // Directory of the workflow configs. The Workflow configs are used for running nextflow workflows.
-    CONFIG_DIR: process.env.NEXTFLOW_TEMPLATE_DIR || path.join(NEXTFLOW_BASE_DIR, 'configs'),
+    CONFIG_DIR: process.env.NEXTFLOW_CONF_DIR || path.join(NEXTFLOW_BASE_DIR, 'configs'),
   },
   CROMWELL: {
     // Base URL at which HTTP clients can access the Cromwell API.

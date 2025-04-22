@@ -2,7 +2,7 @@
 const projectStatus = ['in queue', 'running', 'failed', 'delete', 'rerun', 'interrupted', 'complete', 'processing', 'submitted'];
 const uploadStatus = ['live', 'delete'];
 const jobStatus = ['Submitted', 'Running', 'Failed', 'Aborted', 'Succeeded'];
-const queueTypes = ['cromwell', 'nextflow', 'slurm', 'local'];
+const queueTypes = ['cromwell', 'nextflow'];
 
 module.exports = {
   projectStatus,

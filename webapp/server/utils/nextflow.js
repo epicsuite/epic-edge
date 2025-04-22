@@ -1,13 +1,119 @@
 const fs = require('fs');
+const YAML = require('json-to-pretty-yaml');
 const ejs = require('ejs');
+const csv = require('csvtojson');
 const Papa = require('papaparse');
 const Job = require('../edge-api/models/job');
-const { nextflowConfigs, workflowList, generateWorkflowResult } = require('./workflow');
+const Upload = require('../edge-api/models/upload');
+const { nextflowConfigs, workflowList, linkUpload, generateWorkflowResult } = require('./workflow');
 const { write2log, execCmd, sleep } = require('./common');
 const logger = require('./logger');
 const config = require('../config');
 
 const generateInputs = async (projHome, projectConf, proj) => {
+  if (projectConf.workflow.name === 'fq2hic') {
+    const log = `${projHome}/log.txt`;
+    // projectConf: project conf.js
+    // workflowList in utils/workflow
+    // validate input csv
+    const csvFile = `${projHome}/${projectConf.workflow.input.workflowInput.csvFile}`;
+    const outdir = `${projHome}/${workflowList[projectConf.workflow.name].outdir}`;
+    // Async / await usage
+    const jsonArray = await csv({
+      // rename headers to ignore potentially erroneous user-entered headers
+      noheader: false,
+      headers: ['file_1', 'file_2', 'description']
+    }).fromFile(csvFile);
+
+    // validate inputs and replace with real file paths
+    let currRow = 0;
+    let validInput = true;
+    let errMsg = '';
+    const fq1s = [];
+    const fq2s = [];
+    let newCsv = 'filepath_1,filepath_2,description\n';
+    for (let i = 0; i < jsonArray.length; i += 1) {
+      currRow += 1;
+      const [folder1, upload1] = jsonArray[i].file_1.split(/\//);
+      // find uploaded file
+      // eslint-disable-next-line no-await-in-loop
+      const file1 = await Upload.findOne({ folder: { $eq: folder1 }, name: { $eq: upload1 }, status: { $ne: 'delete' } });
+      if (!file1) {
+        validInput = false;
+        errMsg += `ERROR: Row ${currRow}: file ${jsonArray[i].file_1} not found.\n`;
+      } else {
+        // add file link to input directory
+        // eslint-disable-next-line no-await-in-loop
+        const fqlink1 = await linkUpload(`${config.IO.UPLOADED_FILES_DIR}/${file1.code}`, projHome);
+        fq1s.push(fqlink1);
+        newCsv += `${fqlink1},`;
+      }
+      const [folder2, upload2] = jsonArray[i].file_2.split(/\//);
+      // find uploaded file
+      // eslint-disable-next-line no-await-in-loop
+      const file2 = await Upload.findOne({ folder: { $eq: folder2 }, name: { $eq: upload2 }, status: { $ne: 'delete' } });
+      if (!file2) {
+        validInput = false;
+        errMsg += `ERROR: Row ${currRow}: file ${jsonArray[i].file_2} not found.\n`;
+      } else {
+        // add file link to input directory
+        // eslint-disable-next-line no-await-in-loop
+        const fqlink2 = await linkUpload(`${config.IO.UPLOADED_FILES_DIR}/${file2.code}`, projHome);
+        fq2s.push(fqlink2);
+        newCsv += `${fqlink2},`;
+      }
+      newCsv += `${jsonArray[i].description}\n`;
+    }
+    if (!validInput) {
+      logger.error('Validation failed.');
+      logger.error(errMsg);
+      write2log(log, 'Validation failed.');
+      write2log(log, errMsg);
+      proj.status = 'failed';
+      proj.updated = Date.now();
+      proj.save();
+      return false;
+    }
+    // create experimental_design.csv
+    await fs.promises.writeFile(`${outdir}/experimental_design.csv`, newCsv);
+    // json for template rendering
+    const conf = {
+      ...projectConf.workflow.input.workflowInput,
+      timevalues: projectConf.workflow.input.workflowInput.timeValues.split(/,\s*/).map(str => parseInt(str, 10)),
+      treatments: projectConf.workflow.input.workflowInput.treatments.split(/,\s*/),
+      fqs: [fq1s, fq2s]
+    };
+    // generate workflow.init file
+    const workflowInitTemplate =
+      `cell_line:    <%= cellLine %>
+description:  <%= description %>
+experiment:   <%= experiment %>
+replicate:    <%= replicate %>
+resolution:   <%= resolution %>
+timeunits:    <%= timeUnits %>
+timevalues:   <%- JSON.stringify(timevalues) %>
+treatments:   <%- JSON.stringify(treatments) %>`;
+    const workflowInit = ejs.render(workflowInitTemplate, conf);
+    await fs.promises.writeFile(`${outdir}/workflow.init`, workflowInit);
+    // generate workflow.yaml file
+    const workflowJsonTemplate =
+      `{
+  "cell_line": "<%= cellLine %>",
+  "datasets": <%- JSON.stringify(fqs) %>,
+  "description": "<%= description %>",
+  "experiment": "<%= experiment %>",
+  "replicate": <%= replicate %>,
+  "resolution": <%= resolution %>,
+  "timeunits": "<%= timeUnits %>",
+  "timevalues": <%- JSON.stringify(timevalues) %>,
+  "treatments": <%- JSON.stringify(treatments) %>,
+  "version": "1.0.0"
+}`;
+    const workflowJson = JSON.parse(ejs.render(workflowJsonTemplate, conf));
+    // json2yaml
+    const workflowYaml = YAML.stringify(workflowJson);
+    await fs.promises.writeFile(`${outdir}/workflow.yaml`, workflowYaml);
+  }
   // projectConf: project conf.js
   // workflowList in utils/workflow
   const workflowSettings = workflowList[projectConf.workflow.name];
@@ -16,8 +122,9 @@ const generateInputs = async (projHome, projectConf, proj) => {
   const params = {
     ...projectConf.workflow.input,
     ...projectConf.rawReads,
+    // download sra data to shared directory
+    sraOutdir: config.IO.SRA_BASE_DIR,
     inputFastq2: [],
-    outdir: `${projHome}/${workflowSettings.outdir}`,
     projOutdir: `${projHome}/${workflowSettings.outdir}`,
     project: proj.name,
     executor_config: `${config.NEXTFLOW.CONFIG_DIR}/${executorConfig}`,
@@ -40,10 +147,6 @@ const generateInputs = async (projHome, projectConf, proj) => {
     }
   }
 
-  // download sra data to shared directory
-  if (projectConf.workflow.name === 'sra2fastq') {
-    params.outdir = config.IO.SRA_BASE_DIR;
-  }
   // render input template and write to nextflow_params.json
   let inputs = ejs.render(template, params);
   if (config.NEXTFLOW.SLURM_EDGE_ROOT && config.NEXTFLOW.EDGE_ROOT) {
@@ -112,7 +215,7 @@ const submitWorkflow = async (proj, projectConf, inputsize) => {
   }
   // submit workflow
   const runName = `edge-${proj.code}`;
-  const cmd = `${config.NEXTFLOW.SLURM_SSH} NXF_CACHE_DIR=${slurmProjHome}/nextflow/work NXF_PID_FILE=${slurmProjHome}/nextflow/.nextflow.pid NXF_LOG_FILE=${slurmProjHome}/nextflow/.nextflow.log nextflow -C ${slurmProjHome}/nextflow.config -bg -q run ${config.NEXTFLOW.WORKFLOW_DIR}/${workflowList[projectConf.workflow.name].nextflow_main} -name ${runName}`;
+  const cmd = `${config.NEXTFLOW.SLURM_SSH} NXF_CACHE_DIR=${slurmProjHome}/nextflow/work NXF_PID_FILE=${slurmProjHome}/nextflow/.nextflow.pid NXF_LOG_FILE=${slurmProjHome}/nextflow/.nextflow.log nextflow -C ${slurmProjHome}/nextflow.config -bg -q run ${config.NEXTFLOW.WORKFLOW_DIR}/${workflowList[projectConf.workflow.name].nextflow_main}  -profile ${nextflowConfigs.profile[config.NEXTFLOW.EXECUTOR]} -name ${runName}`;
   write2log(log, 'Run pipeline');
   // Don't need to wait for the command to complete. It may take long time to finish and cause an error.
   // The updateJobStatus will catch the error if this command failed.

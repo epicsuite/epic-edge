@@ -4,12 +4,16 @@ const Upload = require('../edge-api/models/upload');
 const config = require('../config');
 
 const cromwellWorkflows = [];
-const nextflowWorkflows = [];
-const slurmWorkflows = ['fq2hic'];
+const nextflowWorkflows = ['fq2hic'];
+const slurmWorkflows = [];
 const nextflowConfigs = {
   executor_config: {
-    slurm: 'slurm.config',
-    local: 'local.config',
+    slurm: 'epic.config',
+    local: 'epic.config',
+  },
+  profile: {
+    slurm: 'canfs',
+    local: 'standard',
   }
 };
 const workflowList = {
