@@ -18,6 +18,7 @@ if [ ! -d  $io_home ]; then
     "db"
     "structures"
     "sra"
+    "trame"
   )
 
   for dir in "${dirs[@]}"

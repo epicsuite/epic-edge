@@ -228,11 +228,15 @@ const config = {
     PRODUCT_BASE_DIR: process.env.EPIC_PRODUCT_BASE_DIR || path.join(IO_BASE_DIR, 'products'),
     // Directory to store structure datasets
     STRUCTURE_BASE_DIR: process.env.EPIC_STRUCTURE_BASE_DIR || path.join(IO_BASE_DIR, 'structures'),
+    // Directory to store trame view temp files
+    TRAME_BASE_DIR: process.env.EPIC_STRUCTURE_BASE_DIR || path.join(IO_BASE_DIR, 'trame'),
     // Directory to store trame applications
     TRAME_APP_BASE_DIR: process.env.EPIC_TRAME_APP_BASE_DIR || path.join(__dirname, '../../trame/apps'),
     TRAME_BASE_URL: process.env.EPIC_TRAME_BASE_URL || 'http://localhost:',
-    TRAME_PORT_START: makeIntIfDefined(process.env.EPIC_TRAME_PORT_START) || 8001,
-    TRAME_PORT_END: makeIntIfDefined(process.env.EPIC_TRAME_PORT_END) || 8008,
+    TRAME_PUBLIC_PORT_START: makeIntIfDefined(process.env.EPIC_TRAME_PUBLIC_PORT_START) || 8001,
+    TRAME_PUBLIC_PORT_END: makeIntIfDefined(process.env.EPIC_TRAME_PUBLIC_PORT_END) || 8010,
+    TRAME_USER_PORT_START: makeIntIfDefined(process.env.EPIC_TRAME_USER_PORT_START) || 8011,
+    TRAME_USER_PORT_END: makeIntIfDefined(process.env.EPIC_TRAME_USER_PORT_END) || 8020,
     // in hours, trame http instance will be deleted after the grace period
     TRAME_DELETE_GRACE_PERIOD_HOURS: makeIntIfDefined(process.env.EPIC_TRAME_DELETE_GRACE_PERIOD_HOURS) || 12,
     // python path
@@ -241,6 +245,8 @@ const config = {
     PVPYTHON: process.env.PVPYTHON || 'PVPYTHON-not-found-in-env',
     PVPYTHON_PLUGIN_DIR: process.env.PVPYTHON_PLUGIN_DIR || 'PVPYTHON_PLUGIN_DIR-not-found-in-env',
     COMPARE_APP: process.env.COMPARE_APP || 'COMPARE_APP-not-found-in-env',
+    COMPARE_TMPL: process.env.COMPARE_TMPL || 'COMPARE_TMPL-not-found-in-env',
+    COMPARE_SETTINGS: process.env.COMPARE_SETTINGS || 'COMPARE_SETTINGS-not-found-in-env',
     COMPARE_ENV_PYTHONPATH: process.env.COMPARE_ENV_PYTHONPATH || 'COMPARE_ENV_PYTHONPATH-not-found-in-env',
   }
 };

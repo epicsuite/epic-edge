@@ -1,4 +1,5 @@
 const fs = require('fs');
+const randomize = require('randomatic');
 const readline = require('readline');
 const { exec, spawn } = require('child_process');
 const ejs = require('ejs');
@@ -36,7 +37,11 @@ const addOne = (input) => new Promise((resolve, reject) => {
   }).catch((err) => { reject(err); });
 });
 
-const deleteByPort = (port) => new Promise((resolve, reject) => {
+const deleteByPort = (port, code) => new Promise((resolve, reject) => {
+  const trameHome = `${config.EPIC.TRAME_BASE_DIR}/${code}`;
+  if (fs.existsSync(trameHome)) {
+    fs.rmSync(trameHome, { recursive: true, force: true });
+  }
   Trame.deleteOne({ 'port': { $eq: port } }).then(() => {
     resolve(null);
   }).catch((err) => { reject(err); });
@@ -129,7 +134,7 @@ const startTrame = async (req, res, type) => {
           url,
         });
       }
-      await deleteByPort(trameObj.port);
+      await deleteByPort(trameObj.port, trameObj.code);
     }
     if (type === 'user') {
       // assumption: user can be allowed to have only 1 active trame instance
@@ -150,12 +155,12 @@ const startTrame = async (req, res, type) => {
           });
         }
         // delete trame from db
-        await deleteByPort(trameObj.port);
+        await deleteByPort(trameObj.port, trameObj.code);
       }
     }
 
     // get unique port
-    let port = config.EPIC.TRAME_PORT_START;
+    let port = (type === 'user') ? config.EPIC.TRAME_USER_PORT_START : config.EPIC.TRAME_PUBLIC_PORT_START;
     // eslint-disable-next-line no-await-in-loop
     while (await getOne({ port }) !== null) {
       // eslint-disable-next-line no-plusplus
@@ -163,7 +168,7 @@ const startTrame = async (req, res, type) => {
     }
 
     // check if port is available
-    if (port > config.EPIC.TRAME_PORT_END) {
+    if (port > (type === 'user' ? config.EPIC.TRAME_USER_PORT_END : config.EPIC.TRAME_PUBLIC_PORT_END)) {
       return res.status(400).json({
         success: false,
         message: 'The system is busy. Please try again later.'
@@ -175,7 +180,17 @@ const startTrame = async (req, res, type) => {
     const values = {
       port: input.port,
     };
-    let outLog = `${config.LOGGING.LOG_DIR}/tmp-${port}.log`;
+    // create trame directory
+    let code = randomize('Aa0', 16);
+    let trameHome = `${config.EPIC.TRAME_BASE_DIR}/${code}`;
+    while (fs.existsSync(trameHome)) {
+      code = randomize('Aa0', 16);
+      trameHome = `${config.EPIC.TRAME_BASE_DIR}/${code}`;
+    }
+    fs.mkdirSync(trameHome);
+    input.code = code;
+    values.trameHome = trameHome;
+    let outLog = `${trameHome}/tmp-${port}.log`;
     if (trameApp === 'structure') {
       // find the track name, temp solution for now
       const firstLine = await readFirstLine(input.data);
@@ -186,7 +201,16 @@ const startTrame = async (req, res, type) => {
     } else if (trameApp === 'compare') {
       values.leftfile = params.input.leftVtpFile;
       values.rightfile = params.input.rightVtpFile;
-      outLog = `${config.LOGGING.LOG_DIR}/compare-${input.port}`;
+      // generate session.yaml and settings.yaml
+      // generate trame code and create trame home
+      const sessionYaml = `${trameHome}/session.yaml`;
+      values.sessionYaml = sessionYaml;
+      const template = String(fs.readFileSync(config.EPIC.COMPARE_TMPL));
+      // render input template and write to session.yaml
+      await fs.promises.writeFile(sessionYaml, ejs.render(template, values));
+      // copy trame view settings to trame home
+      await fs.promises.copyFile(config.EPIC.COMPARE_SETTINGS, `${trameHome}/settings.yaml`);
+      outLog = `${trameHome}/compare-${input.port}.log`;
       input.data = JSON.stringify(params.input);
     }
 

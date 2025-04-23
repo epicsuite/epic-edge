@@ -32,7 +32,12 @@ const trameSchema = new mongoose.Schema({
     required: true,
     unique: true,
     description: 'unique port number of the trame app process id',
-  }
+  },
+  code: {
+    type: String,
+    required: true,
+    unique: true,
+  },
 }, {
   timestamps: {
     createdAt: 'created', // Use `created` to store the created date
