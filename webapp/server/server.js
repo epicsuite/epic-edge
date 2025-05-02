@@ -13,6 +13,7 @@ const swaggerSpec = require('./epic-api/swagger/swaggerSpec');
 const logger = require('./utils/logger');
 const indexRouter = require('./indexRouter');
 const trameMonitor = require('./crons/trameMonitor');
+const publicTrameMonitor = require('./crons/trameMonitor');
 const uploadMonitor = require('./crons/uploadMonitor');
 // const cromwellWorkflowMonitor = require('./crons/cromwellWorkflowMonitor');
 // const nextflowJobMonitor = require('./crons/nextflowJobMonitor');
@@ -71,6 +72,10 @@ if (config.NODE_ENV === 'production') {
   // monitor trames every day at 4am
   cron.schedule(config.CRON.SCHEDULES.TRAME_MONITOR, () => {
     trameMonitor();
+  });
+  // monitor trames every 3mins
+  cron.schedule(config.CRON.SCHEDULES.TRAME_PUBLIC_MONITOR, () => {
+    publicTrameMonitor();
   });
   // monitor workflow requests on every 2 minutes
   cron.schedule(config.CRON.SCHEDULES.NEXTFLOW_WORKFLOW_MONITOR, async () => {

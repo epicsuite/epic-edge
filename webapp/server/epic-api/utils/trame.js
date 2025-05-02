@@ -38,13 +38,13 @@ const addOne = (input) => new Promise((resolve, reject) => {
 });
 
 const deleteByPort = (port, code) => new Promise((resolve, reject) => {
+  Trame.deleteOne({ 'port': { $eq: port } }).then(() => {
+    resolve(null);
+  }).catch((err) => { reject(err); });
   const trameHome = `${config.EPIC.TRAME_BASE_DIR}/${code}`;
   if (fs.existsSync(trameHome)) {
     fs.rmSync(trameHome, { recursive: true, force: true });
   }
-  Trame.deleteOne({ 'port': { $eq: port } }).then(() => {
-    resolve(null);
-  }).catch((err) => { reject(err); });
 });
 
 const execCmd = (cmd, outLog) => {
@@ -122,7 +122,8 @@ const startTrame = async (req, res, type) => {
     }
     let trameObj = await getOne(input);
     // there is an active trame process for the selected structure dataset and app, return it
-    if (trameObj) {
+    // only for type is user
+    if (trameObj && type === 'user') {
       // set updated time to new time
       await updateOne({ port: trameObj.port });
       // return url
@@ -134,7 +135,9 @@ const startTrame = async (req, res, type) => {
           url,
         });
       }
-      await deleteByPort(trameObj.port, trameObj.code);
+
+      // don't await for it to complete or fail
+      deleteByPort(trameObj.port, trameObj.code);
     }
     if (type === 'user') {
       // assumption: user can be allowed to have only 1 active trame instance
@@ -154,8 +157,9 @@ const startTrame = async (req, res, type) => {
             }
           });
         }
-        // delete trame from db
-        await deleteByPort(trameObj.port, trameObj.code);
+
+        // don't await for it to complete or fail
+        deleteByPort(trameObj.port, trameObj.code);
       }
     }
 

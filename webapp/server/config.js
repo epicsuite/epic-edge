@@ -145,12 +145,14 @@ const config = {
       DATABASE_BACKUP_CREATOR: process.env.CRON_DATABASE_BACKUP_CREATOR_SCHEDULE || '0 1 * * *',
       // delete old db backups every day at 2 am
       DATABASE_BACKUP_PRUNER: process.env.CRON_DATABASE_BACKUP_PRUNER_SCHEDULE || '0 2 * * *',
-      // monitor nextflow jobs on every 2 minutes
+      // monitor nextflow jobs on every 3 minutes
       SLURM_WORKFLOW_MONITOR: process.env.CRON_SLURM_WORKFLOW_MONITOR_SCHEDULE || '0-59/3 * * * *',
-      // monitor nextflow jobs on every 2 minutes
+      // monitor nextflow jobs on every 3 minutes
       SLURM_JOB_MONITOR: process.env.CRON_SLURM_JOB_MONITOR_SCHEDULE || '1-59/3 * * * *',
       // monitor trame instance deletion/expiration every day at 4am
       TRAME_MONITOR: process.env.CRON_TRAME_MONITOR_SCHEDULE || '0 4 * * *',
+      // monitor public trame on every 3 minutes
+      TRAME_PUBLIC_MONITOR: process.env.CRON_SLURM_JOB_MONITOR_SCHEDULE || '2-59/3 * * * *',
     },
   },
   DATABASE: {
@@ -239,6 +241,8 @@ const config = {
     TRAME_USER_PORT_END: makeIntIfDefined(process.env.EPIC_TRAME_USER_PORT_END) || 8020,
     // in hours, trame http instance will be deleted after the grace period
     TRAME_DELETE_GRACE_PERIOD_HOURS: makeIntIfDefined(process.env.EPIC_TRAME_DELETE_GRACE_PERIOD_HOURS) || 12,
+    // in hours, trame http instance will be deleted after the grace period
+    TRAME_PUBLIC_DELETE_GRACE_PERIOD_HOURS: makeIntIfDefined(process.env.EPIC_PUBLIC_TRAME_DELETE_GRACE_PERIOD_HOURS) || 1,
     // python path
     PYTHON: process.env.PYTHON || 'python3',
     // pvpython

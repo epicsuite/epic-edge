@@ -12,6 +12,7 @@ const nextflowWorkflowMonitor = require('./crons/nextflowWorkflowMonitor');
 const projectDeletionMonitor = require('./crons/projectDeletionMonitor');
 const projectStatusMonitor = require('./crons/projectStatusMonitor');
 const trameMonitor = require('./crons/trameMonitor');
+const publicTrameMonitor = require('./crons/trameMonitor');
 const dbBackup = require('./crons/dbBackup');
 const dbBackupClean = require('./crons/dbBackupClean');
 const config = require('./config');
@@ -63,6 +64,10 @@ cron.schedule(config.CRON.SCHEDULES.DATABASE_BACKUP_PRUNER, () => {
 // monitor trames every day at 4am
 cron.schedule(config.CRON.SCHEDULES.TRAME_MONITOR, () => {
   trameMonitor();
+});
+// monitor trames every 3mins
+cron.schedule(config.CRON.SCHEDULES.TRAME_PUBLIC_MONITOR, () => {
+  publicTrameMonitor();
 });
 
 const runApp = async () => {
