@@ -7,13 +7,13 @@ const trameCmds = {
     `${config.EPIC.PYTHON} ${config.EPIC.TRAME_APP_BASE_DIR}/epic.viewer.py \
 <%= data %> <%= track %> --server --port <%= port %> &`,
   'compare':
-    `export PYTHONPATH=$PYTHONPATH:${config.EPIC.COMPARE_ENV_PYTHONPATH}; \
+    `cd <%= trameHome %>; \
 ${config.EPIC.PVPYTHON} \
+--venv ${config.EPIC.COMPARE_ENV_PYTHONPATH} \
 --force-offscreen-rendering \
 ${config.EPIC.COMPARE_APP} \
 --port <%= port %> \
---leftfile <%= leftfile %> \
---rightfile <%= rightfile %> \
+--session <%= sessionYaml %> \
 --plugindir ${config.EPIC.PVPYTHON_PLUGIN_DIR} \
 --serve &`,
 };

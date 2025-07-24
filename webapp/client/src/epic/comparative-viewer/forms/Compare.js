@@ -12,7 +12,6 @@ export const Compare = (props) => {
   const [form] = useState({ ...components[componentName] })
   const [validInputs] = useState({ ...components[componentName].validInputs })
   const [doValidation, setDoValidation] = useState(0)
-
   const toggleParms = () => {
     setCollapseParms(!collapseParms)
   }

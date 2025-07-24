@@ -3,47 +3,36 @@ const fs = require('fs');
 const Upload = require('../edge-api/models/upload');
 const config = require('../config');
 
-const cromwellWorkflows = ['sra2fastq'];
-const nextflowWorkflows = ['runFaQCs'];
-
-const workflowList = {
-  default_wdl_version: '1.0',
-  '4dgb': {
-    wdl: '4dgb.wdl',
-    wdl_imports: 'imports.zip',
-    inputs_tmpl: '4dgb_inputs.tmpl',
-    outdir: 'output/4DGB',
-    // set if not default 1.0
-    // wdl_version: '1.0',
+const cromwellWorkflows = [];
+const nextflowWorkflows = ['fq2hic'];
+const slurmWorkflows = [];
+const nextflowConfigs = {
+  executor_config: {
+    slurm: 'epic.config',
+    local: 'epic.config',
   },
+  profile: {
+    slurm: 'canfs',
+    local: 'standard',
+  }
+};
+const workflowList = {
   'hic': {
     wdl: '4dgb.wdl',
     wdl_imports: 'imports.zip',
     inputs_tmpl: '4dgb_inputs.tmpl',
     outdir: 'output/hic',
   },
-  sra2fastq: {
-    wdl: 'sra2fastq.wdl',
-    wdl_imports: 'imports.zip',
-    inputs_tmpl: 'sra2fastq_inputs.tmpl',
-    cromwell_calls: ['sra.sra2fastq'],
-    outdir: 'output/sra2fastq',
-    // set if not default 1.0
-    // wdl_version: '1.0',
-  },
-  runFaQCs: {
-    wdl: 'runQC.wdl',
-    wdl_imports: 'imports.zip',
-    inputs_tmpl: 'runFaQCs_inputs.tmpl',
-    outdir: 'output/runFaQCs',
-    nextflow_main: 'runFaQCs_main.nf',
-    config_tmpl: 'runFaQCs_config.tmpl',
+  'fq2hic': {
+    outdir: 'output/epic',
+    nextflow_main: 'main.nf',
+    config_tmpl: 'fq2hic_config.tmpl',
   },
 };
 
 const linkUpload = async (fq, projHome) => {
   try {
-    if (fq.startsWith(config.FILE_UPLOADS.FILEUPLOAD_FILE_DIR)) {
+    if (fq.startsWith(config.IO.UPLOADED_FILES_DIR)) {
       // create input dir and link uploaded file with realname
       const inputDir = `${projHome}/input`;
       if (!fs.existsSync(inputDir)) {
@@ -101,6 +90,8 @@ const generateWorkflowResult = (proj) => {
 module.exports = {
   cromwellWorkflows,
   nextflowWorkflows,
+  slurmWorkflows,
+  nextflowConfigs,
   workflowList,
   linkUpload,
   generateWorkflowResult,

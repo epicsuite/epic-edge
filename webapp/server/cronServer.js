@@ -7,11 +7,12 @@ const logger = require('./utils/logger');
 const uploadMonitor = require('./crons/uploadMonitor');
 const cromwellJobMonitor = require('./crons/cromwellJobMonitor');
 const cromwellWorkflowMonitor = require('./crons/cromwellWorkflowMonitor');
-// const nextflowJobMonitor = require('./crons/nextflowJobMonitor');
+const nextflowJobMonitor = require('./crons/nextflowJobMonitor');
 const nextflowWorkflowMonitor = require('./crons/nextflowWorkflowMonitor');
 const projectDeletionMonitor = require('./crons/projectDeletionMonitor');
 const projectStatusMonitor = require('./crons/projectStatusMonitor');
 const trameMonitor = require('./crons/trameMonitor');
+const publicTrameMonitor = require('./crons/trameMonitor');
 const dbBackup = require('./crons/dbBackup');
 const dbBackupClean = require('./crons/dbBackupClean');
 const config = require('./config');
@@ -33,7 +34,7 @@ cron.schedule(config.CRON.SCHEDULES.CROMWELL_WORKFLOW_MONITOR, async () => {
 });
 // monitor nextflow jobs on every 2 minutes
 cron.schedule(config.CRON.SCHEDULES.NEXTFLOW_JOB_MONITOR, async () => {
-  // await nextflowJobMonitor();
+  await nextflowJobMonitor();
 });
 // cron jobs
 // monitor workflow requests on every 2 minutes
@@ -63,6 +64,10 @@ cron.schedule(config.CRON.SCHEDULES.DATABASE_BACKUP_PRUNER, () => {
 // monitor trames every day at 4am
 cron.schedule(config.CRON.SCHEDULES.TRAME_MONITOR, () => {
   trameMonitor();
+});
+// monitor trames every 3mins
+cron.schedule(config.CRON.SCHEDULES.TRAME_PUBLIC_MONITOR, () => {
+  publicTrameMonitor();
 });
 
 const runApp = async () => {

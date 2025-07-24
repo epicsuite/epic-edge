@@ -1,30 +1,19 @@
 import React from 'react'
-import { Badge, Col, Row } from 'reactstrap'
-import { SideMenu } from 'src/components/SideMenu'
+import { Badge } from 'reactstrap'
 import UploadTable from '../common/UploadTable'
 
 const Uploads = (props) => {
   return (
-    <Row className="justify-content-center">
-      <Col xs="12" sm="12" md="2">
-        <SideMenu />
-      </Col>
-      <Col xs="12" sm="12" md="10">
-        <Row className="justify-content-center">
-          <Col xs="12" sm="12" md="10">
-            <div className="clearfix">
-              <Badge color="danger" pill>
-                Admin tool
-              </Badge>
-            </div>
-            <br></br>
-            <UploadTable tableType="admin" title={'Manage Uploads'} {...props} />
-            <br></br>
-          </Col>
-          <Col xs="12" sm="12" md="2"></Col>
-        </Row>
-      </Col>
-    </Row>
+    <div className="animated fadeIn">
+      <div className="clearfix">
+        <Badge color="danger" pill>
+          Admin tool
+        </Badge>
+      </div>
+      <br></br>
+      <UploadTable tableType="admin" title={'Manage Uploads'} {...props} />
+      <br></br>
+    </div>
   )
 }
 

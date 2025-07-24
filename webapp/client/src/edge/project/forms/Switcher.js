@@ -6,7 +6,7 @@ import { components } from './defaults'
 
 export const Switcher = (props) => {
   const componentName = 'switcher'
-  const [form, setState] = useState({ ...components[componentName] })
+  const [form, setState] = useState({ ...components[componentName], isTrue: props.defaultValue })
   const [doValidation, setDoValidation] = useState(0)
 
   const setNewState2 = (name, value) => {
@@ -18,12 +18,16 @@ export const Switcher = (props) => {
   }
 
   useEffect(() => {
-    form.isTrue = props.defaultValue
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    setState({ ...components[componentName], isTrue: props.defaultValue })
+  }, [props.reset]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    setState({ ...components[componentName] })
-  }, [props.reset]) // eslint-disable-line react-hooks/exhaustive-deps
+    if (props.disableFalse) {
+      setNewState2('isTrue', true)
+    } else if (props.disableTrue) {
+      setNewState2('isTrue', false)
+    }
+  }, [props.disableFalse, props.disableTrue]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     //force updating parent's inputParams
@@ -33,7 +37,7 @@ export const Switcher = (props) => {
   return (
     <>
       <Row>
-        <Col md="3">
+        <Col md={props.colMd1 ? props.colMd1 : '3'}>
           {props.tooltip ? (
             <MyTooltip
               id={`switcherTooltip-${props.name}`}
@@ -42,14 +46,16 @@ export const Switcher = (props) => {
               place={props.tooltipPlace ? props.tooltipPlace : defaults.tooltipPlace}
               color={props.tooltipColor ? props.tooltipColor : defaults.tooltipColor}
               showTooltip={props.showTooltip ? props.showTooltip : defaults.showTooltip}
+              clickable={props.tooltipClickable ? props.tooltipClickable : false}
             />
           ) : (
             <>{props.text}</>
           )}{' '}
         </Col>
-        <Col xs="12" md="9">
+        <Col xs="12" md={props.colMd2 ? props.colMd2 : '9'}>
           <ButtonGroup className="mr-3" aria-label="First group" size="sm">
             <Button
+              disabled={props.disableTrue ? true : false}
               color="outline-primary"
               onClick={() => {
                 setNewState2('isTrue', true)
@@ -59,6 +65,7 @@ export const Switcher = (props) => {
               {props.trueText}
             </Button>
             <Button
+              disabled={props.disableFalse ? true : false}
               color="outline-primary"
               onClick={() => {
                 setNewState2('isTrue', false)

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { Row, Col } from 'reactstrap'
-import { SideMenu } from 'src/components/SideMenu'
 import ProjectSummary from '../ProjectSummary'
 import ProjectResult from '../../ProjectResult'
 import { LoaderDialog } from '../../../common/Dialogs'
@@ -53,34 +51,22 @@ const Admin = (props) => {
 
   return (
     <div className="animated fadeIn">
-      <Row className="justify-content-center">
-        <Col xs="12" sm="12" md="2">
-          <SideMenu />
-        </Col>
-        <Col xs="12" sm="12" md="10">
-          <Row className="justify-content-center">
-            <Col xs="12" sm="12" md="10">
-              <LoaderDialog loading={loading} text="Loading..." />
-              {error ? (
-                <div className="clearfix">
-                  <h4 className="pt-3">Project not found</h4>
-                  <hr />
-                  <p className="text-muted float-left">
-                    The project might be deleted or you have no permission to access it.
-                  </p>
-                </div>
-              ) : (
-                <>
-                  <ProjectSummary project={project} type={'admin'} />
-                  <br></br>
-                  <ProjectResult project={project} type={'admin'} />
-                </>
-              )}
-            </Col>
-            <Col xs="12" sm="12" md="2"></Col>
-          </Row>
-        </Col>
-      </Row>
+      <LoaderDialog loading={loading} text="Loading..." />
+      {error ? (
+        <div className="clearfix">
+          <h4 className="pt-3">Project not found</h4>
+          <hr />
+          <p className="text-muted float-left">
+            The project might be deleted or you have no permission to acces it.
+          </p>
+        </div>
+      ) : (
+        <>
+          <ProjectSummary project={project} />
+          <br></br>
+          <ProjectResult project={project} type={'admin'} />
+        </>
+      )}
     </div>
   )
 }

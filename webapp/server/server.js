@@ -13,10 +13,12 @@ const swaggerSpec = require('./epic-api/swagger/swaggerSpec');
 const logger = require('./utils/logger');
 const indexRouter = require('./indexRouter');
 const trameMonitor = require('./crons/trameMonitor');
+const publicTrameMonitor = require('./crons/trameMonitor');
 const uploadMonitor = require('./crons/uploadMonitor');
 // const cromwellWorkflowMonitor = require('./crons/cromwellWorkflowMonitor');
 // const nextflowJobMonitor = require('./crons/nextflowJobMonitor');
 const nextflowWorkflowMonitor = require('./crons/nextflowWorkflowMonitor');
+const slurmWorkflowMonitor = require('./crons/slurmWorkflowMonitor');
 const projectDeletionMonitor = require('./crons/projectDeletionMonitor');
 const projectStatusMonitor = require('./crons/projectStatusMonitor');
 const dbBackup = require('./crons/dbBackup');
@@ -58,7 +60,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: f
 app.use('/projects', express.static(config.IO.PROJECT_BASE_DIR, { dotfiles: 'allow' }));
 app.use('/uploads', express.static(config.IO.UPLOADED_FILES_DIR));
 app.use('/publicdata', express.static(config.IO.PUBLIC_BASE_DIR));
-app.use('/docs', express.static(config.APP.DOCS_BASE_DIR, { dotfiles: 'allow' }));
 
 // Serving React as static files in Express and redirect url path to React client app
 if (config.NODE_ENV === 'production') {
@@ -71,6 +72,14 @@ if (config.NODE_ENV === 'production') {
   // monitor trames every day at 4am
   cron.schedule(config.CRON.SCHEDULES.TRAME_MONITOR, () => {
     trameMonitor();
+  });
+  // monitor trames every 3mins
+  cron.schedule(config.CRON.SCHEDULES.TRAME_PUBLIC_MONITOR, () => {
+    publicTrameMonitor();
+  });
+  // monitor workflow requests on every 2 minutes
+  cron.schedule(config.CRON.SCHEDULES.NEXTFLOW_WORKFLOW_MONITOR, async () => {
+    await slurmWorkflowMonitor();
   });
   // monitor workflow requests on every 2 minutes
   cron.schedule(config.CRON.SCHEDULES.NEXTFLOW_WORKFLOW_MONITOR, async () => {

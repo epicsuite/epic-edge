@@ -1,0 +1,28 @@
+workDir = "<%= nextflowOutDir %>/work"
+params {
+    publishDir = '<%= projOutdir %>/build/'
+    exptdsn = '<%= projOutdir %>/experimental_design.csv'
+    wf_init = '<%= projOutdir %>/workflow.init'
+    wf_config = '<%= projOutdir %>/workflow.yaml'
+}
+
+report {
+    enabled = true
+    file = '<%= nextflowOutDir %>/report.html'
+    overwrite = true
+}
+
+timeline {
+    enabled = true
+    file = '<%= nextflowOutDir %>/timeline.html'
+    overwrite = true
+}
+
+trace {
+    enabled = true
+    file = '<%= nextflowOutDir %>/trace.txt'
+    fields = 'name,status,start,complete,duration'
+    overwrite = true
+}
+
+includeConfig "<%= executor_config %>"

@@ -37,8 +37,6 @@ const Main = (props) => {
     Object.keys(workflowComponent.inputs).forEach((key) => {
       input[key] = workflowComponent.inputs[key].value
     })
-    console.log(input)
-
     // call api to launch a trame instance and redirect to trame
     let params = { input: input, app: 'compare' }
     setSubmitting(true)

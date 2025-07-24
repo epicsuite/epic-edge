@@ -47,22 +47,22 @@ const makeIntIfDefined = (val) => typeof val === 'string' ? parseInt(val, 10) : 
 
 // Determine several reusable directory paths based upon environment variables
 // and/or the path to the directory containing this `config.js` file.
-const CLIENT_BASE_DIR = path.join(__dirname, '../client');
-const DATA_BASE_DIR = path.join(__dirname, '../../data');
-const IO_BASE_DIR = process.env.IO_BASE_DIR || path.join(__dirname, '../../io');
+const appServerDir = process.env.APP_SERVER_DIR ? process.env.APP_SERVER_DIR : __dirname;
+const CLIENT_BASE_DIR = path.join(appServerDir, '../client');
+const NEXTFLOW_BASE_DIR = path.join(appServerDir, '../../workflows/Nextflow');
+const CROMWELL_BASE_DIR = path.join(appServerDir, '../../workflows/Cromwell');
+const IO_BASE_DIR = process.env.IO_BASE_DIR || path.join(appServerDir, '../../io');
 
 const config = {
   // Name of environment in which application is running (either "production" or "development").
   // Reference: https://expressjs.com/en/advanced/best-practice-performance.html#set-node_env-to-production
   NODE_ENV: process.env.NODE_ENV || 'production',
   APP: {
-    // Base URL at which visitors can access the web server (e.g. "https://edge.biioinformatics.org").
+    // Base URL at which visitors can access the web server (e.g. "https://epic.lanl.gov").
     // Note: Some emails the server sends to visitors will contain URLs based upon this one.
     UI_BASE_URL: process.env.APP_UI_BASE_URL || 'https://epic.lanl.gov',
     // Port number on which the web server will listen for HTTP requests.
     SERVER_PORT: makeIntIfDefined(process.env.APP_SERVER_PORT) || 5000,
-    // Path to the "docs" directory on the filesystem.
-    DOCS_BASE_DIR: process.env.DOCS_BASE_DIR || path.join(DATA_BASE_DIR, 'docs'),
     // Version identifier of the application.
     VERSION: process.env.EDGE_WEB_APP_VERSION || 'v3.0.0-default',
     API_ERROR: process.env.API_ERROR || 'system error',
@@ -77,20 +77,29 @@ const config = {
     // Path to the client's "build" directory on the filesystem.
     BUILD_DIR: process.env.CLIENT_BASE_DIR || path.join(CLIENT_BASE_DIR, 'build'),
   },
+  SLURM: {
+    // Max allowed number of jobs in slurm.
+    NUM_JOBS_MAX: makeIntIfDefined(process.env.SLURM_NUM_JOBS_MAX) || 100000,
+    // Total size of the input files allowed per job.
+    // Note: 161061273600 Bytes is 150 Gibibytes (161 Gigabytes).
+    JOBS_INPUT_MAX_SIZE_BYTES: makeIntIfDefined(process.env.SLURM_JOBS_INPUT_MAX_SIZE_BYTES) || 161061273600,
+  },
   NEXTFLOW: {
-    // Max allowed number of jobs in cromwell.
+    EDGE_ROOT: process.env.NEXTFLOW_EDGE_ROOT || null,
+    SLURM_EDGE_ROOT: process.env.NEXTFLOW_SLURM_EDGE_ROOT || null,
+    SLURM_SSH: process.env.NEXTFLOW_SLURM_SSH || '',
+    EXECUTOR: process.env.NEXTFLOW_EXECUTOR || 'local',
+    // Max allowed number of jobs in nextflow.
     NUM_JOBS_MAX: makeIntIfDefined(process.env.NEXTFLOW_NUM_JOBS_MAX) || 100000,
     // Total size of the input files allowed per job.
     // Note: 161061273600 Bytes is 150 Gibibytes (161 Gigabytes).
     JOBS_INPUT_MAX_SIZE_BYTES: makeIntIfDefined(process.env.NEXTFLOW_JOBS_INPUT_MAX_SIZE_BYTES) || 161061273600,
-    CONF: process.env.NEXTFLOW_CONF || path.join(DATA_BASE_DIR, 'workflow/nextflow/nextflow.config'),
-    WORK_DIR: process.env.NEXTFLOW_WORK_DIR || path.join(IO_BASE_DIR, 'nextflow/work'),
     // Directory of the workflow files.
-    WORKFLOW_DIR: process.env.NEXTFLOW_WORKFLOW_DIR || path.join(DATA_BASE_DIR, 'workflow/nextflow/workflows'),
-    // Nextflow wrapper script
-    WRAPPER: process.env.NEXTFLOW_WRAPPER || path.join(DATA_BASE_DIR, 'workflow/nextflow/scripts/wrapper.py'),
-    // Directory of the workflow templates. The Workflow templates are used for creating cromwell inputs.
-    TEMPLATE_DIR: process.env.NEXTFLOW_TEMPLATE_DIR || path.join(DATA_BASE_DIR, 'workflow/nextflow/templates'),
+    WORKFLOW_DIR: process.env.NEXTFLOW_WORKFLOW_DIR || NEXTFLOW_BASE_DIR,
+    // Directory of the workflow templates. The Workflow templates are used for creating nextflow workflow inputs.
+    TEMPLATE_DIR: process.env.NEXTFLOW_TEMPLATE_DIR || path.join(NEXTFLOW_BASE_DIR, 'templates'),
+    // Directory of the workflow configs. The Workflow configs are used for running nextflow workflows.
+    CONFIG_DIR: process.env.NEXTFLOW_CONF_DIR || path.join(NEXTFLOW_BASE_DIR, 'configs'),
   },
   CROMWELL: {
     // Base URL at which HTTP clients can access the Cromwell API.
@@ -105,10 +114,10 @@ const config = {
     // The version of the workflow language. Valid versions: 'draft-2', '1.0'.
     WORKFLOW_TYPE_VERSION: process.env.CROMWELL_WORKFLOW_TYPE_VERSION || 'draft-2',
     // Directory of the workflow WDL files.
-    WDL_DIR: process.env.CROMWELL_WDL_DIR || path.join(DATA_BASE_DIR, 'workflow/cromwell/WDL'),
+    WDL_DIR: process.env.CROMWELL_WDL_DIR || path.join(CROMWELL_BASE_DIR, 'WDL'),
     // Directory of the workflow templates. The Workflow templates are used for creating cromwell inputs.
-    TEMPLATE_DIR: process.env.CROMWELL_TEMPLATE_DIR || path.join(DATA_BASE_DIR, 'workflow/cromwell/templates'),
-    CONF: process.env.CROMWELL_CONF || path.join(DATA_BASE_DIR, 'workflow/cromwell/conf.json'),
+    TEMPLATE_DIR: process.env.CROMWELL_TEMPLATE_DIR || path.join(CROMWELL_BASE_DIR, 'templates'),
+    CONF: process.env.CROMWELL_CONF || path.join(CROMWELL_BASE_DIR, 'conf.json'),
   },
   CRON: {
     // Port number on which the cron web server will listen for HTTP requests.
@@ -136,8 +145,14 @@ const config = {
       DATABASE_BACKUP_CREATOR: process.env.CRON_DATABASE_BACKUP_CREATOR_SCHEDULE || '0 1 * * *',
       // delete old db backups every day at 2 am
       DATABASE_BACKUP_PRUNER: process.env.CRON_DATABASE_BACKUP_PRUNER_SCHEDULE || '0 2 * * *',
+      // monitor nextflow jobs on every 3 minutes
+      SLURM_WORKFLOW_MONITOR: process.env.CRON_SLURM_WORKFLOW_MONITOR_SCHEDULE || '0-59/3 * * * *',
+      // monitor nextflow jobs on every 3 minutes
+      SLURM_JOB_MONITOR: process.env.CRON_SLURM_JOB_MONITOR_SCHEDULE || '1-59/3 * * * *',
       // monitor trame instance deletion/expiration every day at 4am
       TRAME_MONITOR: process.env.CRON_TRAME_MONITOR_SCHEDULE || '0 4 * * *',
+      // monitor public trame on every 3 minutes
+      TRAME_PUBLIC_MONITOR: process.env.CRON_SLURM_JOB_MONITOR_SCHEDULE || '2-59/3 * * * *',
     },
   },
   DATABASE: {
@@ -165,11 +180,11 @@ const config = {
     MAILGUN_DOMAIN: process.env.EMAIL_MAILGUN_DOMAIN,
     MAILGUN_API_KEY: process.env.EMAIL_MAILGUN_API_KEY,
     // activate user
-    ACTIVATE_USER_SUBJECT: process.env.ACTIVATE_USER_SUBJECT || 'Your EDGE login account',
+    ACTIVATE_USER_SUBJECT: process.env.ACTIVATE_USER_SUBJECT || 'Your EPIC EDGE login account',
     ACTIVATE_USER_ACTION: process.env.ACTIVATE_USER_ACTION || 'Activate Your Account',
     ACTIVATE_USER_ACTION_MESSAGE: process.env.ACTIVATE_USER_ACTION_MESSAGE || 'Please activate your account.',
     // resetpassword
-    RESETPASSWORD_SUBJECT: process.env.RESETPASSWORD_SUBJECT || 'Reset your EDGE login password',
+    RESETPASSWORD_SUBJECT: process.env.RESETPASSWORD_SUBJECT || 'Reset your EPIC EDGE login password',
     RESETPASSWORD_ACTION: process.env.RESETPASSWORD_ACTION || 'Reset Your Password',
     RESETPASSWORD_ACTION_MESSAGE: process.env.RESETPASSWORD_ACTION_MESSAGE || 'Someone requested a password reset for your account. If this was not you, please disregard this email. If you would like to continue, click the button to reset your password.',
     // project status
@@ -215,19 +230,27 @@ const config = {
     PRODUCT_BASE_DIR: process.env.EPIC_PRODUCT_BASE_DIR || path.join(IO_BASE_DIR, 'products'),
     // Directory to store structure datasets
     STRUCTURE_BASE_DIR: process.env.EPIC_STRUCTURE_BASE_DIR || path.join(IO_BASE_DIR, 'structures'),
+    // Directory to store trame view temp files
+    TRAME_BASE_DIR: process.env.EPIC_STRUCTURE_BASE_DIR || path.join(IO_BASE_DIR, 'trame'),
     // Directory to store trame applications
     TRAME_APP_BASE_DIR: process.env.EPIC_TRAME_APP_BASE_DIR || path.join(__dirname, '../../trame/apps'),
     TRAME_BASE_URL: process.env.EPIC_TRAME_BASE_URL || 'http://localhost:',
-    TRAME_PORT_START: makeIntIfDefined(process.env.EPIC_TRAME_PORT_START) || 8001,
-    TRAME_PORT_END: makeIntIfDefined(process.env.EPIC_TRAME_PORT_END) || 8008,
+    TRAME_PUBLIC_PORT_START: makeIntIfDefined(process.env.EPIC_TRAME_PUBLIC_PORT_START) || 8001,
+    TRAME_PUBLIC_PORT_END: makeIntIfDefined(process.env.EPIC_TRAME_PUBLIC_PORT_END) || 8010,
+    TRAME_USER_PORT_START: makeIntIfDefined(process.env.EPIC_TRAME_USER_PORT_START) || 8011,
+    TRAME_USER_PORT_END: makeIntIfDefined(process.env.EPIC_TRAME_USER_PORT_END) || 8020,
     // in hours, trame http instance will be deleted after the grace period
     TRAME_DELETE_GRACE_PERIOD_HOURS: makeIntIfDefined(process.env.EPIC_TRAME_DELETE_GRACE_PERIOD_HOURS) || 12,
+    // in hours, trame http instance will be deleted after the grace period
+    TRAME_PUBLIC_DELETE_GRACE_PERIOD_HOURS: makeIntIfDefined(process.env.EPIC_PUBLIC_TRAME_DELETE_GRACE_PERIOD_HOURS) || 1,
     // python path
     PYTHON: process.env.PYTHON || 'python3',
     // pvpython
     PVPYTHON: process.env.PVPYTHON || 'PVPYTHON-not-found-in-env',
     PVPYTHON_PLUGIN_DIR: process.env.PVPYTHON_PLUGIN_DIR || 'PVPYTHON_PLUGIN_DIR-not-found-in-env',
     COMPARE_APP: process.env.COMPARE_APP || 'COMPARE_APP-not-found-in-env',
+    COMPARE_TMPL: process.env.COMPARE_TMPL || 'COMPARE_TMPL-not-found-in-env',
+    COMPARE_SETTINGS: process.env.COMPARE_SETTINGS || 'COMPARE_SETTINGS-not-found-in-env',
     COMPARE_ENV_PYTHONPATH: process.env.COMPARE_ENV_PYTHONPATH || 'COMPARE_ENV_PYTHONPATH-not-found-in-env',
   }
 };
