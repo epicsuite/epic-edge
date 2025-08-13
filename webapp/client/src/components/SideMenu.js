@@ -8,17 +8,17 @@ export const SideMenu = (props) => {
       <br></br>
       <span style={{ fontSize: '1.0em', paddingLeft: '30px', color: '#c4c9d0' }}>WORKFLOWS</span>
       <div className="pt-3 text-muted edge-side-menu">
-        {/* <NavLink
-          to="/workflow/4dgb"
+        <NavLink
+          to="/workflow/4dgenome"
           className={({ isActive, isPending }) =>
             isPending ? 'pending' : isActive ? 'active' : ''
           }
         >
-          4DGB
+          4D Genome
         </NavLink>
         <br></br>
-        <br></br> */}
-        {/*  <NavLink
+        <br></br>
+        {/* <NavLink
           to="/workflow/slurpy"
           className={({ isActive, isPending }) =>
             isPending ? 'pending' : isActive ? 'active' : ''
@@ -28,14 +28,14 @@ export const SideMenu = (props) => {
         </NavLink>
         <br></br>
         <br></br> */}
-        <NavLink
+        {/*  <NavLink
           to="/workflow/fq2hic"
           className={({ isActive, isPending }) =>
             isPending ? 'pending' : isActive ? 'active' : ''
           }
         >
           Fastq to HiC
-        </NavLink>
+        </NavLink> */}
       </div>
       <br></br>
       <br></br>

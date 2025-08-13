@@ -1,4 +1,10 @@
 export const workflowList = {
+  fdgenome: {
+    label: '4D Genome',
+    category: 'epic workflow',
+    title: '4D Genome',
+    name: '4D Genome',
+  },
   fq2hic: {
     label: 'fq2hic',
     category: 'epic',

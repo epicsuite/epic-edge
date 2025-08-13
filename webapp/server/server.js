@@ -12,17 +12,13 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./epic-api/swagger/swaggerSpec');
 const logger = require('./utils/logger');
 const indexRouter = require('./indexRouter');
-const trameMonitor = require('./crons/trameMonitor');
-const publicTrameMonitor = require('./crons/trameMonitor');
-const uploadMonitor = require('./crons/uploadMonitor');
-// const cromwellWorkflowMonitor = require('./crons/cromwellWorkflowMonitor');
-// const nextflowJobMonitor = require('./crons/nextflowJobMonitor');
-const nextflowWorkflowMonitor = require('./crons/nextflowWorkflowMonitor');
-const slurmWorkflowMonitor = require('./crons/slurmWorkflowMonitor');
-const projectDeletionMonitor = require('./crons/projectDeletionMonitor');
-const projectStatusMonitor = require('./crons/projectStatusMonitor');
-const dbBackup = require('./crons/dbBackup');
-const dbBackupClean = require('./crons/dbBackupClean');
+const { uploadMonitor } = require('./crons/uploadMonitor');
+const { localWorkflowMonitor, localJobMonitor } = require('./crons/localMonitors');
+const { cromwellWorkflowMonitor } = require('./crons/cromwellMonitors');
+const { nextflowJobMonitor, nextflowWorkflowMonitor } = require('./crons/nextflowMonitors');
+const { projectDeletionMonitor, projectStatusMonitor } = require('./crons/projectMonitors');
+const { dbBackup, dbBackupClean } = require('./crons/dbMonitors');
+const { trameMonitor, publicTrameMonitor } = require('./crons/trameMonitors');
 const config = require('./config');
 
 const app = express();
@@ -50,7 +46,6 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 // Passport config
 require('./edge-api/utils/passport')(passport);
-
 // APIs
 app.use('/api', indexRouter);
 // API docs
@@ -68,7 +63,6 @@ if (config.NODE_ENV === 'production') {
     res.sendFile(path.join(config.CLIENT.BUILD_DIR, 'index.html'));
   });
 } else {
-  // cron jobs
   // monitor trames every day at 4am
   cron.schedule(config.CRON.SCHEDULES.TRAME_MONITOR, () => {
     trameMonitor();
@@ -77,9 +71,22 @@ if (config.NODE_ENV === 'production') {
   cron.schedule(config.CRON.SCHEDULES.TRAME_PUBLIC_MONITOR, () => {
     publicTrameMonitor();
   });
+  // cron jobs
+  // monitor local workflow on every 2 minutes
+  cron.schedule(config.CRON.SCHEDULES.LOCAL_WORKFLOW_MONITOR, async () => {
+    await localWorkflowMonitor();
+  });
+  // monitor local job on every 2 minutes
+  cron.schedule(config.CRON.SCHEDULES.LOCAL_JOB_MONITOR, async () => {
+    await localJobMonitor();
+  });
   // monitor workflow requests on every 2 minutes
-  cron.schedule(config.CRON.SCHEDULES.NEXTFLOW_WORKFLOW_MONITOR, async () => {
-    await slurmWorkflowMonitor();
+  cron.schedule(config.CRON.SCHEDULES.CROMWELL_WORKFLOW_MONITOR, async () => {
+    await cromwellWorkflowMonitor();
+  });
+  // monitor nextflow jobs on every 2 minutes
+  cron.schedule(config.CRON.SCHEDULES.NEXTFLOW_JOB_MONITOR, async () => {
+    await nextflowJobMonitor();
   });
   // monitor workflow requests on every 2 minutes
   cron.schedule(config.CRON.SCHEDULES.NEXTFLOW_WORKFLOW_MONITOR, async () => {

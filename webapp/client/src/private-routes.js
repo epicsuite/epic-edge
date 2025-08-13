@@ -12,6 +12,7 @@ const AdminProjects = React.lazy(() => import('./edge/um/admin/Projects'))
 const AdminProjectPage = React.lazy(() => import('./edge/project/results/projectPage/Admin'))
 const MetaGWorkflow = React.lazy(() => import('./edge/workflows/metagenomics/Main'))
 
+const FdgenomeWorkflow = React.lazy(() => import('./epic/fdgenome/Main'))
 const SlurpyWorkflow = React.lazy(() => import('./epic/slurpy/Main'))
 const Fq2hicWorkflow = React.lazy(() => import('./epic/fq2hic/Main'))
 const ComparativeViewer = React.lazy(() => import('./epic/comparative-viewer/Main'))
@@ -28,6 +29,7 @@ const privateRoutes = [
   { path: '/admin/projects', exact: true, name: 'AdminProjects', element: AdminProjects },
   { path: '/admin/project', name: 'AdminProjectPage', element: AdminProjectPage },
   { path: '/workflow/metagenomics', name: 'MetaG', element: MetaGWorkflow },
+  { path: '/workflow/4dgenome', exact: true, name: '4dgenome', element: FdgenomeWorkflow },
   { path: '/workflow/slurpy', exact: true, name: 'slurpy', element: SlurpyWorkflow },
   { path: '/workflow/fq2hic', exact: true, name: 'slurpy', element: Fq2hicWorkflow },
   { path: '/user/comparative-viewer', exact: true, name: 'compare', element: ComparativeViewer },

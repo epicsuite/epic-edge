@@ -61,7 +61,7 @@ const AppHeader = () => {
                 <CNavLink
                   style={{ color: 'white' }}
                   className="edge-header-nav-link"
-                  href="/workflow/fq2hic"
+                  href="/workflow/4dgenome"
                   component={NavLink}
                 >
                   Workflows

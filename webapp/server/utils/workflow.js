@@ -4,7 +4,7 @@ const Upload = require('../edge-api/models/upload');
 const config = require('../config');
 
 const cromwellWorkflows = [];
-const nextflowWorkflows = ['fq2hic'];
+const nextflowWorkflows = ['fdgenome'];
 const slurmWorkflows = [];
 const nextflowConfigs = {
   executor_config: {
@@ -14,7 +14,7 @@ const nextflowConfigs = {
   profile: {
     slurm: 'canfs',
     local: 'standard',
-  }
+  },
 };
 const workflowList = {
   'hic': {
@@ -27,6 +27,13 @@ const workflowList = {
     outdir: 'output/epic',
     nextflow_main: 'main.nf',
     config_tmpl: 'fq2hic_config.tmpl',
+  },
+  'fdgenome': {
+    outdir: 'output/epic',
+    indir: 'input',
+    nextflow_main: 'epicedge_sandbox_pipeline.nf',
+    config_tmpl: 'fdgenome_config.tmpl',
+    conda_env: '/panfs/biopan04/epicdev/apps/envs/epic',
   },
 };
 

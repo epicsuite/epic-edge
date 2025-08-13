@@ -1,25 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import { Col, Row } from 'reactstrap'
-import MySelect from '../../common/MySelect'
 import { MyTooltip } from '../../common/MyTooltip'
 import { defaults } from '../../common/util'
 import { components } from './defaults'
+import { RangeTextInput } from './RangeTextInput'
 
-export const SelectInput = (props) => {
-  const componentName = 'selectInput'
+export const RangeTextInputSingle = (props) => {
+  const componentName = 'rangeTextInputSingle'
   const [form, setState] = useState({ ...components[componentName] })
   const [doValidation, setDoValidation] = useState(0)
 
-  useEffect(() => {
-    form.selection = props.defaultValue ? props.defaultValue : null
-  }, [props.reset]) // eslint-disable-line react-hooks/exhaustive-deps
+  const setRangeTextInputSingle = (params, name) => {
+    setState({ ...params })
+    setDoValidation(doValidation + 1)
+  }
 
+  //trigger validation method when input changes
   useEffect(() => {
-    form.validForm = true
-    if (!props.isOptional && !form.selection) {
-      form.validForm = false
-    }
-    //force updating parent's inputParams
     props.setParams(form, props.name)
   }, [doValidation]) // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -29,7 +26,7 @@ export const SelectInput = (props) => {
         <Col md="3">
           {props.tooltip ? (
             <MyTooltip
-              id={`rangeInputTooltip-${props.name}`}
+              id={`rangeTextInputSingleTooltip-${props.name}`}
               tooltip={props.tooltip}
               text={props.text}
               place={props.tooltipPlace ? props.tooltipPlace : defaults.tooltipPlace}
@@ -42,19 +39,17 @@ export const SelectInput = (props) => {
           )}
         </Col>
         <Col xs="12" md="9">
-          <MySelect
-            defaultValue={props.defaultValue ? props.defaultValue : null}
-            options={props.options}
-            onChange={(e) => {
-              if (e) {
-                form.selection = e
-              } else {
-                form.selection = null
-              }
-              setDoValidation(doValidation + 1)
-            }}
-            placeholder={props.placeholder}
-            isClearable={props.isClearable}
+          <RangeTextInput
+            name={'rangeTextInputSingle'}
+            setParams={setRangeTextInputSingle}
+            startText={props.startText}
+            endText={props.endText}
+            defaultValueStart={props.defaultValueStart}
+            minStart={props.minStart}
+            maxStart={props.maxStart}
+            defaultValueEnd={props.defaultValueEnd}
+            minEnd={props.minEnd}
+            maxEnd={props.maxEnd}
           />
         </Col>
       </Row>

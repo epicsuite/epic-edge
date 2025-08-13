@@ -13,6 +13,11 @@ export const apis = {
 export const structureUrl = config.APP.API_URI + '/structures'
 
 // validators
+export const isValidChromosomes = (name) => {
+  const regexp = new RegExp(/^([xy]|[1-9]|[1-2]\d{1})(,([xy]|[1-9]|[1-2]\d{1}))*$/)
+  return regexp.test(name.trim().toLowerCase())
+}
+// used in slurpy/forms/HiC.js
 export const isValidChromosome = (name) => {
   const regexp = new RegExp(/^[a-zA-Z0-9\-_.]{3,}$/)
   return regexp.test(name.trim())

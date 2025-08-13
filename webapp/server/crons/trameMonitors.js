@@ -4,7 +4,7 @@ const Trame = require('../epic-api/models/trame');
 const logger = require('../utils/logger');
 const config = require('../config');
 
-module.exports = function trameMonitor() {
+const trameMonitor = async () => {
   logger.debug('Trame monitor');
   // kill the trame instance process and delete trame from DB after deleteGracePeriod
   const deleteGracePeriod = moment().subtract(config.EPIC.TRAME_DELETE_GRACE_PERIOD_HOURS, 'hours');
@@ -31,7 +31,7 @@ module.exports = function trameMonitor() {
 };
 
 // moniter public trame every 3 mins
-module.exports = function publicTrameMonitor() {
+const publicTrameMonitor = async () => {
   logger.debug('Public Trame monitor');
   // kill the trame instance process and delete trame from DB after deleteGracePeriod
   const deleteGracePeriod = moment().subtract(config.EPIC.TRAME_PUBLIC_DELETE_GRACE_PERIOD_HOURS, 'hours');
@@ -55,4 +55,9 @@ module.exports = function publicTrameMonitor() {
       });
     });
   });
+};
+
+module.exports = {
+  trameMonitor,
+  publicTrameMonitor,
 };

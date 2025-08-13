@@ -1,24 +1,29 @@
 import React, { useState, useEffect } from 'react'
 import { Col, Row } from 'reactstrap'
-import MySelect from '../../common/MySelect'
+import Slider, { Range } from 'rc-slider'
+import 'rc-slider/assets/index.css'
+import 'rc-slider/assets/index.css'
 import { MyTooltip } from '../../common/MyTooltip'
 import { defaults } from '../../common/util'
 import { components } from './defaults'
 
-export const SelectInput = (props) => {
-  const componentName = 'selectInput'
+export const Range2Input = (props) => {
+  const componentName = 'range2Input'
   const [form, setState] = useState({ ...components[componentName] })
   const [doValidation, setDoValidation] = useState(0)
 
-  useEffect(() => {
-    form.selection = props.defaultValue ? props.defaultValue : null
-  }, [props.reset]) // eslint-disable-line react-hooks/exhaustive-deps
+  const setRange2 = (value) => {
+    form['start'] = value[0]
+    form['end'] = value[1]
+    setDoValidation(doValidation + 1)
+  }
 
   useEffect(() => {
-    form.validForm = true
-    if (!props.isOptional && !form.selection) {
-      form.validForm = false
-    }
+    form['start'] = props.defaultValue[0]
+    form['end'] = props.defaultValue[1]
+  }, [props.defaultValue]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     //force updating parent's inputParams
     props.setParams(form, props.name)
   }, [doValidation]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -29,7 +34,7 @@ export const SelectInput = (props) => {
         <Col md="3">
           {props.tooltip ? (
             <MyTooltip
-              id={`rangeInputTooltip-${props.name}`}
+              id={`range2InputTooltip-${props.name}`}
               tooltip={props.tooltip}
               text={props.text}
               place={props.tooltipPlace ? props.tooltipPlace : defaults.tooltipPlace}
@@ -42,19 +47,19 @@ export const SelectInput = (props) => {
           )}
         </Col>
         <Col xs="12" md="9">
-          <MySelect
-            defaultValue={props.defaultValue ? props.defaultValue : null}
-            options={props.options}
-            onChange={(e) => {
-              if (e) {
-                form.selection = e
-              } else {
-                form.selection = null
-              }
-              setDoValidation(doValidation + 1)
-            }}
-            placeholder={props.placeholder}
-            isClearable={props.isClearable}
+          <Row>
+            <Col> {form['start']}</Col>
+            <Col className="edge-right"> {form['end']} </Col>
+          </Row>
+
+          <Slider
+            range
+            name="range2Input"
+            value={[form['start'], form['end']]}
+            min={props.min}
+            max={props.max}
+            step={props.step}
+            onChange={(e) => setRange2(e)}
           />
         </Col>
       </Row>
