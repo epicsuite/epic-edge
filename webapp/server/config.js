@@ -86,6 +86,7 @@ const config = {
   },
   NEXTFLOW: {
     CONDA_ACTIVATE: process.env.NEXTFLOW_CONDA_ACTIVATE || null,
+    PROFILE: process.env.NEXTFLOW_PROFILE || null,
     EDGE_ROOT: process.env.NEXTFLOW_EDGE_ROOT || null,
     SLURM_EDGE_ROOT: process.env.NEXTFLOW_SLURM_EDGE_ROOT || null,
     SLURM_SSH: process.env.NEXTFLOW_SLURM_SSH || '',

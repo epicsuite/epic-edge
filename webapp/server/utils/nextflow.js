@@ -168,6 +168,9 @@ const submitWorkflow = async (proj, projectConf, inputsize) => {
   if (config.NEXTFLOW.CONDA_ACTIVATE) {
     cmd = `${config.NEXTFLOW.CONDA_ACTIVATE} && ${cmd}`;
   }
+  if (config.NEXTFLOW.PROFILE) {
+    cmd += ` -profile ${config.NEXTFLOW.PROFILE}`;
+  }
   write2log(log, 'Run pipeline');
   // Don't need to wait for the command to complete. It may take long time to finish and cause an error.
   // The updateJobStatus will catch the error if this command failed.
