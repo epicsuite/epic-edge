@@ -85,6 +85,7 @@ const config = {
     JOBS_INPUT_MAX_SIZE_BYTES: makeIntIfDefined(process.env.SLURM_JOBS_INPUT_MAX_SIZE_BYTES) || 161061273600,
   },
   NEXTFLOW: {
+    CONDA_ACTIVATE: process.env.NEXTFLOW_CONDA_ACTIVATE || null,
     EDGE_ROOT: process.env.NEXTFLOW_EDGE_ROOT || null,
     SLURM_EDGE_ROOT: process.env.NEXTFLOW_SLURM_EDGE_ROOT || null,
     SLURM_SSH: process.env.NEXTFLOW_SLURM_SSH || '',

@@ -47,7 +47,7 @@ const AppHeader = () => {
                   Home
                 </CNavLink>
               </CNavItem>
-              <CNavItem>
+              {/* <CNavItem>
                 <CNavLink
                   style={{ color: 'white' }}
                   className="edge-header-nav-link"
@@ -56,7 +56,7 @@ const AppHeader = () => {
                 >
                   Comparative Viewer
                 </CNavLink>
-              </CNavItem>
+              </CNavItem> */}
               <CNavItem>
                 <CNavLink
                   style={{ color: 'white' }}
@@ -90,7 +90,7 @@ const AppHeader = () => {
                   Home
                 </CNavLink>
               </CNavItem>
-              <CNavItem>
+              {/* <CNavItem>
                 <CNavLink
                   style={{ color: 'white' }}
                   className="edge-header-nav-link"
@@ -99,7 +99,7 @@ const AppHeader = () => {
                 >
                   Comparative Viewer
                 </CNavLink>
-              </CNavItem>
+              </CNavItem> */}
               <CNavItem>
                 <CNavLink
                   style={{ color: 'white' }}

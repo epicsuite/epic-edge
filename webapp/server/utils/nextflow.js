@@ -164,7 +164,10 @@ const submitWorkflow = async (proj, projectConf, inputsize) => {
   }
   // submit workflow
   const runName = `edge-${proj.code}`;
-  const cmd = `${config.NEXTFLOW.SLURM_SSH} NXF_CACHE_DIR=${slurmProjHome}/nextflow/work NXF_PID_FILE=${slurmProjHome}/nextflow/.nextflow.pid NXF_LOG_FILE=${slurmProjHome}/nextflow/.nextflow.log nextflow -C ${slurmProjHome}/nextflow.config -bg -q run ${config.NEXTFLOW.WORKFLOW_DIR}/${workflowList[projectConf.workflow.name].nextflow_main} -name ${runName}`;
+  let cmd = `${config.NEXTFLOW.SLURM_SSH} NXF_CACHE_DIR=${slurmProjHome}/nextflow/work NXF_PID_FILE=${slurmProjHome}/nextflow/.nextflow.pid NXF_LOG_FILE=${slurmProjHome}/nextflow/.nextflow.log nextflow -C ${slurmProjHome}/nextflow.config -bg -q run ${config.NEXTFLOW.WORKFLOW_DIR}/${workflowList[projectConf.workflow.name].nextflow_main} -name ${runName}`;
+  if (config.NEXTFLOW.CONDA_ACTIVATE) {
+    cmd = `${config.NEXTFLOW.CONDA_ACTIVATE} && ${cmd}`;
+  }
   write2log(log, 'Run pipeline');
   // Don't need to wait for the command to complete. It may take long time to finish and cause an error.
   // The updateJobStatus will catch the error if this command failed.
