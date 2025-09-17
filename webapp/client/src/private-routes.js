@@ -16,6 +16,7 @@ const FdgenomeWorkflow = React.lazy(() => import('./epic/fdgenome/Main'))
 const SlurpyWorkflow = React.lazy(() => import('./epic/slurpy/Main'))
 const Fq2hicWorkflow = React.lazy(() => import('./epic/fq2hic/Main'))
 const ComparativeViewer = React.lazy(() => import('./epic/comparative-viewer/Main'))
+const Episcope = React.lazy(() => import('./epic/episcope/Main'))
 
 const privateRoutes = [
   { path: '/user/profile', exact: true, name: 'Profile', element: UserProfile },
@@ -33,6 +34,7 @@ const privateRoutes = [
   { path: '/workflow/slurpy', exact: true, name: 'slurpy', element: SlurpyWorkflow },
   { path: '/workflow/fq2hic', exact: true, name: 'slurpy', element: Fq2hicWorkflow },
   { path: '/user/comparative-viewer', exact: true, name: 'compare', element: ComparativeViewer },
+  { path: '/user/episcope', exact: true, name: 'episcope', element: Episcope },
 ]
 
 export default privateRoutes

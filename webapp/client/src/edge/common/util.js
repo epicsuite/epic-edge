@@ -3,6 +3,7 @@ import { toast } from 'react-toastify'
 
 export const apis = {
   publicProjects: '/api/public/projects',
+  publicFiles: '/api/public/data',
   register: '/api/user/register',
   login: '/api/user/login',
   oauthLogin: '/api/user/oauthLogin',

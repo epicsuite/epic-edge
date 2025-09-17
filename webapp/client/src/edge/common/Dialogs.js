@@ -68,6 +68,44 @@ export const LoaderDialog = (props) => {
   )
 }
 
+export const FolderBrowserDialog = (props) => {
+  return (
+    <Modal
+      isOpen={props.isOpen}
+      centered
+      toggle={props.toggle}
+      className={'modal-lg ' + props.className}
+    >
+      <ModalHeader toggle={props.toggle}>{props.title}</ModalHeader>
+      <ModalBody className="edge-modal-body">
+        <FileBrowser
+          files={props.files}
+          icons={{
+            Folder: <FcFolder className={'edge-fab-file-selector-icon'} />,
+            FolderOpen: <FcOpenedFolder className={'edge-fab-file-selector-icon'} />,
+          }}
+          showActionBar={false}
+          //disable selected file Item Detail section
+          detailRenderer={() => {
+            return <span></span>
+          }}
+          onSelectFile={props.handleSelectedFile}
+          noFilesMessage={props.noFilesMessage}
+          onSelectFolder={(folder) => {
+            console.log('Selected folder:', folder)
+            props.handleSelectedFolder(folder)
+          }}
+        />
+      </ModalBody>
+      <ModalFooter className="justify-content-center">
+        <Button color="primary" disabled={props.disable_select} onClick={props.handleClickSelect}>
+          Select
+        </Button>
+      </ModalFooter>
+    </Modal>
+  )
+}
+
 export const FileBrowserDialog = (props) => {
   return (
     <Modal

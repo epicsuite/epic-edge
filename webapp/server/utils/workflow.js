@@ -28,10 +28,15 @@ const workflowList = {
     nextflow_main: 'main.nf',
     config_tmpl: 'fq2hic_config.tmpl',
   },
+  '4dgb': {
+    outdir: 'output/4DGB',
+    nextflow_main: 'main.nf',
+    config_tmpl: 'fq2hic_config.tmpl',
+  },
   'fdgenome': {
     outdir: 'output/epic',
     indir: 'input',
-    nextflow_main: 'epicedge_sandbox_pipeline.nf',
+    nextflow_main: 'epicedge_main.nf',
     config_tmpl: 'fdgenome_config.tmpl',
     conda_env: '/panfs/biopan04/epicdev/apps/envs/epic',
   },

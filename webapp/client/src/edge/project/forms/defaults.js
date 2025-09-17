@@ -64,6 +64,12 @@ export const components = {
     validForm: false,
     errMessage: 'File is required',
   },
+  folderInput: {
+    validForm: false,
+    folderInput: null,
+    folderInput_display: null,
+    files: [],
+  },
   fileInput: {
     validForm: false,
     fileInput: null,
