@@ -1,7 +1,7 @@
-const path = require('path');
 const fs = require('fs');
 const ejs = require('ejs');
 const Papa = require('papaparse');
+const YAML = require('json-to-pretty-yaml');
 const Job = require('../edge-api/models/job');
 const { nextflowConfigs, workflowList, generateWorkflowResult } = require('./workflow');
 const { write2log, execCmd, sleep, pidIsRunning } = require('./common');
@@ -26,49 +26,30 @@ const generateInputs = async (projHome, projectConf, proj) => {
     executorConfig: `${config.NEXTFLOW.CONFIG_DIR}/${executorConfig}`,
     nextflowOutDir: `${projHome}/nextflow`,
     workflow: projectConf.workflow.name,
-    chromosomes: projectConf.workflow.input.chromosomes.split(',').map((chr) => chr.trim()),
   };
 
-  // create input directory
   if (projectConf.workflow.name === 'fdgenome') {
-    const fastqDir = `${projHome}/${workflowSettings.indir}/fastqs`;
-    // clean up fastq directory
-    fs.rmSync(fastqDir, { recursive: true, force: true });
-    // create fastq directory
-    fs.mkdirSync(fastqDir, { recursive: true });
-    // link input fastq files to input directory
-    projectConf.workflow.input.inputFastq.forEach((item) => {
-      const fileName1 = path.basename(item.f1);
-      const fileName2 = path.basename(item.f2);
-
-      let linkFq = `${fastqDir}/${fileName1}`;
-      let i = 1;
-      while (fs.existsSync(linkFq)) {
-        i += 1;
-        if (fileName1.includes('.')) {
-          const newName = fileName1.replace('.', `.${i}.`);
-          linkFq = `${fastqDir}/${newName}`;
-        } else {
-          linkFq = `${fastqDir}/${fileName1}${i}`;
-        }
-      }
-      // if file already exists, ignore it
-      fs.symlinkSync(item.f1, linkFq, 'file');
-      // link second fastq file
-      linkFq = `${fastqDir}/${fileName2}`;
-      i = 1;
-      while (fs.existsSync(linkFq)) {
-        i += 1;
-        if (fileName2.includes('.')) {
-          const newName = fileName2.replace('.', `.${i}.`);
-          linkFq = `${fastqDir}/${newName}`;
-        } else {
-          linkFq = `${fastqDir}/${fileName2}${i}`;
-        }
-      }
-      // if file already exists, ignore it
-      fs.symlinkSync(item.f2, linkFq, 'file');
-    });
+    // generate input.yaml
+    const json = {
+      ensemble: {
+        verion: '1.0',
+        meta: { title: proj.name, desc: proj.desc },
+        license: 'somename.txt',
+        reference: {
+          sequence: projectConf.workflow.input.reference.sequence,
+          annotation: projectConf.workflow.input.reference.annotation,
+          mitochondria: projectConf.workflow.input.reference.mitochondria,
+          resolution: projectConf.workflow.input.reference.resolution || 10000,
+          chromosomes: {
+            genomelist1: projectConf.workflow.input.reference.genomelist,
+            genomelist2: projectConf.workflow.input.reference.chromosomes
+          },
+        },
+      },
+      experiments: { ...projectConf.workflow.input.experiments }
+    };
+    fs.writeFileSync(`${projHome}/input.yaml`, YAML.stringify(json));
+    params.inputYaml = `${projHome}/input.yaml`;
   }
 
   if (projectConf.rawReads) {

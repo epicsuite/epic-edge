@@ -270,6 +270,9 @@ button:hover {
 .__react_component_tooltip {
   pointer-events: auto !important;
 }
+.edge-tooltip {
+  z-index: 9999;
+}
 
 //react-select
 .mySelect__value-container {

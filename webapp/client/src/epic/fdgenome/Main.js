@@ -6,20 +6,20 @@ import 'react-toastify/dist/ReactToastify.css'
 
 import { postData, getData, notify, apis } from 'src/edge/common/util'
 import { LoaderDialog, MessageDialog } from 'src/edge/common/Dialogs'
-import MySelect from 'src/edge/common/MySelect'
 import { Project } from 'src/edge/project/forms/Project'
 import { HtmlText } from 'src/edge/common/HtmlText'
 import { workflowList } from 'src/util'
 import { SideMenu } from 'src/components/SideMenu'
-import { FdGenome } from './forms/FdGenome'
+import { Reference } from './forms/Reference'
 import { fdgenome, workflowOptions, components } from './defaults'
+import { Experiments } from './forms/Experiments'
 
 const Main = (props) => {
   const navigate = useNavigate()
   const [submitting, setSubmitting] = useState(false)
   const [requestSubmit, setRequestSubmit] = useState(false)
   const [projectParams, setProjectParams] = useState()
-  const [workflowComponent, setWorkflowComponent] = useState({})
+  const [inputComponents, setInputComponents] = useState({})
   const [doValidation, setDoValidation] = useState(0)
   const [workflow, setWorkflow] = useState(workflowOptions[0].value)
   const [openDialog, setOpenDialog] = useState(false)
@@ -33,8 +33,8 @@ const Main = (props) => {
     setDoValidation(doValidation + 1)
   }
   const setComponentParams = (params, name) => {
-    // console.log('component:', params, name)
-    setWorkflowComponent(params)
+    //console.log('main component:', params, name)
+    setInputComponents({ ...inputComponents, [name]: params })
     setDoValidation(doValidation + 1)
   }
 
@@ -54,17 +54,59 @@ const Main = (props) => {
     let myWorkflow = { name: workflow, input: {} }
     // set workflow input display
     let inputDisplay = { workflow: workflowList[workflow].label, input: {} }
-
-    myWorkflow.input = {}
-    inputDisplay.input = {}
-    Object.keys(workflowComponent.inputs).forEach((key) => {
-      myWorkflow.input[key] = workflowComponent.inputs[key].value
-      if (workflowComponent.inputs[key].display) {
-        inputDisplay.input[workflowComponent.inputs[key].text] =
-          workflowComponent.inputs[key].display
+    // set workflow input reference parameters
+    myWorkflow.input.reference = {}
+    inputDisplay.input.reference = {}
+    //console.log('input components:', inputComponents)
+    Object.keys(inputComponents.reference.inputs).forEach((key) => {
+      myWorkflow.input.reference[key] = inputComponents.reference.inputs[key].value
+      if (inputComponents.reference.inputs[key].display) {
+        inputDisplay.input.reference[inputComponents.reference.inputs[key].text] =
+          inputComponents.reference.inputs[key].display
       } else {
-        inputDisplay.input[workflowComponent.inputs[key].text] = workflowComponent.inputs[key].value
+        inputDisplay.input.reference[inputComponents.reference.inputs[key].text] =
+          inputComponents.reference.inputs[key].value
       }
+    })
+    // set workflow input experiment parameters
+    myWorkflow.input.experiments = []
+    inputComponents.experiments.inputs.value.forEach((exp) => {
+      //console.log('experiment:', exp)
+      let myExp = {}
+      Object.keys(exp.inputs).forEach((key) => {
+        if (key === 'timesteps') {
+          myExp.timesteps = []
+          exp.inputs['timesteps'].forEach((ts, index) => {
+            myExp.timesteps[index] = {}
+            Object.keys(ts.inputs).forEach((tsk) => {
+              myExp.timesteps[index][tsk] = ts.inputs[tsk]
+            })
+          })
+        } else {
+          myExp[key] = exp.inputs[key]
+        }
+      })
+      myWorkflow.input.experiments.push(myExp)
+    })
+    // set workflow input experiment display parameters
+    inputDisplay.input.experiments = []
+    inputComponents.experiments.inputs.display.forEach((exp) => {
+      //console.log('experiment:', exp)
+      let expDisplay = {}
+      Object.keys(exp.inputs).forEach((key) => {
+        if (key === 'TimeSteps') {
+          expDisplay.TimeSteps = []
+          exp.inputs['TimeSteps'].forEach((ts, index) => {
+            expDisplay.TimeSteps[index] = {}
+            Object.keys(ts.inputs).forEach((tsk) => {
+              expDisplay.TimeSteps[index][tsk] = ts.inputs[tsk]
+            })
+          })
+        } else {
+          expDisplay[key] = exp.inputs[key]
+        }
+      })
+      inputDisplay.input.experiments.push(expDisplay)
     })
     // set form data
     formData.workflow = myWorkflow
@@ -93,20 +135,12 @@ const Main = (props) => {
     if (projectParams && !projectParams.validForm) {
       setRequestSubmit(false)
     }
-
-    if (!workflowComponent?.validForm) {
-      setRequestSubmit(false)
-    }
+    Object.keys(inputComponents).forEach((component) => {
+      if (!inputComponents[component].validForm) {
+        setRequestSubmit(false)
+      }
+    })
   }, [doValidation]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (workflow) {
-      setWorkflowComponent(components[workflow])
-    } else {
-      setWorkflowComponent({})
-    }
-    setDoValidation(doValidation + 1)
-  }, [workflow]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     let url = apis.userInfo
@@ -184,12 +218,37 @@ const Main = (props) => {
                   /> */}
                   {workflow === 'fdgenome' && (
                     <>
-                      <FdGenome
-                        title={workflowComponent ? workflowComponent.text : 'Input'}
+                      <Reference
+                        title={'Reference'}
                         setParams={setComponentParams}
-                        isValid={workflowComponent ? workflowComponent.validForm : false}
-                        errMessage={workflowComponent ? workflowComponent.errMessage : null}
+                        isValid={
+                          inputComponents['reference']
+                            ? inputComponents['reference'].validForm
+                            : false
+                        }
+                        errMessage={
+                          inputComponents['reference']
+                            ? inputComponents['reference'].errMessage
+                            : null
+                        }
                       />
+                      <Experiments
+                        title={'Experiments'}
+                        id={'experiments'}
+                        name={'experimentArray'}
+                        setParams={setComponentParams}
+                        isValid={
+                          inputComponents['experiments']
+                            ? inputComponents['experiments'].validForm
+                            : false
+                        }
+                        errMessage={
+                          inputComponents['experiments']
+                            ? inputComponents['experiments'].errMessage
+                            : null
+                        }
+                      />
+                      <br></br>
                     </>
                   )}
                   <br></br>

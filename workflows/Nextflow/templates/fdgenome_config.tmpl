@@ -1,11 +1,7 @@
 workDir = "<%= nextflowOutDir %>/work"
 params {
-    outDir = '<%= projOutdir %>'
-    fastqdir = '<%= projIndir %>/fastqs/'
-    refix = '<%= refix %>'
-    mtDNA = '<%= mtDNA %>'
-    genomelist = '<%= genomelist %>'
-    chromosomes = <%- JSON.stringify(chromosomes) %>
+    yaml = '<%= inputYaml %>'
+    outdir = '<%= projOutdir %>'
     partitions = 'fast,tb,gpu'
 }
 

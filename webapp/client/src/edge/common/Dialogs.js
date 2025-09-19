@@ -92,7 +92,7 @@ export const FolderBrowserDialog = (props) => {
           onSelectFile={props.handleSelectedFile}
           noFilesMessage={props.noFilesMessage}
           onSelectFolder={(folder) => {
-            console.log('Selected folder:', folder)
+            //console.log('Selected folder:', folder)
             props.handleSelectedFolder(folder)
           }}
         />

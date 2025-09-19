@@ -13,57 +13,63 @@ export const fdgenome = {
 export const workflowOptions = [{ value: 'fdgenome', label: workflowList['fdgenome'].label }]
 
 export const components = {
-  fdgenome: {
-    text: 'Input',
+  reference: {
+    text: 'Reference',
     validForm: false,
-    errMessage: 'Input error.<br/>',
+    errMessage: 'Reference input error.<br/>',
     inputs: {
-      inputFastq: {
-        text: 'Input Raw Reads',
-        value: [],
-        display: [],
-        fastqInput: {
-          tooltip:
-            '4D Genome workflow requires paired-end Illumina data in FASTQ format as the input; the file must be compressed. <br/>Acceptable file formats: .fastq.gz, .fq.gz',
-          enableInput: false,
-          placeholder: 'Select a file',
-          dataSources: ['upload', 'public'],
-          fileTypes: ['fastq.gz', 'fq.gz'],
-          viewFile: false,
-          isOptional: false,
-          cleanupInput: false,
-          maxInput: 100,
-          paired: true,
-          disableSwitcher: true,
-        },
-      },
-      refix: {
-        text: 'Reference Fasta',
+      sequence: {
+        text: 'Sequence',
         value: null,
         display: null,
         fileInput: {
           tooltip:
-            'Path to input reference referecne (in .fasta or .fa format) with an assoicated (.fai) bwa index to use for alignment.',
+            "Path to input reference fasta (in .fna format), source of the project's list of chromosomes.",
           enableInput: false,
           placeholder: 'Select a file',
           dataSources: ['upload', 'public'],
-          fileTypes: ['fasta', 'fa'],
+          fileTypes: ['fna'],
           viewFile: false,
           isOptional: false,
           cleanupInput: false,
         },
       },
-      mtDNA: {
-        text: 'Name of Mitochondrial Contig',
-        value: 'chrM',
+      annotation: {
+        text: 'Annotation',
+        value: null,
+        display: null,
+        fileInput: {
+          tooltip: 'Path to .gff file.',
+          enableInput: false,
+          placeholder: 'Select a file',
+          dataSources: ['upload', 'public'],
+          fileTypes: ['gff'],
+          viewFile: false,
+          isOptional: true,
+          cleanupInput: true,
+        },
+      },
+      mitochondria: {
+        text: 'Mitochondria',
+        value: '',
         textInput: {
           placeholder: '(required)',
-          tooltip: 'Name of the mitochondrial contig (default: chrM).',
+          tooltip: 'Some accession number',
           showError: false,
           isOptional: false,
           showErrorTooltip: true,
           errMessage: 'Required.',
-          defaultValue: 'chrM',
+          defaultValue: '',
+        },
+      },
+      resolution: {
+        text: 'Resolution',
+        value: 100000,
+        integerInput: {
+          tooltip: 'The bin resolution in the .hic files to choose. Default: 100000',
+          min: 0,
+          max: 100000000000,
+          defaultValue: 100000,
         },
       },
       genomelist: {
@@ -84,7 +90,7 @@ export const components = {
       },
       chromosomes: {
         text: 'Chromosomes',
-        value: '1,2',
+        value: '',
         textInput: {
           placeholder: '(required)',
           tooltip: 'List of chromosomes to include in the analysis, separated by commas.',
@@ -92,17 +98,26 @@ export const components = {
           isOptional: false,
           showErrorTooltip: true,
           errMessage: 'Required.',
-          defaultValue: '1,2',
+          defaultValue: '',
         },
       },
     },
     // only for input with validation method
     validInputs: {
-      inputFastq: { isValid: false, error: 'Input Fastq error.' },
-      refix: { isValid: false, error: 'Reference File error.' },
-      mtDNA: { isValid: true, error: 'Name of Mitochondrial Contig error.' },
+      sequence: { isValid: false, error: 'Reference File error.' },
+      mitochondria: { isValid: false, error: 'Mitochondria error.' },
+      resolution: { isValid: true, error: 'Resolution error.' },
       genomelist: { isValid: false, error: 'Genome List File error.' },
       chromosomes: { isValid: true, error: 'Chromosomes error.' },
+    },
+  },
+  experiments: {
+    text: 'Experiments',
+    validForm: false,
+    errMessage: 'Experiment input error.<br/>',
+    inputs: {
+      value: [],
+      display: [],
     },
   },
 }
