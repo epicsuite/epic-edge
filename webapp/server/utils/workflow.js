@@ -38,7 +38,7 @@ const workflowList = {
     indir: 'input',
     nextflow_main: 'epicedge_main.nf',
     config_tmpl: 'fdgenome_config.tmpl',
-    conda_env: '/panfs/biopan04/epicdev/apps/envs/epic',
+    conda_env: '/panfs/biopan04/4DGENOMESEQ/HIC2STRUCTURE/envs/epicedge',
   },
 };
 
