@@ -119,6 +119,13 @@ const startTrame = async (req, res, type) => {
       input.data = structureData;
     } else if (trameApp === 'compare') {
       input.data = JSON.stringify(params.input);
+    } else if (trameApp === 'episcope') {
+      input.data = params.input.dataPath;
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid trame app.'
+      });
     }
     let trameObj = await getOne(input);
     // there is an active trame process for the selected structure dataset and app, return it
@@ -216,6 +223,8 @@ const startTrame = async (req, res, type) => {
       await fs.promises.copyFile(config.EPIC.COMPARE_SETTINGS, `${trameHome}/settings.yaml`);
       outLog = `${trameHome}/compare-${input.port}.log`;
       input.data = JSON.stringify(params.input);
+    } else if (trameApp === 'episcope') {
+      values.data = input.data;
     }
 
     // render command

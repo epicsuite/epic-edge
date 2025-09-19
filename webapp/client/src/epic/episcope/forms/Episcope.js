@@ -84,6 +84,9 @@ export const Episcope = (props) => {
                   ? components[componentName].inputs['dataPath']['folderInput'].dataSources
                   : 'public'
               }
+              projectTypes={
+                components[componentName].inputs['dataPath']['folderInput'].projectTypes
+              }
               fileTypes={components[componentName].inputs['dataPath']['folderInput'].fileTypes}
               viewFile={components[componentName].inputs['dataPath']['folderInput'].viewFile}
               isOptional={components[componentName].inputs['dataPath']['folderInput'].isOptional}

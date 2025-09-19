@@ -11,7 +11,7 @@ export const components = {
     errMessage: 'Input error.<br/>',
     inputs: {
       dataPath: {
-        text: '4D Genome Result Path',
+        text: '4D Genome Workflow Result Path',
         value: null,
         display: null,
         folderInput: {
@@ -19,6 +19,7 @@ export const components = {
           enableInput: false,
           placeholder: 'Select a folder',
           dataSources: ['project', 'public'],
+          projectTypes: ['fdgenome'],
           viewFile: false,
           isOptional: false,
           cleanupInput: false,

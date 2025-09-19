@@ -16,6 +16,14 @@ ${config.EPIC.COMPARE_APP} \
 --session <%= sessionYaml %> \
 --plugindir ${config.EPIC.PVPYTHON_PLUGIN_DIR} \
 --serve &`,
+  'episcope':
+    // eslint-disable-next-line no-multi-str
+    'cd /panfs/biopan04/epicdev/apps/episcope; \
+/panfs/biopan04/epicdev/apps/ParaView-osmesa/bin/pvpython \
+--venv .venv -m episcope.app \
+--data <%= data %> \
+--port <%= port %> \
+--serve &',
 };
 
 module.exports = {

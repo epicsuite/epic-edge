@@ -92,7 +92,7 @@ const Main = (props) => {
             }}
           >
             <div className="clearfix">
-              <h4 className="pt-3">Comparative Viewer</h4>
+              <h4 className="pt-3">Episcope</h4>
               <span className="pt-3 text-muted edge-text-size-small">
                 <HtmlText
                   text={
