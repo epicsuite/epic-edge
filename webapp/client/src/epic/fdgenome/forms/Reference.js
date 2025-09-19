@@ -126,7 +126,6 @@ export const Reference = (props) => {
                 components[componentName].inputs['mitochondria']['textInput'].placeholder
               }
               errMessage={components[componentName].inputs['mitochondria']['textInput'].errMessage}
-              isValidTextInput={isValidTextInput}
               toUpperCase={true}
             />
             <br></br>
