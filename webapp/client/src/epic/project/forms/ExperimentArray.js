@@ -93,7 +93,7 @@ export const ExperimentArray = (props) => {
                 setDoValidation(doValidation + 1)
               }}
             >
-              Add more Experiment
+              Add Experiment
             </Button>
           )}
         </Col>
@@ -147,7 +147,7 @@ export const ExperimentArray = (props) => {
                     setDoValidation(doValidation + 1)
                   }}
                 >
-                  Add Experiment
+                  Add more Experiment
                 </Button>
               )}
             </Col>
