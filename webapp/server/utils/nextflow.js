@@ -48,8 +48,8 @@ const generateInputs = async (projHome, projectConf, proj) => {
       },
       experiments: { ...projectConf.workflow.input.experiments }
     };
-    fs.writeFileSync(`${projHome}/input.yaml`, YAML.stringify(json));
-    params.inputYaml = `${projHome}/input.yaml`;
+    fs.writeFileSync(`${projHome}/workflow_input.yaml`, YAML.stringify(json));
+    params.inputYaml = `${projHome}/workflow_input.yaml`;
   }
 
   if (projectConf.rawReads) {
