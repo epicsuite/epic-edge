@@ -45,9 +45,22 @@ const generateInputs = async (projHome, projectConf, proj) => {
             genomelist2: projectConf.workflow.input.reference.chromosomes
           },
         },
-        experiments: { ...projectConf.workflow.input.experiments }
+        experiments: []
       },
     };
+    projectConf.workflow.input.experiments.forEach((exp) => {
+      const e = {
+        name: exp.name,
+        sample: exp.sample,
+        replicate: exp.replicate,
+        desc: exp.desc,
+        timesteps: []
+      };
+      exp.timesteps.forEach((ts) => {
+        e.timesteps.push({ name: ts.name, structure: ts.structure });
+      });
+      json.ensemble.experiments.push(e);
+    });
     fs.writeFileSync(`${projHome}/workflow_input.yaml`, YAML.stringify(json));
     params.inputYaml = `${projHome}/workflow_input.yaml`;
   }
