@@ -41,7 +41,7 @@ const generateInputs = async (projHome, projectConf, proj) => {
           mitochondria: projectConf.workflow.input.reference.mitochondria,
           resolution: projectConf.workflow.input.reference.resolution || 10000,
           chromosomes: {
-            genomelist1: projectConf.workflow.input.reference.genomelist,
+            genomelist1: fs.realpathSync(projectConf.workflow.input.reference.genomelist),
             genomelist2: projectConf.workflow.input.reference.chromosomes
           },
         },
@@ -57,7 +57,7 @@ const generateInputs = async (projHome, projectConf, proj) => {
         timesteps: []
       };
       exp.timesteps.forEach((ts) => {
-        e.timesteps.push({ name: ts.name, structure: ts.structure });
+        e.timesteps.push({ name: ts.name, structure: fs.realpathSync(ts.structure) });
       });
       json.ensemble.experiments.push(e);
     });
