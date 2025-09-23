@@ -1,7 +1,7 @@
 const fs = require('fs');
 const ejs = require('ejs');
 const Papa = require('papaparse');
-const YAML = require('json-to-pretty-yaml');
+const yaml = require('js-yaml');
 const Job = require('../edge-api/models/job');
 const { nextflowConfigs, workflowList, generateWorkflowResult } = require('./workflow');
 const { write2log, execCmd, sleep, pidIsRunning } = require('./common');
@@ -46,9 +46,12 @@ const generateInputs = async (projHome, projectConf, proj) => {
           },
         },
       },
-      experiments: { ...projectConf.workflow.input.experiments }
+      experiments: []
     };
-    fs.writeFileSync(`${projHome}/workflow_input.yaml`, YAML.stringify(json));
+    projectConf.workflow.input.experiments.forEach((exp) => {
+      json.experiments.push(exp);
+    });
+    fs.writeFileSync(`${projHome}/workflow_input.yaml`, yaml.dump(json));
     params.inputYaml = `${projHome}/workflow_input.yaml`;
   }
 
