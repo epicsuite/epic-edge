@@ -45,12 +45,9 @@ const generateInputs = async (projHome, projectConf, proj) => {
             genomelist2: projectConf.workflow.input.reference.chromosomes
           },
         },
+        experiments: { ...projectConf.workflow.input.experiments }
       },
-      experiments: []
     };
-    projectConf.workflow.input.experiments.forEach((exp) => {
-      json.experiments.push({ ...exp });
-    });
     fs.writeFileSync(`${projHome}/workflow_input.yaml`, YAML.stringify(json));
     params.inputYaml = `${projHome}/workflow_input.yaml`;
   }
