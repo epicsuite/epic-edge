@@ -36,8 +36,8 @@ const generateInputs = async (projHome, projectConf, proj) => {
         meta: { title: proj.name, desc: proj.desc },
         license: 'somename.txt',
         reference: {
-          sequence: projectConf.workflow.input.reference.sequence,
-          annotation: projectConf.workflow.input.reference.annotation,
+          sequence: fs.realpathSync(projectConf.workflow.input.reference.sequence),
+          annotation: fs.existsSync(projectConf.workflow.input.reference.annotation) ? fs.realpathSync(projectConf.workflow.input.reference.annotation) : null,
           mitochondria: projectConf.workflow.input.reference.mitochondria,
           resolution: projectConf.workflow.input.reference.resolution || 10000,
           chromosomes: {
