@@ -48,11 +48,10 @@ const projectMonitor = async () => {
   }
 };
 
-
 const projectDeletionMonitor = async () => {
   logger.debug('project deletion monitor');
   try {
-    // delete file after deleteGracePeriod
+    // delete project after deleteGracePeriod
     const deleteGracePeriod = moment().subtract(config.CRON.PROJECT_DELETION_GRACE_PERIOD_DAYS, 'days');
     const projs = await Project.find({ 'status': 'delete', 'updated': { '$lte': deleteGracePeriod } });
     let i;
@@ -62,7 +61,7 @@ const projectDeletionMonitor = async () => {
       const path = `${config.IO.PROJECT_BASE_DIR}/${code}`;
       // delete directory recursively
       try {
-        fs.rmdirSync(path, { recursive: true });
+        fs.rmSync(path, { recursive: true });
         logger.info(`deleted ${path}`);
       } catch (err) {
         logger.error(`Failed to delete ${path}:${err}`);
@@ -85,7 +84,60 @@ const projectDeletionMonitor = async () => {
   }
 };
 
+const projectRerunMonitor = async () => {
+  logger.debug('project rerun monitor');
+  try {
+    // rerun failed projects
+    const projs = await Project.find({ 'status': 'rerun' }).sort({ updated: 1 });
+    let i;
+    for (i = 0; i < projs.length; i += 1) {
+      const proj = projs[i];
+      const { code } = proj;
+      logger.info(`rerun project: ${code}`);
+      const projHome = `${config.IO.PROJECT_BASE_DIR}/${code}`;
+      // delete result.json if exists
+      const resultJsonPath = `${projHome}/result.json`;
+      if (fs.existsSync(resultJsonPath)) {
+        fs.unlinkSync(resultJsonPath);
+        logger.info(`deleted ${resultJsonPath}`);
+      }
+      // delete nextflow directory recursively
+      const path = `${projHome}/nextflow`;
+      if (fs.existsSync(path)) {
+        fs.rmSync(path, { recursive: true });
+        logger.info(`deleted ${path}`);
+      }
+      // delete input directory
+      const inputPath = `${projHome}/input`;
+      if (fs.existsSync(inputPath)) {
+        fs.rmSync(inputPath, { recursive: true });
+        logger.info(`deleted ${inputPath}`);
+      }
+      // clean up output directory
+      const outputPath = `${projHome}/output`;
+      if (fs.existsSync(outputPath)) {
+        fs.rmSync(outputPath, { recursive: true });
+        logger.info(`deleted ${outputPath}`);
+      }
+      // delete job from database
+      Job.deleteOne({ project: code }, (err) => {
+        if (err) {
+          logger.error(`Failed to delete job from DB ${code}:${err} `);
+        }
+      });
+      // update project status to 'in queue'
+      proj.status = 'in queue';
+      proj.notified = false;
+      proj.updated = Date.now();
+      proj.save();
+    }
+  } catch (err) {
+    logger.error(`projectRerunMonitor failed:${err} `);
+  }
+};
+
 module.exports = {
   projectMonitor,
   projectDeletionMonitor,
+  projectRerunMonitor
 };

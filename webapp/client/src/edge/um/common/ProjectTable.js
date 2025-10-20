@@ -11,6 +11,7 @@ import Fab from '@mui/material/Fab'
 import {
   Delete,
   Edit,
+  Redo,
   Refresh,
   PersonAdd,
   PersonAddDisabled,
@@ -262,6 +263,10 @@ const ProjectTable = (props) => {
   }
 
   const updateProj = (proj, oldProj) => {
+    // only update status to 'rerun' if it is 'failed'
+    if (action === 'rerun' && oldProj.status !== 'failed') {
+      return oldProj
+    }
     if (props.tableType === 'admin') {
       dispatch(updateProjectAdmin(proj))
     } else {
@@ -333,6 +338,7 @@ const ProjectTable = (props) => {
   }
 
   const proccessProject = (proj) => {
+    const oldProj = { ...proj }
     if (action === 'delete') {
       proj.status = 'delete'
     } else if (action === 'rerun') {
@@ -343,7 +349,7 @@ const ProjectTable = (props) => {
       proj.public = false
     }
 
-    return updateProj(proj, proj)
+    return updateProj(proj, oldProj)
   }
 
   const handleUserSelectorChange = (selectedUsers) => {
@@ -374,6 +380,7 @@ const ProjectTable = (props) => {
   }
 
   const processShareUnshareProject = (proj) => {
+    const oldProj = { ...proj }
     if (action === 'share') {
       let sharedTo = proj.sharedTo
       userList.map((user) => {
@@ -396,7 +403,7 @@ const ProjectTable = (props) => {
       proj.sharedTo = sharedTo
     }
 
-    return updateProj(proj, proj)
+    return updateProj(proj, oldProj)
   }
 
   const handleUserSelectorClose = () => {
@@ -514,6 +521,24 @@ const ProjectTable = (props) => {
                       />
                     </Fab>
                   </Tooltip>
+                  {props.tableType === 'admin' && (
+                    <Tooltip title="Rerun selected 'Failed' projects" aria-label="rerun">
+                      <Fab
+                        color="primary"
+                        size="small"
+                        style={{ marginRight: 10 }}
+                        aria-label="rerun"
+                      >
+                        <Redo
+                          className="edge-table-icon"
+                          onClick={() => {
+                            setTable(table)
+                            handleAction('rerun', table.getSelectedRowModel().flatRows)
+                          }}
+                        />
+                      </Fab>
+                    </Tooltip>
+                  )}
                   <Tooltip title="Share selected projects" aria-label="share">
                     <Fab
                       color="primary"

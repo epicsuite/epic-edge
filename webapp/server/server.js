@@ -16,7 +16,7 @@ const { uploadMonitor } = require('./crons/uploadMonitor');
 const { localWorkflowMonitor, localJobMonitor } = require('./crons/localMonitors');
 const { cromwellWorkflowMonitor } = require('./crons/cromwellMonitors');
 const { nextflowJobMonitor, nextflowWorkflowMonitor } = require('./crons/nextflowMonitors');
-const { projectDeletionMonitor, projectStatusMonitor } = require('./crons/projectMonitors');
+const { projectDeletionMonitor, projectStatusMonitor, projectRerunMonitor } = require('./crons/projectMonitors');
 const { dbBackup, dbBackupClean } = require('./crons/dbMonitors');
 const { trameMonitor, publicTrameMonitor } = require('./crons/trameMonitors');
 const config = require('./config');
@@ -99,6 +99,10 @@ if (config.NODE_ENV === 'production') {
   // monitor project status on every 1 minute
   cron.schedule(config.CRON.SCHEDULES.PROJECT_STATUS_MONITOR, async () => {
     await projectStatusMonitor();
+  });
+  // monitor project rerun on every 1 minute
+  cron.schedule(config.CRON.SCHEDULES.PROJECT_RERUN_MONITOR, async () => {
+    await projectRerunMonitor();
   });
   // monitor project deletion every day at 10pm
   cron.schedule(config.CRON.SCHEDULES.PROJECT_DELETION_MONITOR, async () => {

@@ -148,6 +148,8 @@ const config = {
       FILE_UPLOAD_MONITOR: process.env.CRON_FILE_UPLOAD_MONITOR_SCHEDULE || '0 0 * * *',
       // monitor project status on every 1 minute
       PROJECT_STATUS_MONITOR: process.env.CRON_PROJECT_STATUS_MONITOR_SCHEDULE || '*/1 * * * *',
+      // monitor project status on every 1 minute
+      PROJECT_RERUN_MONITOR: process.env.CRON_PROJECT_RERUN_MONITOR_SCHEDULE || '*/1 * * * *',
       // monitor project deletion every day at 10pm
       PROJECT_DELETION_MONITOR: process.env.CRON_PROJECT_DELETION_MONITOR_SCHEDULE || '0 22 * * *',
       // backup nmdcedge database every day at 1 am
