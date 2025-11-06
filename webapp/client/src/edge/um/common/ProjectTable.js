@@ -264,7 +264,8 @@ const ProjectTable = (props) => {
 
   const updateProj = (proj, oldProj) => {
     // only update status to 'rerun' if it is 'failed'
-    if (action === 'rerun' && oldProj.status !== 'failed') {
+    const stats = ['failed', 'processing', 'running']
+    if (action === 'rerun' && !stats.includes(oldProj.status)) {
       return oldProj
     }
     if (props.tableType === 'admin') {
