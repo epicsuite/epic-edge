@@ -114,11 +114,13 @@ const ProjectResult = (props) => {
       getProjectConf()
       setRunStatsLoading(true)
       getProjectRunStats()
+      if (['complete', 'running', 'failed'].includes(project.status)) {
+        setOutputLoading(true)
+        getProjectOutputs()
+      }
       if (project.status === 'complete') {
         setResultLoading(true)
         getProjectResult()
-        setOutputLoading(true)
-        getProjectOutputs()
       }
     }
   }, [project, type])
