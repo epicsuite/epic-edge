@@ -22,13 +22,18 @@ export const components = {
         value: null,
         display: null,
         folderInput: {
-          placeholder: '(Required) Select a folder ...',
+          placeholder: '(required) Select a folder ...',
           dataSources: ['upload', 'public'],
           fileTypes: ['fastq.gz', 'fq.gz'],
           viewFile: false,
           isOptional: false,
           cleanupInput: false,
         },
+      },
+      struct_stage: {
+        text: 'Structure Stage',
+        value: 1,
+        display: 1,
       },
     },
     // only for input with validation method

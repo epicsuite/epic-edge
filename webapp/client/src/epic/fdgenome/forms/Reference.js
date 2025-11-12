@@ -159,20 +159,6 @@ export const Reference = (props) => {
               }
             />
             <br></br>
-            <TextInput
-              name={'chromosomes'}
-              setParams={setTextInput}
-              text={components[componentName].inputs['chromosomes'].text}
-              tooltip={components[componentName].inputs['chromosomes']['textInput'].tooltip}
-              defaultValue={
-                components[componentName].inputs['chromosomes']['textInput'].defaultValue
-              }
-              isOptional={components[componentName].inputs['chromosomes']['textInput'].isOptional}
-              placeholder={components[componentName].inputs['chromosomes']['textInput'].placeholder}
-              errMessage={components[componentName].inputs['chromosomes']['textInput'].errMessage}
-              toUpperCase={true}
-            />
-            <br></br>
           </CardBody>
         </Collapse>
       </Card>

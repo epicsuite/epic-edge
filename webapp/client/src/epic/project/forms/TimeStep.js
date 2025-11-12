@@ -24,6 +24,14 @@ export const TimeStep = (props) => {
     if (validInputs[name]) {
       validInputs[name].isValid = inForm.validForm
     }
+    // set structure stage
+    if (inForm.files[0]?.endsWith('.fastq.gz') || inForm.files[0]?.endsWith('.fq.gz')) {
+      form.inputs['struct_stage'].value = 1
+      form.inputs['struct_stage'].display = 1
+    } else {
+      form.inputs['struct_stage'].value = 2
+      form.inputs['struct_stage'].display = 2
+    }
     setDoValidation(doValidation + 1)
   }
 

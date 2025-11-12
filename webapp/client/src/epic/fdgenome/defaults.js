@@ -41,7 +41,7 @@ export const components = {
         fileInput: {
           tooltip: 'Path to .gff file.',
           enableInput: false,
-          placeholder: 'Select a file',
+          placeholder: '(optional) Select a file',
           dataSources: ['upload', 'public'],
           fileTypes: ['gff'],
           viewFile: false,
@@ -53,7 +53,7 @@ export const components = {
         text: 'Mitochondria',
         value: '',
         textInput: {
-          placeholder: '(some genomes do not have it)',
+          placeholder: '(optional) Accession for mitochondrial contig, if present',
           tooltip: 'Some accession number',
           showError: false,
           isOptional: true,
@@ -73,7 +73,7 @@ export const components = {
         },
       },
       genomelist: {
-        text: 'Genome List File',
+        text: 'Contigs',
         value: null,
         display: null,
         fileInput: {
@@ -88,19 +88,6 @@ export const components = {
           cleanupInput: false,
         },
       },
-      chromosomes: {
-        text: 'Chromosomes',
-        value: '',
-        textInput: {
-          placeholder: '(required)',
-          tooltip: 'List of chromosomes to include in the analysis, separated by commas.',
-          showError: false,
-          isOptional: false,
-          showErrorTooltip: true,
-          errMessage: 'Required.',
-          defaultValue: '',
-        },
-      },
     },
     // only for input with validation method
     validInputs: {
@@ -108,7 +95,6 @@ export const components = {
       mitochondria: { isValid: false, error: 'Mitochondria error.' },
       resolution: { isValid: true, error: 'Resolution error.' },
       genomelist: { isValid: false, error: 'Genome List File error.' },
-      chromosomes: { isValid: true, error: 'Chromosomes error.' },
     },
   },
   experiments: {

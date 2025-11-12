@@ -35,7 +35,7 @@ const User = (props) => {
           setLoading(false)
         })
         .catch((err) => {
-          setError(err)
+          setError('Failed to load project data.')
           setLoading(false)
         })
     }
