@@ -108,7 +108,7 @@ const ProjectOutputs = (props) => {
       <Header
         toggle={true}
         toggleParms={toggleOutputs}
-        title={'Download Outputs'}
+        title={'Outputs'}
         collapseParms={collapseCard}
       />
       <Collapse isOpen={!collapseCard}>
