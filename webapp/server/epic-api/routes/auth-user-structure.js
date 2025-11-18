@@ -1,13 +1,19 @@
-const router = require('express').Router();
-const { validationRules: codeValidationRules, validate: codeValidate } = require('../validations/code-validator');
-const { validationRules: addValidationRules, validate: addValidate } = require('../validations/structure-validator');
+const router = require('express').Router()
+const {
+  validationRules: codeValidationRules,
+  validate: codeValidate
+} = require('../validations/code-validator')
+const {
+  validationRules: addValidationRules,
+  validate: addValidate
+} = require('../validations/structure-validator')
 const {
   addOne,
   getOne,
   updateOne,
   getOwn,
-  getAll,
-} = require('../controllers/auth-user-structure-controller');
+  getAll
+} = require('../controllers/auth-user-structure-controller')
 
 /**
  * @swagger
@@ -38,8 +44,8 @@ const {
  *               $ref: '#/components/models/serverError'
  */
 router.get('/structures', async (req, res) => {
-  await getOwn(req, res);
-});
+  await getOwn(req, res)
+})
 
 /**
  * @swagger
@@ -70,8 +76,8 @@ router.get('/structures', async (req, res) => {
  *               $ref: '#/components/models/serverError'
  */
 router.get('/structures/all', async (req, res) => {
-  await getAll(req, res);
-});
+  await getAll(req, res)
+})
 
 /**
  * @swagger
@@ -107,9 +113,14 @@ router.get('/structures/all', async (req, res) => {
  *             schema:
  *               $ref: '#/components/models/serverError'
  */
-router.post('/structures', addValidationRules(), addValidate, async (req, res) => {
-  await addOne(req, res);
-});
+router.post(
+  '/structures',
+  addValidationRules(),
+  addValidate,
+  async (req, res) => {
+    await addOne(req, res)
+  }
+)
 
 /**
  * @swagger
@@ -152,9 +163,14 @@ router.post('/structures', addValidationRules(), addValidate, async (req, res) =
  *             schema:
  *               $ref: '#/components/models/serverError'
  */
-router.put('/structures/:code', codeValidationRules(), codeValidate, async (req, res) => {
-  await updateOne(req, res);
-});
+router.put(
+  '/structures/:code',
+  codeValidationRules(),
+  codeValidate,
+  async (req, res) => {
+    await updateOne(req, res)
+  }
+)
 
 /**
  * @swagger
@@ -191,8 +207,13 @@ router.put('/structures/:code', codeValidationRules(), codeValidate, async (req,
  *             schema:
  *               $ref: '#/components/models/serverError'
  */
-router.get('/structures/:code', codeValidationRules(), codeValidate, async (req, res) => {
-  await getOne(req, res);
-});
+router.get(
+  '/structures/:code',
+  codeValidationRules(),
+  codeValidate,
+  async (req, res) => {
+    await getOne(req, res)
+  }
+)
 
-module.exports = router;
+module.exports = router

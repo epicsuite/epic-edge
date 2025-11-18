@@ -1,64 +1,67 @@
-const Structure = require('../models/structure');
-const { updateStructure } = require('../utils/structure');
-const logger = require('../../utils/logger');
-const config = require('../../config');
+const Structure = require('../models/structure')
+const { updateStructure } = require('../utils/structure')
+const logger = require('../../utils/logger')
+const config = require('../../config')
 
-const sysError = config.APP.API_ERROR;
+const sysError = config.APP.API_ERROR
 
 // Update structure
 const updateOne = async (req, res) => {
   try {
-    logger.debug(`/api/admin/structures/${req.params.code} update`);
+    logger.debug(`/api/admin/structures/${req.params.code} update`)
 
-    const query = { 'status': { $ne: 'delete' }, code: { $eq: req.params.code } };
-    const structure = await updateStructure(query, req);
+    const query = { status: { $ne: 'delete' }, code: { $eq: req.params.code } }
+    const structure = await updateStructure(query, req)
 
     if (!structure) {
-      logger.error(`structure ${req.params.code} not found or access denied.`);
+      logger.error(`structure ${req.params.code} not found or access denied.`)
       return res.status(400).json({
-        error: { structure: `structure ${req.params.code} not found or access denied` },
+        error: {
+          structure: `structure ${req.params.code} not found or access denied`
+        },
         message: 'Action failed',
-        success: false,
-      });
+        success: false
+      })
     }
     return res.send({
       structure,
       message: 'Action successful',
-      success: true,
-    });
+      success: true
+    })
   } catch (err) {
-    logger.error(`Admin update structure failed: ${err}`);
+    logger.error(`Admin update structure failed: ${err}`)
 
     return res.status(500).json({
       message: sysError,
-      success: false,
-    });
+      success: false
+    })
   }
-};
+}
 
 // Find all structures
 const getAll = async (req, res) => {
   try {
-    logger.debug('/api/admin/structures');
+    logger.debug('/api/admin/structures')
     // find all structures
-    const structures = await Structure.find({ 'status': { $ne: 'delete' } }).sort([['updated', -1]]);
+    const structures = await Structure.find({ status: { $ne: 'delete' } }).sort(
+      [['updated', -1]]
+    )
 
     return res.json({
       structures,
       message: 'Action successful',
-      success: true,
-    });
-
+      success: true
+    })
   } catch (err) {
-    logger.error(`Admin get structures failed: ${err}`);
+    logger.error(`Admin get structures failed: ${err}`)
     return res.status(500).json({
       message: sysError,
-      success: false,
-    });
+      success: false
+    })
   }
-};
+}
 
 module.exports = {
   updateOne,
-  getAll,
-};
+  getAll
+}

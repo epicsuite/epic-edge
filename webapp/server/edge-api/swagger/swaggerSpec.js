@@ -1,6 +1,6 @@
-const swaggerJSDoc = require('swagger-jsdoc');
-const swaggerSchemas = require('./swaggerSchemas');
-const swaggerModels = require('./swaggerModels');
+const swaggerJSDoc = require('swagger-jsdoc')
+const swaggerSchemas = require('./swaggerSchemas')
+const swaggerModels = require('./swaggerModels')
 
 const options = {
   definition: {
@@ -9,7 +9,7 @@ const options = {
       title: 'EDGE API with Swagger',
       version: '1.0.0',
       description:
-        'This is a EDGE API application made with Express and documented with Swagger',
+        'This is a EDGE API application made with Express and documented with Swagger'
     },
     components: {
       schemas: swaggerSchemas,
@@ -21,39 +21,40 @@ const options = {
           bearerFormat: 'JWT',
           name: 'Authorization',
           in: 'header',
-          description: 'Enter the token with the `Bearer: ` prefix, e.g. "Bearer abcde12345".'
+          description:
+            'Enter the token with the `Bearer: ` prefix, e.g. "Bearer abcde12345".'
         }
       }
     },
     servers: [
       {
         url: 'http://localhost:5000',
-        description: 'Development server',
-      },
+        description: 'Development server'
+      }
     ],
     tags: [
       {
         name: 'User',
-        description: 'Public user endpoints',
+        description: 'Public user endpoints'
       },
       {
         name: 'Project',
-        description: 'Public project endpoints',
+        description: 'Public project endpoints'
       },
       {
         name: 'AuthUser',
-        description: 'Authorized user endpoints',
+        description: 'Authorized user endpoints'
       },
       {
         name: 'Admin',
-        description: 'Admin endpoints',
-      },
-    ],
+        description: 'Admin endpoints'
+      }
+    ]
   },
   // Path to the API docs
-  apis: ['./routes/*.js'],
-};
+  apis: ['./routes/*.js']
+}
 
-const swaggerSpec = swaggerJSDoc(options);
+const swaggerSpec = swaggerJSDoc(options)
 
-module.exports = swaggerSpec;
+module.exports = swaggerSpec

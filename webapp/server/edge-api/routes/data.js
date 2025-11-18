@@ -1,7 +1,5 @@
-const router = require('express').Router();
-const {
-  getPublicFiles,
-} = require('../controllers/data-controller');
+const router = require('express').Router()
+const { getPublicFiles } = require('../controllers/data-controller')
 
 /**
  * @swagger
@@ -37,7 +35,7 @@ const {
  */
 
 router.post('/', async (req, res) => {
-  await getPublicFiles(req, res);
-});
+  await getPublicFiles(req, res)
+})
 
-module.exports = router;
+module.exports = router
