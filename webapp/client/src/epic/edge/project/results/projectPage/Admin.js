@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { Row, Col } from 'reactstrap'
 import ProjectSummary from 'src/edge/project/results/ProjectSummary'
-import ProjectResult from 'src/edge/project/ProjectResult'
+import ProjectResult from '../ProjectResult'
 import { LoaderDialog } from 'src/edge/common/Dialogs'
 import { getData, apis } from 'src/edge/common/util'
 
