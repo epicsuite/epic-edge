@@ -264,6 +264,7 @@ const startTrame = async (req, res, type) => {
       input.data = JSON.stringify(params.input)
     } else if (trameApp === 'episcope') {
       values.data = input.data
+      outLog = `${trameHome}/episcope-${port}.log`
     }
 
     // render command
@@ -280,7 +281,7 @@ const startTrame = async (req, res, type) => {
       logger.info(`trame ${url}`)
       // wait for the trame server to be up running
       let duration = 3000
-      if (trameApp === 'compare') {
+      if (trameApp === 'episcope') {
         duration = 50000
       }
       setTimeout(
