@@ -196,7 +196,7 @@ const ProjectResult = (props) => {
           {project && project.status === 'complete' && (
             <>
               <Button type="button" size="sm" color="primary" onClick={launchEpiscope}>
-                View Result with Epicscope Tool
+                View Result with Episcope Tool
               </Button>
               <br></br>
               <br></br>
