@@ -198,6 +198,11 @@ const ProjectResult = (props) => {
               <Button type="button" size="sm" color="primary" onClick={launchEpiscope}>
                 View Result with Episcope Tool
               </Button>
+              <span className="edge-sub-top-bar edge-text-size-small">
+                <a href={'https://github.com/epicsuite/episcope'} target="_blank" rel="noreferrer">
+                  &nbsp; (What is Episcope?)
+                </a>
+              </span>
               <br></br>
               <br></br>
             </>

@@ -264,7 +264,7 @@ const ProjectTable = (props) => {
 
   const updateProj = (proj, oldProj) => {
     // only update status to 'rerun' if it is 'failed'
-    const stats = ['failed', 'processing', 'running']
+    const stats = ['failed', 'processing', 'running', 'complete']
     if (action === 'rerun' && !stats.includes(oldProj.status)) {
       return oldProj
     }
