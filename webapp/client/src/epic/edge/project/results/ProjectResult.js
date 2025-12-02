@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button } from 'reactstrap'
+import { useNavigate } from 'react-router-dom'
 import { LoaderDialog, FileViewerDialog } from 'src/edge/common/Dialogs'
 import { getData, fetchFile, apis } from 'src/edge/common/util'
 import ProjectGeneral from 'src/edge/project/results/ProjectGeneral'
@@ -7,6 +8,7 @@ import ProjectOutputs from 'src/edge/project/results/ProjectOutputs'
 import { submitTrameSession } from '../../../util'
 
 const ProjectResult = (props) => {
+  const navigate = useNavigate()
   const [project, setProject] = useState()
   const [type, setType] = useState()
   const [runStats, setRunStats] = useState()
