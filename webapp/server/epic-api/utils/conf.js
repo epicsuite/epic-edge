@@ -17,7 +17,7 @@ ${config.EPIC.COMPARE_APP} \
   episcope:
     // eslint-disable-next-line no-multi-str
     'cd /panfs/biopan04/epicdev/apps/episcope; \
-/panfs/biopan04/epicdev/apps/ParaView-osmesa/bin/pvpython \
+/panfs/biopan04/epicdev/apps/ParaView/bin/pvpython \
 --venv .venv -m episcope.app \
 --data <%= data %> \
 --port <%= port %> \
