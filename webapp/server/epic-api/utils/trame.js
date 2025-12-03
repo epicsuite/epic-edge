@@ -177,11 +177,12 @@ const startTrame = async (req, res, type) => {
     if (type === 'user') {
       // assumption: user can be allowed to have only 1 active trame instance
       // there is an active trame process for previouse dataset and app, delete it
+      // kill process and all descendant processes: pkill -TERM -P <pid>
       trameObj = await getOne({ user: input.user })
       if (trameObj) {
         // kill the process and delete the trame from DB
         if (pidIsRunning(trameObj.pid)) {
-          exec(`kill -9 ${trameObj.pid}`, (error, stdout, stderr) => {
+          exec(`pkill -TERM -P ${trameObj.pid}`, (error, stdout, stderr) => {
             if (error) {
               logger.error(error.message)
               // throw new Error(error.message);
