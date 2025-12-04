@@ -148,7 +148,7 @@ const startTrame = async (req, res, type) => {
     } else if (trameApp === 'episcope') {
       // input.data = params.input.dataPath
       // find project output directory
-      input.data = `${config.IO.PROJECT_BASE_DIR}/${params.input.project}/output/epic`
+      input.data = `${config.IO.PROJECT_BASE_DIR}/${params.input.project}/output/epic/ensemble`
     } else {
       return res.status(400).json({
         success: false,
