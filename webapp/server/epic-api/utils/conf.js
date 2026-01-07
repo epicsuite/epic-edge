@@ -20,7 +20,6 @@ ${config.EPIC.COMPARE_APP} \
     // /panfs/biopan04/epicdev/apps/ParaView/bin/pvpython \
     // eslint-disable-next-line no-multi-str
     'pvpython --venv /panfs/biopan03/home/stam/projects/pv-bins/conda-py13-env -m episcope.app \
---venv .venv -m episcope.app \
 --data <%= data %> \
 --port <%= port %> \
 --serve &'
