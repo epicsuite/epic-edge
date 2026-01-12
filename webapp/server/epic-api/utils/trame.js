@@ -283,7 +283,7 @@ const startTrame = async (req, res, type) => {
       // wait for the trame server to be up running
       let duration = 3000
       if (trameApp === 'episcope') {
-        duration = 10000
+        duration = 15000
       }
       setTimeout(
         () =>
