@@ -38,13 +38,6 @@ window.addEventListener('storage', (e) => {
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
 
 const App = () => {
-  const { isColorModeSet, setColorMode } = useColorModes('')
-  const storedTheme = useSelector((state) => state.theme)
-
-  useEffect(() => {
-    setColorMode(storedTheme)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
   return (
     <Router>
       <Suspense
