@@ -24,7 +24,7 @@ export const components = {
         folderInput: {
           placeholder: '(required) Select a folder ...',
           dataSources: ['upload', 'public'],
-          fileTypes: ['fastq.gz', 'fq.gz'],
+          fileTypes: ['fastq.gz', 'fq.gz', 'hic'],
           viewFile: false,
           isOptional: false,
           cleanupInput: false,

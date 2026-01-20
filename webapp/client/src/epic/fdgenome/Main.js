@@ -19,7 +19,7 @@ const Main = (props) => {
   const [submitting, setSubmitting] = useState(false)
   const [requestSubmit, setRequestSubmit] = useState(false)
   const [projectParams, setProjectParams] = useState()
-  const [inputComponents, setInputComponents] = useState({})
+  const [inputComponents, setInputComponents] = useState(components)
   const [doValidation, setDoValidation] = useState(0)
   const [workflow, setWorkflow] = useState(workflowOptions[0].value)
   const [openDialog, setOpenDialog] = useState(false)
