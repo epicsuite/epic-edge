@@ -23,12 +23,11 @@ export const components = {
         value: null,
         display: null,
         fileInput: {
-          tooltip:
-            "Path to input reference fasta (in .fna format), source of the project's list of chromosomes.",
+          tooltip: "Path to input reference fasta, source of the project's list of chromosomes.",
           enableInput: false,
           placeholder: 'Select a file',
           dataSources: ['upload', 'public'],
-          fileTypes: ['fna'],
+          fileTypes: ['fna', 'fa', 'fasta'],
           viewFile: false,
           isOptional: false,
           cleanupInput: false,
