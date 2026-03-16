@@ -6,7 +6,8 @@ const Job = require('../edge-api/models/job')
 const {
   nextflowConfigs,
   workflowList,
-  generateWorkflowResult
+  generateWorkflowResult,
+  zipProjectOutputs
 } = require('./workflow')
 const { write2log, execCmd, sleep, pidIsRunning } = require('./common')
 const logger = require('./logger')
@@ -292,6 +293,8 @@ const updateJobStatus = async (job, proj) => {
         proj.save()
         throw e
       }
+      // zip output if needed
+      await zipProjectOutputs(proj)
       status = 'complete'
     } else if (newStatus === 'Failed') {
       status = 'failed'
