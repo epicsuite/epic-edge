@@ -13,7 +13,7 @@ ${config.EPIC.COMPARE_APP} \
 --port <%= port %> \
 --session <%= sessionYaml %> \
 --plugindir ${config.EPIC.PVPYTHON_PLUGIN_DIR} \
---serve &`,
+--server &`,
   episcope:
     // eslint-disable-next-line no-multi-str
     //     'cd /panfs/biopan04/epicdev/apps/episcope; \
@@ -22,7 +22,7 @@ ${config.EPIC.COMPARE_APP} \
     '/panfs/biopan04/epicdev/apps/v2_episcope/ParaView-6.0.1-MPI-Linux-Python3.12-x86_64/bin/pvpython --venv /panfs/biopan04/epicdev/apps/v2_episcope/venv -m episcope.app \
 --data <%= data %> \
 --port <%= port %> \
---serve &'
+--server &'
 }
 
 module.exports = {
